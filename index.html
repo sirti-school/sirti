@@ -5738,6 +5738,314 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 </script>
+<script id="sirti-v154-exemption">
+/* سيرتي v154 — الإعفاء من الامتحان النهائي (فردي وعام) */
+(function(){
+'use strict';
+var DEF_GRADES=['الأول المتوسط','الثاني المتوسط','الرابع الإعدادي','الخامس الإعدادي'];
+function E(v){return typeof esc==='function'?esc(v):String(v==null?'':v).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function num(v,d){if(v===null||v===undefined||String(v).trim()==='')return d;var n=Number(toLatin(String(v)));return Number.isFinite(n)?n:d}
+function say(m){try{toast(m)}catch(e){}}
+function cfg(){
+  var c=(window.db&&db.settings&&db.settings.exemption)||{};
+  return{enabled:c.enabled!==false,ind:num(c.individual,90),avg:num(c.generalAvg,85),min:num(c.generalMin,75),grades:Array.isArray(c.grades)?c.grades:DEF_GRADES};
+}
+/* ذاكرة مؤقتة قصيرة لتسريع الجداول، وتُفرَّغ عند كل حفظ */
+var cache={db:null,m:{}};
+function cinfo(st){
+  if(cache.db!==window.db){cache={db:window.db,m:{}}}
+  var k=String(st.id),now=Date.now(),e=cache.m[k];
+  if(e&&now-e.t<400)return e.v;
+  var v=compute(st);cache.m[k]={t:now,v:v};return v;
+}
+function compute(st){
+  var c=cfg();if(!c.enabled||!st||c.grades.indexOf(st.grade)<0)return null;
+  var subs=Array.isArray(db.subjects&&db.subjects[st.grade])?db.subjects[st.grade]:[];
+  if(!subs.length)return null;
+  var ann={},all=true,sum=0,min=101;
+  subs.forEach(function(sb){
+    var a=annualStudyBeforeDecision(st,sb);
+    a=(a===null||a===undefined)?null:Number(a);ann[sb]=a;
+    if(a===null)all=false;else{sum+=a;if(a<min)min=a}
+  });
+  var general=false,avgAll=null;
+  if(all){avgAll=Math.round(sum/subs.length);general=avgAll>=c.avg&&min>=c.min}
+  return{general:general,ann:ann,c:c,avg:avgAll,subs:subs};
+}
+/* نتيجة الإعفاء لطالب ومادة: null أو {type,value} */
+window.sirtiExemption=function(st,sub){
+  var i=st?cinfo(st):null;if(!i)return null;
+  var a=i.ann[sub];if(a===null||a===undefined)return null;
+  if(i.general)return{type:'general',value:a};
+  if(a>=i.c.ind)return{type:'individual',value:a};
+  return null;
+};
+/* تفاصيل الإعفاء لطالب: {general,avg,individual:[{subject,value}]} */
+window.sirtiExemptionDetail=function(st){
+  var i=st?cinfo(st):null;if(!i)return null;
+  var ind=[];
+  i.subs.forEach(function(sb){var a=i.ann[sb];if(a!==null&&a!==undefined&&a>=i.c.ind)ind.push({subject:sb,value:a})});
+  return{general:i.general,avg:i.avg,individual:ind};
+};
+/* درجة الامتحان النهائي للمعفى = درجة سعيه السنوي، فتنتقل تلقائيًا إلى كل السجلات والنتائج */
+var oGV=window.gradeVal;
+window.gradeVal=function(st,sub,exam){
+  if(exam==='final'&&st){var ex=window.sirtiExemption(st,sub);if(ex)return ex.value}
+  return oGV.apply(this,arguments);
+};
+var oSave=window.saveDB;
+window.saveDB=function(){cache={db:null,m:{}};return oSave.apply(this,arguments)};
+
+/* عمود «الإعفاء» في شاشة إدخال الدرجات عند اختيار الامتحان النهائي */
+function augment(){
+  var exam=(document.getElementById('gradeEntryExam')||{}).value;if(exam!=='final')return;
+  var wrap=document.getElementById('gradeEntryTable'),table=wrap&&wrap.querySelector('table');
+  if(!table||table.getAttribute('data-ex')==='1')return;
+  var subject=(document.getElementById('gradeEntrySubject')||{}).value;if(!subject)return;
+  var hr=table.querySelector('thead tr');if(!hr)return;
+  var th=document.createElement('th');th.textContent='الإعفاء';hr.insertBefore(th,hr.children[2]||null);
+  table.querySelectorAll('tbody tr').forEach(function(tr){
+    var inp=tr.querySelector('.grade-input'),td=document.createElement('td');
+    var st=inp?db.students.find(function(x){return String(x.id)===String(inp.dataset.student)}):null;
+    var ex=st?window.sirtiExemption(st,subject):null;
+    if(ex){
+      td.innerHTML='<span class="pill ok">'+(ex.type==='general'?'إعفاء عام':'إعفاء فردي')+'</span>';
+      inp.value=String(ex.value);inp.disabled=true;inp.classList.remove('grade-input');inp.classList.add('grade-input-exempt');
+      var cell=inp.closest('.grade-cell'),hint=cell&&cell.querySelector('.grade-last-edit');
+      if(hint){hint.className='grade-last-edit grade-last-edit-empty';hint.textContent='معفى من الامتحان النهائي — تُملأ الخانة بدرجة السعي السنوي ('+(typeof arNum==='function'?arNum(ex.value):ex.value)+')'}
+    }else{td.innerHTML='<span class="muted">—</span>'}
+    tr.insertBefore(td,tr.children[2]||null);
+  });
+  table.setAttribute('data-ex','1');
+  if(typeof applyArabicDigits==='function')applyArabicDigits(wrap);
+}
+var oRG=window.renderGradeEntry;
+if(typeof oRG==='function')window.renderGradeEntry=function(){var r=oRG.apply(this,arguments);try{augment()}catch(e){console.error('exemption',e)}return r};
+
+/* إعدادات الإعفاء (للمالك): النسب والصفوف المشمولة */
+function owner(){var u=window.currentUser||currentUser;return !!u&&u.role==='owner'}
+function renderCard(){
+  var sec=document.getElementById('settings');if(!sec)return;
+  var card=document.getElementById('exemptionSettingsCard');
+  if(!owner()||!window.db){if(card)card.remove();return}
+  var c=cfg(),sig=JSON.stringify(c);
+  if(card&&card.getAttribute('data-sig')===sig)return;
+  if(!card){card=document.createElement('div');card.id='exemptionSettingsCard';card.className='card';card.style.marginTop='14px';sec.appendChild(card)}
+  card.setAttribute('data-sig',sig);
+  var gl=(typeof gradesList!=='undefined'?gradesList:DEF_GRADES);
+  card.innerHTML='<div class="head"><div><h3>الإعفاء من الامتحان النهائي</h3><div class="muted">الإعفاء الفردي: يُعفى الطالب في المادة التي يبلغ سعيه السنوي فيها الحد المحدد. الإعفاء العام: يُعفى من جميع المواد إذا بلغ معدله العام الحد المحدد ولم تقل أي مادة عن الحد الأدنى. تُملأ درجة الامتحان النهائي للمعفى بدرجة سعيه السنوي. السعي السنوي = (الفصل الأول + نصف السنة + الفصل الثاني) ÷ ٣، ولا يظهر الإعفاء إلا بعد اكتمال هذه الدرجات.</div></div></div>'+
+  '<div class="decision-grid" style="margin-top:12px"><div class="field"><label><input type="checkbox" id="exEnabled" '+(c.enabled?'checked':'')+'> تفعيل نظام الإعفاء</label></div>'+
+  '<div class="field"><label>حد الإعفاء الفردي (سعي المادة)</label><input id="exInd" class="control" type="number" min="0" max="100" value="'+E(c.ind)+'"></div>'+
+  '<div class="field"><label>حد الإعفاء العام (المعدل العام)</label><input id="exAvg" class="control" type="number" min="0" max="100" value="'+E(c.avg)+'"></div>'+
+  '<div class="field"><label>الحد الأدنى لأي مادة في الإعفاء العام</label><input id="exMin" class="control" type="number" min="0" max="100" value="'+E(c.min)+'"></div></div>'+
+  '<div class="field" style="margin-top:10px"><label>الصفوف المشمولة (المراحل المنتهية: الثالث المتوسط والسادس الإعدادي لا تُشمل عادةً)</label><div id="exGrades" style="display:flex;flex-wrap:wrap;gap:14px">'+
+  gl.map(function(g){return'<label style="display:flex;align-items:center;gap:6px"><input type="checkbox" data-g="'+E(g)+'" '+(c.grades.indexOf(g)>-1?'checked':'')+'> '+E(g)+'</label>'}).join('')+'</div></div>'+
+  '<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" id="exSave">حفظ إعدادات الإعفاء</button></div>';
+  document.getElementById('exSave').addEventListener('click',function(){
+    var p=function(id,d){return Math.max(0,Math.min(100,Math.round(num(document.getElementById(id).value,d))))};
+    var gs=[].slice.call(document.querySelectorAll('#exGrades input[type=checkbox]')).filter(function(i){return i.checked}).map(function(i){return i.getAttribute('data-g')});
+    db.settings=db.settings||{};
+    db.settings.exemption={enabled:document.getElementById('exEnabled').checked,individual:p('exInd',90),generalAvg:p('exAvg',85),generalMin:p('exMin',75),grades:gs};
+    saveDB();
+    try{renderAll()}catch(e){}
+    say('تم حفظ إعدادات الإعفاء');
+  });
+}
+
+/* ===== صفحة «الإعفاء»: كشف الإعفاء العام (مرتب بالمعدل) والفردي (أبجدي) لكل صف ===== */
+function fp(n){return typeof arDigits==='function'?arDigits(String(n)):String(n)}
+function me(){return window.currentUser||currentUser}
+function scope(){
+  var u=me();
+  if(u&&u.role==='teacher'){
+    var t=(db.teachers||[]).find(function(x){return x.id===u.id})||(db.teachers||[]).find(function(x){return x.username===u.username});
+    var as=(t&&t.assignments)||[];
+    return{student:function(st){return as.some(function(a){return a.grade===st.grade&&a.section===st.section})},
+           subject:function(st,sb){return as.some(function(a){return a.grade===st.grade&&a.section===st.section&&a.subject===sb})}};
+  }
+  return{student:function(){return true},subject:function(){return true}};
+}
+function byName(a,b){return String(a.st.name).localeCompare(String(b.st.name),'ar')}
+function gather(grade){
+  var sc=scope(),gen=[],ind=[];
+  (db.students||[]).filter(function(st){return st.grade===grade&&sc.student(st)}).forEach(function(st){
+    var d=window.sirtiExemptionDetail(st);if(!d)return;
+    if(d.general)gen.push({st:st,avg:d.avg});
+    else{var subs=d.individual.filter(function(x){return sc.subject(st,x.subject)});if(subs.length)ind.push({st:st,subs:subs})}
+  });
+  gen.sort(function(a,b){return b.avg-a.avg||byName(a,b)});
+  ind.sort(byName);
+  return{gen:gen,ind:ind};
+}
+function gradesToShow(){
+  var c=cfg(),sel=(document.getElementById('exGradeSel')||{}).value||'';
+  var gl=(typeof gradesList!=='undefined'?gradesList:c.grades).filter(function(g){return c.grades.indexOf(g)>-1});
+  return sel?gl.filter(function(g){return g===sel}):gl;
+}
+function genTable(rows){
+  if(!rows.length)return '<div class="empty">لا يوجد طلاب معفون إعفاءً عامًا في هذا الصف حتى الآن.</div>';
+  return '<div class="table-wrap"><table class="table" dir="rtl" style="min-width:0"><thead><tr><th style="width:70px">التسلسل</th><th>اسم الطالب</th><th style="width:90px">الشعبة</th><th style="width:110px">المعدل</th></tr></thead><tbody>'+
+    rows.map(function(r,i){return'<tr><td>'+fp(i+1)+'</td><td style="text-align:right"><b>'+E(r.st.name)+'</b></td><td>'+E(r.st.section)+'</td><td><b>'+fp(r.avg)+'</b></td></tr>'}).join('')+'</tbody></table></div>';
+}
+function indTable(rows){
+  if(!rows.length)return '<div class="empty">لا يوجد طلاب معفون إعفاءً فرديًا في هذا الصف حتى الآن.</div>';
+  var h='<div class="table-wrap"><table class="table" dir="rtl" style="min-width:0"><thead><tr><th style="width:70px">التسلسل</th><th>اسم الطالب</th><th style="width:90px">الشعبة</th><th>المادة المعفى منها</th><th style="width:110px">الدرجة</th></tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    r.subs.forEach(function(x,k){
+      h+='<tr>'+(k===0?'<td rowspan="'+r.subs.length+'">'+fp(i+1)+'</td><td rowspan="'+r.subs.length+'" style="text-align:right"><b>'+E(r.st.name)+'</b></td><td rowspan="'+r.subs.length+'">'+E(r.st.section)+'</td>':'')+'<td style="text-align:right">'+E(x.subject)+'</td><td><b>'+fp(x.value)+'</b></td></tr>';
+    });
+  });
+  return h+'</tbody></table></div>';
+}
+function renderExemptionPage(){
+  var body=document.getElementById('exBody');if(!body||!window.db)return;
+  var c=cfg();
+  if(!c.enabled){body.innerHTML='<div class="empty">نظام الإعفاء موقوف حاليًا. يمكن للمالك تفعيله من الإعدادات.</div>';return}
+  var sel=document.getElementById('exGradeSel');
+  if(sel&&sel.options.length<2){
+    var gl=(typeof gradesList!=='undefined'?gradesList:c.grades).filter(function(g){return c.grades.indexOf(g)>-1});
+    sel.innerHTML='<option value="">جميع الصفوف</option>'+gl.map(function(g){return'<option value="'+E(g)+'">'+E(g)+'</option>'}).join('');
+  }
+  var kind=(document.getElementById('exKindSel')||{}).value||'both',html='',any=false;
+  gradesToShow().forEach(function(g){
+    var d=gather(g);any=any||d.gen.length||d.ind.length;
+    html+='<div class="card" style="margin-top:12px"><div class="head"><div><h3>'+E(g)+'</h3></div></div>';
+    if(kind!=='ind')html+='<h4 style="margin:12px 0 6px">الإعفاء العام <span class="pill ok">'+fp(d.gen.length)+'</span></h4><div class="muted" style="margin-bottom:6px">مرتب حسب المعدل من الأعلى إلى الأقل.</div>'+genTable(d.gen);
+    if(kind!=='gen')html+='<h4 style="margin:16px 0 6px">الإعفاء الفردي <span class="pill ok">'+fp(d.ind.length)+'</span></h4><div class="muted" style="margin-bottom:6px">مرتب أبجديًا، ويظهر أمام كل طالب المواد المعفى منها ودرجته فيها.</div>'+indTable(d.ind);
+    html+='</div>';
+  });
+  if(!html)html='<div class="empty">لا توجد صفوف مشمولة بنظام الإعفاء.</div>';
+  else if(!any)html='<div class="empty" style="margin-top:12px">لا توجد حالات إعفاء بعد. يظهر الإعفاء بعد اكتمال السعي السنوي للمادة (الفصل الأول + نصف السنة + الفصل الثاني).</div>'+html;
+  body.innerHTML=html;
+}
+function printHTML(kind){
+  var s=(db&&db.settings)||{},c=cfg(),pages=[];
+  gradesToShow().forEach(function(g){
+    var d=gather(g);
+    if((kind==='gen'&&!d.gen.length)||(kind!=='gen'&&!d.ind.length))return;
+    var head='<h1>'+E(s.schoolName||'')+'</h1><div class="sub">'+(kind==='gen'?'كشف الإعفاء العام':'كشف الإعفاء الفردي')+' — '+E(g)+' — العام الدراسي '+E(s.year||'')+'</div>';
+    var table;
+    if(kind==='gen'){
+      table=d.gen.length?'<table><thead><tr><th style="width:21mm">التسلسل</th><th>اسم الطالب</th><th style="width:22mm">الشعبة</th><th style="width:26mm">المعدل</th></tr></thead><tbody>'+d.gen.map(function(r,i){return'<tr><td>'+fp(i+1)+'</td><td class="nm">'+E(r.st.name)+'</td><td>'+E(r.st.section)+'</td><td><b>'+fp(r.avg)+'</b></td></tr>'}).join('')+'</tbody></table>':'<div class="none">لا يوجد طلاب معفون إعفاءً عامًا.</div>';
+    }else{
+      var rows='';d.ind.forEach(function(r,i){rows+='<tbody>';r.subs.forEach(function(x,k){rows+='<tr>'+(k===0?'<td rowspan="'+r.subs.length+'">'+fp(i+1)+'</td><td class="nm" rowspan="'+r.subs.length+'">'+E(r.st.name)+'</td><td rowspan="'+r.subs.length+'">'+E(r.st.section)+'</td>':'')+'<td class="nm">'+E(x.subject)+'</td><td><b>'+fp(x.value)+'</b></td></tr>'});rows+='</tbody>'});
+      table=d.ind.length?'<table><thead><tr><th style="width:21mm">التسلسل</th><th>اسم الطالب</th><th style="width:20mm">الشعبة</th><th>المادة المعفى منها</th><th style="width:22mm">الدرجة</th></tr></thead>'+rows+'</table>':'<div class="none">لا يوجد طلاب معفون إعفاءً فرديًا.</div>';
+    }
+    pages.push('<section class="ex-page">'+head+table+'</section>');
+  });
+  if(!pages.length)return '<section class="ex-page"><h1>'+E(s.schoolName||'')+'</h1><div class="sub">'+(kind==='gen'?'كشف الإعفاء العام':'كشف الإعفاء الفردي')+' — العام الدراسي '+E(s.year||'')+'</div><div class="none">لا توجد حالات إعفاء حتى الآن.</div></section>';
+  return pages.join('');
+}
+function printCss(){return '@page{size:A4 portrait;margin:12mm 10mm}'+
+ '@media print{html:has(body.sirti-printing),html body.sirti-printing{width:190mm!important;min-width:190mm!important;max-width:190mm!important;margin:0!important;padding:0!important}}'+
+ '#sirtiPrintRoot{width:190mm!important;margin:0!important;padding:0!important}'+
+ '.ex-page{width:190mm;margin:0;padding:0;font-family:Cairo,Arial,sans-serif;color:#111;page-break-after:always;break-after:page}.ex-page:last-child{page-break-after:auto;break-after:auto}'+
+ '.ex-page h1{font-size:16pt;text-align:center;margin:0 0 2mm}.ex-page .sub{text-align:center;font-size:11pt;font-weight:700;margin:0 0 5mm}'+
+ '.ex-page table{width:100%;border-collapse:collapse;table-layout:fixed}.ex-page thead{display:table-header-group}.ex-page tr,.ex-page tbody{break-inside:avoid;page-break-inside:avoid}'+
+ '.ex-page th,.ex-page td{border:1px solid #111;padding:1.6mm 1.8mm;font-size:11.5pt;text-align:center;line-height:1.3;overflow-wrap:anywhere}'+
+ '.ex-page th{background:#dbe5f5;font-weight:800}.ex-page td.nm{text-align:right;font-weight:700}.ex-page .none{text-align:center;padding:12mm 0;font-size:12pt}'}
+window.sirtiExemptionPrintHTML=printHTML;
+function doPrint(kind){
+  if(!window.db)return;
+  var html=printHTML(kind);
+  if(!html){say('لا توجد صفوف للطباعة');return}
+  openDedicatedPrintWindow(kind==='gen'?'كشف الإعفاء العام':'كشف الإعفاء الفردي',html,printCss());
+}
+function ensurePage(){
+  var main=document.querySelector('main');if(!main)return;
+  if(typeof titles!=='undefined'&&!titles.exemption)titles.exemption=['الإعفاء','قوائم الإعفاء العام والفردي لكل صف'];
+  if(!document.getElementById('exemption')){
+    var sec=document.createElement('section');sec.id='exemption';sec.className='view';
+    sec.innerHTML='<div class="card"><div class="head"><div><h3>قوائم الإعفاء من الامتحان النهائي</h3><div class="muted">الإعفاء العام: يظهر مرتبًا بالمعدل من الأعلى إلى الأقل لكل صف. الإعفاء الفردي: يظهر بالترتيب الأبجدي لكل صف، وأمام كل طالب المواد المعفى منها ودرجته فيها.</div></div></div>'+
+    '<div class="decision-grid" style="margin-top:10px"><div class="field"><label>الصف</label><select id="exGradeSel" class="control"><option value="">جميع الصفوف</option></select></div>'+
+    '<div class="field"><label>نوع الإعفاء</label><select id="exKindSel" class="control"><option value="both">العام والفردي</option><option value="gen">العام فقط</option><option value="ind">الفردي فقط</option></select></div></div>'+
+    '<div class="decision-actions"><button class="btn primary" type="button" id="exPrintGen">🖨️ طباعة كشف الإعفاء العام</button><button class="btn light" type="button" id="exPrintInd">🖨️ طباعة كشف الإعفاء الفردي</button></div></div><div id="exBody"></div>';
+    main.appendChild(sec);
+    sec.querySelector('#exGradeSel').addEventListener('change',renderExemptionPage);
+    sec.querySelector('#exKindSel').addEventListener('change',renderExemptionPage);
+    sec.querySelector('#exPrintGen').addEventListener('click',function(){doPrint('gen')});
+    sec.querySelector('#exPrintInd').addEventListener('click',function(){doPrint('ind')});
+  }
+  if(!document.querySelector('.nav button[onclick*="show(\'exemption\'"]')){
+    var nav=document.querySelector('aside .nav');
+    if(nav){
+      var btn=document.createElement('button');btn.setAttribute('onclick',"show('exemption',this)");btn.innerHTML='<i>🎓</i><span>الإعفاء</span>';
+      var ref=[].slice.call(nav.querySelectorAll('button')).filter(function(b){return(b.getAttribute('onclick')||'').indexOf("show('slips'")>-1})[0];
+      if(ref)nav.insertBefore(btn,ref);else nav.appendChild(btn);
+    }
+  }
+}
+var oGuard=window.guardView;
+window.guardView=function(id){
+  var u=me();
+  if(id==='exemption'&&u&&(u.role==='owner'||u.role==='manager'||u.role==='teacher'))return true;
+  return oGuard.apply(this,arguments);
+};
+ensurePage();
+var oRA=window.renderAll;
+if(typeof oRA==='function')window.renderAll=function(){var r=oRA.apply(this,arguments);setTimeout(function(){ensurePage();renderCard();var v=document.getElementById('exemption');if(v&&v.classList.contains('active'))renderExemptionPage()},0);return r};
+var oShow=window.show;
+if(typeof oShow==='function')window.show=function(id){var r=oShow.apply(this,arguments);setTimeout(function(){renderCard();if(id==='exemption'){ensurePage();renderExemptionPage()}},0);return r};
+function boot(){setTimeout(renderCard,300)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+
+</script>
+<script id="sirti-v155-autosave">
+/* سيرتي v155 — حفظ تلقائي لدرجة الطالب عند مغادرة حقله (الانتقال لطالب آخر) */
+(function(){
+'use strict';
+var busy=false,timer=null;
+var HEAVY=['renderHome','renderTeacherStats','renderTeacherRegister','renderAdminRecords','renderSlips'];
+function lat(v){try{return toLatin(String(v==null?'':v)).trim()}catch(e){return String(v||'').trim()}}
+function mark(){
+  var t=document.getElementById('gradeEntryTable');if(!t)return;
+  [].forEach.call(t.querySelectorAll('.grade-input'),function(i){i.setAttribute('data-orig',lat(i.value))});
+}
+/* بعد كل رسم لجدول الإدخال سجّل القيم الأصلية للمقارنة */
+var oRG=window.renderGradeEntry;
+if(typeof oRG==='function')window.renderGradeEntry=function(){var r=oRG.apply(this,arguments);try{mark()}catch(e){}return r};
+
+/* احفظ بلا إعادة رسم الصفحات الثقيلة فورًا؛ تُحدَّث بعد توقف الكتابة */
+function lightSave(){
+  var saved={};
+  HEAVY.forEach(function(n){saved[n]=window[n];window[n]=function(){}});
+  try{window.saveGrades()}finally{HEAVY.forEach(function(n){window[n]=saved[n]})}
+  clearTimeout(timer);
+  timer=setTimeout(runHeavy,1500);
+}
+/* تحديث الصفحات الثقيلة لا يجري أثناء وجود المؤشر داخل جدول الإدخال حتى لا يضيع ما يكتبه المدرس */
+function runHeavy(){
+  var a=document.activeElement;
+  if(a&&a.closest&&a.closest('#gradeEntryTable')){timer=setTimeout(runHeavy,1500);return}
+  HEAVY.forEach(function(n){try{if(typeof window[n]==='function')window[n]()}catch(e){}});
+}
+document.addEventListener('focusout',function(e){
+  var inp=e.target;
+  if(busy||!inp||!inp.classList||!inp.classList.contains('grade-input')||inp.disabled)return;
+  if(!inp.closest||!inp.closest('#gradeEntryTable'))return;
+  var orig=inp.getAttribute('data-orig');if(orig===null)return;
+  if(lat(inp.value)===orig)return;                         // لا تغيير
+  var next=e.relatedTarget;
+  /* قيمة غير صالحة: أعد القيمة السابقة بدل تركها تعطّل الحفظ */
+  var raw=lat(inp.value);
+  if(raw!==''){var n=Number(raw);if(!Number.isFinite(n)||n<0||n>100){inp.value=orig;try{toast('الدرجة يجب أن تكون بين ٠ و١٠٠ — أُعيدت القيمة السابقة')}catch(x){}return}}
+  if(next&&next.tagName==='BUTTON'&&/saveGrades|clearGradeInputs/.test(next.getAttribute('onclick')||''))return; // زر الحفظ يتولى الأمر
+  var keep=next&&next.classList&&next.classList.contains('grade-input')?next.getAttribute('data-student'):null;
+  busy=true;
+  try{lightSave()}catch(err){console.error('autosave',err)}
+  finally{busy=false}
+  if(keep!==null){
+    var refocus=function(){
+      var el=document.querySelector('#gradeEntryTable .grade-input[data-student="'+(window.CSS&&CSS.escape?CSS.escape(keep):keep)+'"]');
+      if(el&&document.activeElement!==el){el.focus();try{el.select()}catch(x){}}
+    };
+    refocus();setTimeout(refocus,0);
+  }
+},true);
+})();
+
+</script>
 <script id="sirti-v151-firebase">
 /* سيرتي v151 — الربط مع Firebase (تسجيل دخول حقيقي + قاعدة بيانات مشتركة) */
 (function(){
