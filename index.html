@@ -3682,7 +3682,7 @@ function registerHeaderHTML(o){
   `<div class="rh-box rh-side rh-left">${registerPlaqueSVG(58,27)}<div class="rh-text"><div class="rh-line"><label>الصف /</label><b>${esc(o.gradeText)}</b></div><div class="rh-line"><label>المادة /</label><b>${esc(o.subject)}</b></div></div></div>`+
   `</div>`;
 }
-function renderTeacherRegister(){let grade=document.getElementById('regGrade')?.value||gradesList[4],section=document.getElementById('regSection')?.value||'أ',subject=document.getElementById('regSubject')?.value||'';const teacher=currentUser?.role==='teacher',globalUser=currentUser?.role==='owner'||currentUser?.role==='manager';if(teacher){configureTeacherSelectors();grade=document.getElementById('regGrade')?.value||teacherAssignedGrades()[0]||'';section=document.getElementById('regSection')?.value||teacherAssignedSections(grade)[0]||'';const allowed=teacherAssignedSubjects(grade,section);subject=allowed.includes(subject)?subject:(allowed[0]||'')}else if(globalUser){const oldSubject=document.getElementById('regSubject')?.value;fillSubjectSelect('regSubject',grade);if(oldSubject&&db.subjects[grade]?.includes(oldSubject))document.getElementById('regSubject').value=oldSubject;subject=document.getElementById('regSubject')?.value||db.subjects[grade]?.[0]||''}const box=document.getElementById('teacherRegisterContent');if(!box)return;if(!subject||(teacher&&!teacherCanEditGrade(grade,section,subject))){box.innerHTML='<div class="empty">لا توجد تكليفات مناسبة للمدرس.</div>';return}const list=db.students.filter(st=>st.grade===grade&&st.section===section).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));const rows=list.map((st,i)=>{const c1=avgCourse(st,subject,1),mid=gradeVal(st,subject,'mid'),c2=avgCourse(st,subject,2),annual=annualStudy(st,subject),annualRaw=annualStudyBeforeDecision(st,subject),fin=gradeVal(st,subject,'final'),fg=finalGrade(st,subject),fgRaw=finalGradeBeforeDecision(st,subject);const annualCell=decisionGradeDisplay(st,subject,'annual',annualRaw,annual),finalCell=decisionGradeDisplay(st,subject,'final',fgRaw,fg);return `<tr><td>${arDigits(i+1)}</td><td class="name-col">${esc(st.name)}</td><td>${teacherRegisterDisplay(c1)}</td><td>${teacherRegisterDisplay(mid)}</td><td>${teacherRegisterDisplay(c2)}</td><td>${annualCell}</td><td>${teacherRegisterDisplay(fin)}</td><td>${finalCell}</td><td></td></tr>`}).join('');const summary=teacherRegisterSummaryRowsHTML(list,subject);box.innerHTML=`${registerHeaderHTML({school:db.settings.schoolName,title:teacher?'سجلي الخاص':'سجل المدرسين',year:registerYearText(db.settings.year),gradeText:registerGradeText(grade,section),subject})}${list.length?`<div class="register-table-wrap"><table class="teacher-register-table" dir="rtl"><thead><tr><th class="seq-col"><span class="vtxt">التسلسل</span></th><th class="name-col">اسم الطالب</th><th>الفصل الأول<br>١٠٠</th><th>نصف السنة<br>١٠٠</th><th>الفصل الثاني<br>١٠٠</th><th>السعي السنوي<br>١٠٠</th><th>الامتحان النهائي<br>١٠٠</th><th>الدرجة النهائية<br>١٠٠</th><th class="notes-col">الملاحظات</th></tr></thead><tbody>${rows}</tbody>${summary}</table></div>`:'<div class="empty">لا يوجد طلاب في هذه الشعبة</div>'}<div class="register-footer">${(()=>{const fn=registerFooterNames(grade,section,subject);const tp=fn.p.length?esc(fn.p.join(' / ')):'';const ts=fn.s.length?esc(fn.s.join(' / ')):'';const pn=esc(String(db.settings?.principalName||'').trim());return `<div class="rf-cell"><b>مدرس المادة</b><span class="rf-name">${tp||'&nbsp;'}</span></div><div class="rf-cell"><b>مدرس المادة</b><span class="rf-name">${ts||'&nbsp;'}</span></div><div class="rf-cell"><b>مدير المدرسة</b><span class="rf-name">${pn||'&nbsp;'}</span></div>`})()}</div>`;applyArabicDigits(box)}
+function renderTeacherRegister(){let grade=document.getElementById('regGrade')?.value||gradesList[4],section=document.getElementById('regSection')?.value||'أ',subject=document.getElementById('regSubject')?.value||'';const teacher=currentUser?.role==='teacher',globalUser=currentUser?.role==='owner'||currentUser?.role==='manager';if(teacher){configureTeacherSelectors();grade=document.getElementById('regGrade')?.value||teacherAssignedGrades()[0]||'';section=document.getElementById('regSection')?.value||teacherAssignedSections(grade)[0]||'';const allowed=teacherAssignedSubjects(grade,section);subject=allowed.includes(subject)?subject:(allowed[0]||'')}else if(globalUser){const oldSubject=document.getElementById('regSubject')?.value;fillSubjectSelect('regSubject',grade);if(oldSubject&&db.subjects[grade]?.includes(oldSubject))document.getElementById('regSubject').value=oldSubject;subject=document.getElementById('regSubject')?.value||db.subjects[grade]?.[0]||''}const box=document.getElementById('teacherRegisterContent');if(!box)return;if(!subject||(teacher&&!teacherCanEditGrade(grade,section,subject))){box.innerHTML='<div class="empty">لا توجد تكليفات مناسبة للمدرس.</div>';return}const list=db.students.filter(st=>st.grade===grade&&st.section===section).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));const rows=list.map((st,i)=>{const c1=avgCourse(st,subject,1),mid=gradeVal(st,subject,'mid'),c2=avgCourse(st,subject,2),annual=annualStudy(st,subject),annualRaw=annualStudyBeforeDecision(st,subject),fin=gradeVal(st,subject,'final'),fg=finalGrade(st,subject),fgRaw=finalGradeBeforeDecision(st,subject);const annualCell=decisionGradeDisplay(st,subject,'annual',annualRaw,annual),finalCell=decisionGradeDisplay(st,subject,'final',fgRaw,fg);return `<tr><td>${arDigits(i+1)}</td><td class="name-col">${esc(st.name)}</td><td>${teacherRegisterDisplay(c1)}</td><td>${teacherRegisterDisplay(mid)}</td><td>${teacherRegisterDisplay(c2)}</td><td>${annualCell}</td><td>${teacherRegisterDisplay(fin)}</td><td>${finalCell}</td><td></td></tr>`}).join('');const summary=teacherRegisterSummaryRowsHTML(list,subject);box.innerHTML=`${registerHeaderHTML({school:db.settings.schoolName,title:'سجل المدرسين',year:registerYearText(db.settings.year),gradeText:registerGradeText(grade,section),subject})}${list.length?`<div class="register-table-wrap"><table class="teacher-register-table" dir="rtl"><thead><tr><th class="seq-col"><span class="vtxt">التسلسل</span></th><th class="name-col">اسم الطالب</th><th>الفصل الأول<br>١٠٠</th><th>نصف السنة<br>١٠٠</th><th>الفصل الثاني<br>١٠٠</th><th>السعي السنوي<br>١٠٠</th><th>الامتحان النهائي<br>١٠٠</th><th>الدرجة النهائية<br>١٠٠</th><th class="notes-col">الملاحظات</th></tr></thead><tbody>${rows}</tbody>${summary}</table></div>`:'<div class="empty">لا يوجد طلاب في هذه الشعبة</div>'}<div class="register-footer">${(()=>{const fn=registerFooterNames(grade,section,subject);const tp=fn.p.length?esc(fn.p.join(' / ')):'';const ts=fn.s.length?esc(fn.s.join(' / ')):'';const pn=esc(String(db.settings?.principalName||'').trim());return `<div class="rf-cell"><b>مدرس المادة</b><span class="rf-name">${tp||'&nbsp;'}</span></div><div class="rf-cell"><b>مدرس المادة</b><span class="rf-name">${ts||'&nbsp;'}</span></div><div class="rf-cell"><b>مدير المدرسة</b><span class="rf-name">${pn||'&nbsp;'}</span></div>`})()}</div>`;applyArabicDigits(box)}
 
 function teacherRegisterPrintPages(){
   renderTeacherRegister();
@@ -6666,6 +6666,54 @@ setInterval(function(){if(ready&&Date.now()-lastAct>IDLE_MS){say('انتهت ا�
 .teacher-register-table thead th:nth-child(4),.teacher-register-table thead th:nth-child(6),.teacher-register-table thead th:nth-child(8){background:linear-gradient(180deg,#d6e2f6,#bcd0ee)!important;color:#14213d!important}
 body.dark-mode .teacher-register-table tbody td:nth-child(4),body.dark-mode .teacher-register-table tbody td:nth-child(6),body.dark-mode .teacher-register-table tbody td:nth-child(8){background:#182a4c!important}
 body.dark-mode .teacher-register-table thead th:nth-child(4),body.dark-mode .teacher-register-table thead th:nth-child(6),body.dark-mode .teacher-register-table thead th:nth-child(8){background:linear-gradient(180deg,#2a4272,#223660)!important;color:#f1f6ff!important}
+</style>
+<style id="sirti-v153-mobile-toggle">
+body.dark-mode .mobile-menu-toggle,body.dark .mobile-menu-toggle,body.theme-dark .mobile-menu-toggle{background:linear-gradient(180deg,#2b3a63,#1c2748)!important;color:#eaf0ff!important;border:1px solid rgba(140,165,235,.45)!important;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.mobile-menu-toggle{box-shadow:0 2px 8px rgba(30,50,100,.12)}
+</style>
+<style id="sirti-v153-polish">
+/* ===== v153 تحسين التنسيق العام ===== */
+:root{--p-ease:cubic-bezier(.2,.7,.2,1)}
+.btn,.control,.tab,.top-user,.mobile-menu-toggle{transition:transform .18s var(--p-ease),box-shadow .18s var(--p-ease),border-color .18s,background-color .18s}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.control:focus,input:focus,select:focus,textarea:focus{outline:none!important;border-color:#5b7cf0!important;box-shadow:0 0 0 3.5px rgba(91,124,240,.22)!important}
+.card{border-radius:20px}
+.head{align-items:center}
+.head h3{letter-spacing:0}
+.toolbar{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px!important;align-items:center}
+.toolbar .control{width:100%!important;min-height:44px;border-radius:12px}
+table{border-collapse:separate;border-spacing:0}
+thead th{position:sticky;top:0;z-index:2;font-weight:800;letter-spacing:0;white-space:nowrap}
+tbody tr{transition:background-color .15s}
+tbody tr:hover td{background:rgba(91,124,240,.07)}
+tbody td{padding-top:10px!important;padding-bottom:10px!important}
+td .btn,td button.btn{min-height:34px;padding:6px 14px!important;border-radius:10px;font-size:12.5px}
+.pill{font-weight:800;border-radius:999px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:rgba(120,140,190,.45);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(120,140,190,.7);background-clip:padding-box;border:2px solid transparent}
+.top{border-radius:22px}
+@media(max-width:900px){
+  .top .theme-toggle,.top>.actions .theme-toggle{display:none!important}
+  .top{grid-template-columns:auto 1fr!important;padding:12px!important;gap:10px!important;border-radius:18px}
+  .mobile-menu-toggle{min-height:42px;padding:8px 14px;border-radius:12px;font-size:13.5px}
+  .top .top-user{padding:6px 10px!important;min-height:0!important;border-radius:12px}
+  .top .top-user small{display:none}
+  .top .top-user-avatar{width:32px!important;height:32px!important;font-size:14px!important}
+  .title h2{font-size:17px!important}
+  .title p{display:none}
+  main .toolbar{display:grid!important;grid-template-columns:1fr 1fr!important}
+  main .toolbar #studentSearch,.toolbar input.control{grid-column:1 / -1}
+  .head>.actions .btn,.head>.btn{width:100%}
+  .head{flex-direction:column;align-items:stretch!important}
+  .head>div:first-child{width:100%}
+  tbody td{padding-top:8px!important;padding-bottom:8px!important;font-size:13px}
+  td .btn,td button.btn{padding:5px 10px!important;font-size:12px}
+}
+@media(max-width:420px){.toolbar{grid-template-columns:1fr 1fr}}
+body.dark-mode thead th{background:#1b2848!important}
+body.dark-mode tbody tr:hover td{background:rgba(120,150,255,.09)}
 </style>
 </body>
 
