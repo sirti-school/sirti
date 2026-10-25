@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٩</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٦٠</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -6134,7 +6134,7 @@ function msg(e){var c=(e&&e.code)||'';
 /* ---------- قاعدة بيانات فارغة ---------- */
 function baseDB(){var d=freshDB();d.students=[];d.teachers=[];d.owner={username:'owner',name:'',email:'',status:'مفعّل',password:PH};d.manager={username:'manager',name:'المدير',status:'مفعّل',password:PH};return d}
 var MAIN_SKIP=['students','teachers','owner','manager','gradeAudit','gradeAuditLog','gradeAuditByStudent'];
-function mainPayload(){var o={};Object.keys(db).forEach(function(k){if(MAIN_SKIP.indexOf(k)<0)o[k]=db[k]});return clone(o)}
+function mainPayload(){var o={};Object.keys(db).forEach(function(k){if(MAIN_SKIP.indexOf(k)<0)o[k]=db[k]});if(isStaff())o.publicStats={teachers:(db.teachers||[]).length,students:(db.students||[]).length};return clone(o)}
 function allowFrom(as){var allow={},ck=[];(as||[]).forEach(function(a){var k=a.grade+'|'+a.section;if(!allow[k]){allow[k]=[];ck.push(k)}if(allow[k].indexOf(a.subject)<0)allow[k].push(a.subject)});return{allow:allow,classKeys:ck}}
 function teacherDoc(t,email){var a=allowFrom(t.assignments);return{role:'teacher',username:t.username,name:t.name,gender:t.gender||'male',active:t.active!==false,assignments:t.assignments||[],acl:a.allow,classKeys:a.classKeys,email:email,lastSeen:0}}
 function toTeacher(id,x){var f=(x.assignments&&x.assignments[0])||{};return{id:id,name:x.name||'',gender:x.gender||'male',username:x.username||'',password:'',assignments:x.assignments||[],subject:f.subject,grade:f.grade,section:f.section,active:x.active!==false,lastSeen:x.lastSeen||0,authEmail:x.email||''}}
@@ -6222,6 +6222,7 @@ async function loadAll(user){
   snap={js:{},obj:{},main:''};
   db.students.forEach(function(st){var c=cleanSt(st);snap.js[sid(st)]=JSON.stringify(c);snap.obj[sid(st)]=c});
   snap.main=JSON.stringify(mainPayload());
+  try{if(isStaff()){var st0=(ms.exists&&ms.data().publicStats)||{};if(st0.teachers!==db.teachers.length||st0.students!==db.students.length){snap.main='';window.__sirtiNeedMainSync=true}}}catch(e){}
   synced=new WeakSet();db.gradeAuditLog.forEach(function(e){synced.add(e)});
 }
 
@@ -6319,6 +6320,7 @@ async function enter(user){
     var le=$('loginError');if(le)le.style.display='none';
     var lp=$('loginPassword');if(lp)lp.value='';
     try{startPresence()}catch(e){}
+    if(window.__sirtiNeedMainSync){window.__sirtiNeedMainSync=false;setTimeout(function(){try{syncNow()}catch(e){}},2500)}
     renderAll();updateRoleUI();addRefreshBtn();
     say(me.role==='owner'?'تم تسجيل الدخول بحساب المالك':me.role==='manager'?'تم تسجيل الدخول بحساب المدير':'تم تسجيل الدخول بحساب المدرس');
     if(isStaff()){clearInterval(usersTimer);usersTimer=setInterval(refreshUsers,120000);refreshUsers()}
@@ -6782,6 +6784,17 @@ if(typeof oSave==='function')window.saveStudent=function(id){
   return r;
 };
 })();
+</script>
+<script id="sirti-v160-public-stats">
+(function(){var o=window.renderHome;if(typeof o!=='function')return;
+window.renderHome=function(){var r=o.apply(this,arguments);
+try{if(window.currentUser&&currentUser.role==='teacher'&&db.publicStats){
+  var t=document.getElementById('statTeachers'),st=document.getElementById('statStudents');
+  var ad=function(n){return typeof arDigits==='function'?arDigits(n):String(n)};
+  if(t)t.textContent=ad(Math.max(db.teachers.length,Number(db.publicStats.teachers)||0));
+  if(st)st.textContent=ad(Math.max(db.students.length,Number(db.publicStats.students)||0));
+}}catch(e){}
+return r}})();
 </script>
 </body>
 
