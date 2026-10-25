@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٥</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٦</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -6733,7 +6733,7 @@ body.dark-mode tbody tr:hover td{background:rgba(120,150,255,.09)}
 <script id="sirti-v155-student-access-note">
 (function(){var orig=window.renderStudents;if(typeof orig!=='function')return;
 window.renderStudents=function(){var r=orig.apply(this,arguments);
-try{if(window.__sirtiStudentsLimited&&window.currentUser&&currentUser.role==='teacher'){var t=document.getElementById('studentsTable');if(t)t.innerHTML='<div style="text-align:center;padding:26px;line-height:2">الخادم لم يسمح بتحميل كل الطلاب لهذا الحساب رغم منحه الصلاحية.<br><small>يلزم تحديث قواعد أمان Firestore للسماح بقراءة الطلاب لمن يملك صلاحية «الطلاب». تواصل مع المطوّر/المالك.</small></div>'}}catch(e){}
+try{if(window.__sirtiStudentsLimited&&window.currentUser&&currentUser.role==='teacher'){var t=document.getElementById('studentsTable');if(t)t.insertAdjacentHTML('afterbegin','<div style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:rgba(231,154,50,.15);font-size:13px;line-height:1.9">تنبيه: الخادم لا يسمح لهذا الحساب بتحميل كل الطلاب، لذلك تظهر فقط الصفوف المكلَّف بها. يلزم تحديث قواعد أمان Firestore.</div>')}}catch(e){}
 return r}})();
 </script>
 </body>
