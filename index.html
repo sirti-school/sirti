@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٦</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -6192,18 +6192,21 @@ async function loadAll(user){
   }else{
     d.teachers=[toTeacher(uid,p)];
     var seeAll=!!(d.permissions&&d.permissions.members&&d.permissions.members[uid]&&(d.permissions.members[uid].students_view===true||d.permissions.members[uid].students_edit===true));
-    window.__sirtiStudentsLimited=false;
-    var gotAll=false;
+    window.__sirtiStudentsLimited=false;window.__sirtiDeniedKeys=[];
+    var keys=(p.classKeys||[]).slice();allowFrom(p.assignments).classKeys.forEach(function(k){if(keys.indexOf(k)<0)keys.push(k)});
     if(seeAll){
-      /* v155: مدرس/معاون ممنوح صلاحية الطلاب من المالك → يحمّل كل الطلاب */
-      try{var allS=await fs.collection('students').get();allS.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)});gotAll=true}
-      catch(e){console.warn('students full read denied',e);window.__sirtiStudentsLimited=true;d.students=[]}
+      /* v157: معاون ممنوح صلاحية الطلاب → نحاول تحميل كل صف/شعبة على حدة، وما يرفضه الخادم نتجاوزه */
+      var secs=['أ','ب','ج','د','هـ'];
+      (gradesList||[]).forEach(function(g){var ss2=((d.sectionsByGrade&&d.sectionsByGrade[g])||[]).concat(secs);ss2.forEach(function(x){var k=g+'|'+x;if(keys.indexOf(k)<0)keys.push(k)})});
     }
-    if(!gotAll){
-      var keys=(p.classKeys||[]).slice();allowFrom(p.assignments).classKeys.forEach(function(k){if(keys.indexOf(k)<0)keys.push(k)});
-      var qs=await Promise.all(keys.map(function(k){return fs.collection('students').where('classKey','==',k).get()}));
-      qs.forEach(function(q){q.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)})});
-    }
+    var own=allowFrom(p.assignments).classKeys;
+    var qs=await Promise.allSettled(keys.map(function(k){return fs.collection('students').where('classKey','==',k).get()}));
+    var seen={};
+    qs.forEach(function(q,i){
+      if(q.status==='fulfilled'){q.value.forEach(function(doc){if(seen[doc.id])return;seen[doc.id]=1;var s=doc.data();delete s.classKey;d.students.push(s)})}
+      else if(seeAll&&own.indexOf(keys[i])<0){window.__sirtiDeniedKeys.push(keys[i])}
+    });
+    if(seeAll&&window.__sirtiDeniedKeys.length)window.__sirtiStudentsLimited=true;
   }
   d.gradeAuditLog=log;
   db=d;window.db=db;migrateDB();
@@ -6733,8 +6736,47 @@ body.dark-mode tbody tr:hover td{background:rgba(120,150,255,.09)}
 <script id="sirti-v155-student-access-note">
 (function(){var orig=window.renderStudents;if(typeof orig!=='function')return;
 window.renderStudents=function(){var r=orig.apply(this,arguments);
-try{if(window.__sirtiStudentsLimited&&window.currentUser&&currentUser.role==='teacher'){var t=document.getElementById('studentsTable');if(t)t.insertAdjacentHTML('afterbegin','<div style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:rgba(231,154,50,.15);font-size:13px;line-height:1.9">تنبيه: الخادم لا يسمح لهذا الحساب بتحميل كل الطلاب، لذلك تظهر فقط الصفوف المكلَّف بها. يلزم تحديث قواعد أمان Firestore.</div>')}}catch(e){}
+try{if(window.__sirtiStudentsLimited&&window.currentUser&&currentUser.role==='teacher'){var t=document.getElementById('studentsTable');var d=(window.__sirtiDeniedKeys||[]).filter(function(k){return k.indexOf('|')>0}).map(function(k){return k.replace('|',' / ')}).join('، ');if(t)t.insertAdjacentHTML('afterbegin','<div style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:rgba(231,154,50,.15);font-size:13px;line-height:1.9">تنبيه: رفض الخادم تحميل: '+d+'. يلزم تحديث قواعد أمان Firestore.</div>')}}catch(e){}
 return r}})();
+</script>
+<script id="sirti-v158-remember-student-class">
+(function(){
+var K='sirti_last_student_class';
+function load(){try{return JSON.parse(localStorage.getItem(K)||'null')}catch(e){return null}}
+function save(v){window.__sirtiLastStudentClass=v;try{localStorage.setItem(K,JSON.stringify(v))}catch(e){}}
+var oOpen=window.openStudentModal,oSave=window.saveStudent;
+if(typeof oOpen==='function')window.openStudentModal=function(id){
+  var r=oOpen.apply(this,arguments);
+  try{
+    if(!id){
+      var last=window.__sirtiLastStudentClass||load()||{};
+      var gf=document.getElementById('studentGradeFilter'),sf=document.getElementById('studentSectionFilter');
+      var g=last.grade||(gf&&gf.value)||'',sc=last.section||(sf&&sf.value)||'';
+      var ge=document.getElementById('mStudentGrade'),se=document.getElementById('mStudentSection');
+      if(ge&&g&&[].some.call(ge.options,function(o){return o.value===g||o.text===g}))ge.value=g;
+      if(se&&sc&&[].some.call(se.options,function(o){return o.value===sc||o.text===sc}))se.value=sc;
+      var nm=document.getElementById('mStudentName');if(nm)nm.focus();
+    }
+  }catch(e){}
+  return r;
+};
+if(typeof oSave==='function')window.saveStudent=function(id){
+  var gf=document.getElementById('studentGradeFilter'),sf=document.getElementById('studentSectionFilter');
+  var fg=gf?gf.value:'',fs=sf?sf.value:'';
+  var ge=document.getElementById('mStudentGrade'),se=document.getElementById('mStudentSection'),nm=document.getElementById('mStudentName');
+  var g=ge?ge.value:'',sc=se?se.value:'',ok=nm&&nm.value.trim();
+  var r=oSave.apply(this,arguments);
+  try{
+    if(ok){
+      if(!id)save({grade:g,section:sc});
+      var gf2=document.getElementById('studentGradeFilter'),sf2=document.getElementById('studentSectionFilter');
+      if(gf2&&fg!==undefined)gf2.value=fg;if(sf2&&fs!==undefined)sf2.value=fs;
+      if(typeof renderStudents==='function')renderStudents();
+    }
+  }catch(e){}
+  return r;
+};
+})();
 </script>
 </body>
 
