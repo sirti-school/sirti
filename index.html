@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٨٤ - خطوط السجلات أكبر</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٥</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -6103,6 +6103,9 @@ Promise.resolve(secAuth.setPersistence(firebase.auth.Auth.Persistence.NONE)).cat
 var fails=0,lockUntil=0,ready=false,claiming=false,uid=null,me=null,timer=null,syncing=false,pending=false,allowMass=false,lastSeenW=0,usersTimer=null,busyLogin=false;
 var snap={js:{},obj:{},main:''},synced=new WeakSet();
 function isStaff(){return !!me&&(me.role==='owner'||me.role==='manager')}
+function memberCan(k){try{var m=db&&db.permissions&&db.permissions.members&&db.permissions.members[uid];return !!(m&&m[k]===true)}catch(e){return false}}
+function memberCanStudents(){return !!me&&me.role==='teacher'&&(memberCan('students_view')||memberCan('students_edit'))}
+function memberCanEditStudents(){return !!me&&me.role==='teacher'&&memberCan('students_edit')}
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function uKey(u){return String(u==null?'':u).trim().toLowerCase()}
 function okUser(u){return /^[a-z0-9][a-z0-9._-]{1,31}$/.test(u)}
@@ -6182,13 +6185,25 @@ async function loadAll(user){
       if(x.role==='teacher')d.teachers.push(toTeacher(doc.id,x));
       else if(x.role==='owner')d.owner={username:x.username,name:x.name,email:x.contact||'',status:'مفعّل',password:PH,_uid:doc.id,authEmail:x.email||''};
       else if(x.role==='manager')d.manager={username:x.username,name:x.name,status:x.active===false?'معطّل':'مفعّل',password:PH,_uid:doc.id,authEmail:x.email||''}});
-    var ss=await fs.collection('students').get();ss.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)});
+    var ss=await fs.collection('students').get();var ckFix=[];ss.forEach(function(doc){var s=doc.data();if(s.classKey!==ckey(s))ckFix.push({ref:doc.ref,key:ckey(s)});delete s.classKey;d.students.push(s)});
+    /* v154: إصلاح الطلاب الذين ينقصهم مفتاح الصف (classKey) حتى يظهروا للمدرسين */
+    try{for(var ci=0;ci<ckFix.length;ci+=400){var cb=fs.batch();ckFix.slice(ci,ci+400).forEach(function(x){cb.update(x.ref,{classKey:x.key})});await cb.commit()}}catch(e){console.warn('classKey backfill skipped',e)}
     try{var as=await fs.collection('auditLog').orderBy('createdAt','desc').limit(300).get();as.forEach(function(doc){var e=doc.data();delete e.createdAt;delete e.uid;log.push(e)});log.reverse()}catch(e){}
   }else{
     d.teachers=[toTeacher(uid,p)];
-    var keys=p.classKeys||[];
-    var qs=await Promise.all(keys.map(function(k){return fs.collection('students').where('classKey','==',k).get()}));
-    qs.forEach(function(q){q.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)})});
+    var seeAll=!!(d.permissions&&d.permissions.members&&d.permissions.members[uid]&&(d.permissions.members[uid].students_view===true||d.permissions.members[uid].students_edit===true));
+    window.__sirtiStudentsLimited=false;
+    var gotAll=false;
+    if(seeAll){
+      /* v155: مدرس/معاون ممنوح صلاحية الطلاب من المالك → يحمّل كل الطلاب */
+      try{var allS=await fs.collection('students').get();allS.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)});gotAll=true}
+      catch(e){console.warn('students full read denied',e);window.__sirtiStudentsLimited=true;d.students=[]}
+    }
+    if(!gotAll){
+      var keys=(p.classKeys||[]).slice();allowFrom(p.assignments).classKeys.forEach(function(k){if(keys.indexOf(k)<0)keys.push(k)});
+      var qs=await Promise.all(keys.map(function(k){return fs.collection('students').where('classKey','==',k).get()}));
+      qs.forEach(function(q){q.forEach(function(doc){var s=doc.data();delete s.classKey;d.students.push(s)})});
+    }
   }
   d.gradeAuditLog=log;
   db=d;window.db=db;migrateDB();
@@ -6235,7 +6250,7 @@ async function syncNow(){
     var staff=isStaff(),ops=[],cur={};
     db.students.forEach(function(st){cur[sid(st)]=st});
     var del=Object.keys(snap.obj).filter(function(id){return !cur[id]});
-    if(staff&&del.length){
+    if((staff||memberCanEditStudents())&&del.length){
       var limit=Math.max(5,Math.ceil(Object.keys(snap.obj).length*0.2));
       if(del.length>limit&&!allowMass){
         if(!confirm('سيتم حذف '+del.length+' طالب من الخادم. هل أنت متأكد؟')){
@@ -6246,7 +6261,7 @@ async function syncNow(){
     Object.keys(cur).forEach(function(id){
       var c=cleanSt(cur[id]),js=JSON.stringify(c);if(snap.js[id]===js)return;
       var old=snap.obj[id];
-      if(!old){if(staff){var dd=clone(c);dd.classKey=ckey(c);ops.push({k:'set',id:id,data:dd,js:js,c:c})}return}
+      if(!old){if(staff||memberCanEditStudents()){var dd=clone(c);dd.classKey=ckey(c);ops.push({k:'set',id:id,data:dd,js:js,c:c})}return}
       var args=[];
       Object.keys(c).forEach(function(k){if(k==='grades')return;if(JSON.stringify(c[k])!==JSON.stringify(old[k]))args.push(new FP(k),c[k])});
       Object.keys(old).forEach(function(k){if(k==='grades')return;if(!(k in c))args.push(new FP(k),FV.delete())});
@@ -6715,6 +6730,12 @@ td .btn,td button.btn{min-height:34px;padding:6px 14px!important;border-radius:1
 body.dark-mode thead th{background:#1b2848!important}
 body.dark-mode tbody tr:hover td{background:rgba(120,150,255,.09)}
 </style>
+<script id="sirti-v155-student-access-note">
+(function(){var orig=window.renderStudents;if(typeof orig!=='function')return;
+window.renderStudents=function(){var r=orig.apply(this,arguments);
+try{if(window.__sirtiStudentsLimited&&window.currentUser&&currentUser.role==='teacher'){var t=document.getElementById('studentsTable');if(t)t.innerHTML='<div style="text-align:center;padding:26px;line-height:2">الخادم لم يسمح بتحميل كل الطلاب لهذا الحساب رغم منحه الصلاحية.<br><small>يلزم تحديث قواعد أمان Firestore للسماح بقراءة الطلاب لمن يملك صلاحية «الطلاب». تواصل مع المطوّر/المالك.</small></div>'}}catch(e){}
+return r}})();
+</script>
 </body>
 
 </html>
