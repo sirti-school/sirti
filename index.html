@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٨</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٥٩</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1645,7 +1645,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       <div class="card"><div class="stat"><div><p>إجمالي الطلاب</p><div class="num" id="statStudents">٠</div></div><div class="stat-icon blue">👨‍🎓</div></div></div>
       <div class="card"><div class="stat"><div><p>المدرسون والمدرسات</p><div class="num" id="statTeachers">٠</div></div><div class="stat-icon green">👨‍🏫</div></div></div>
       <div class="card online-teachers-stat-card" id="onlineTeachersStatCard" role="button" tabindex="0" aria-controls="onlineTeachersOwnerPanel" aria-expanded="false" title="عرض المدرسين المتصلين للمالك فقط">
-  <div class="stat"><div><p>المدرسون المتصلون</p><div class="num" id="statOnlineTeachers">٠</div></div><div class="stat-icon online-card-icon">●</div></div>
+  <div class="stat"><div><p>المتصلون الآن</p><div class="num" id="statOnlineTeachers">٠</div></div><div class="stat-icon online-card-icon">●</div></div>
 </div>
 <div id="onlineTeachersOwnerPanel" class="online-teachers-owner-panel" hidden aria-live="polite"></div>
       <div class="card"><div class="stat"><div><p>بانتظار الحفظ</p><div class="num" id="statUnsaved">٠</div></div><div class="stat-icon red">✓</div></div></div>
@@ -1909,7 +1909,7 @@ function writePresence(map){localStorage.setItem(PRESENCE_KEY,JSON.stringify(map
 function markTeacherOnline(){if(!currentUser||currentUser.role!=='teacher')return;const map=readPresence();map[currentUser.id]={name:currentUser.name||'',username:currentUser.username||'',ts:Date.now()};writePresence(map);renderHome()}
 function markTeacherOffline(){if(!currentUser||currentUser.role!=='teacher')return;const map=readPresence();delete map[currentUser.id];writePresence(map);renderHome()}
 function onlineTeacherCount(){const now=Date.now(),map=readPresence(),active={};Object.entries(map).forEach(([id,v])=>{if(v&&now-(Number(v.ts)||0)<45000)active[id]=v});if(Object.keys(active).length!==Object.keys(map).length)writePresence(active);return Object.keys(active).filter(id=>db.teachers.some(t=>t.id===id&&t.active!==false)).length}
-function startPresence(){clearInterval(presenceTimer);if(currentUser?.role==='teacher'){markTeacherOnline();presenceTimer=setInterval(markTeacherOnline,15000)}}
+function startPresence(){clearInterval(presenceTimer);if(currentUser?.role==='teacher'||currentUser?.role==='manager'){markTeacherOnline();presenceTimer=setInterval(markTeacherOnline,15000)}}
 function authSession(user){currentUser=user;sessionStorage.setItem('sirti_session',JSON.stringify(user));document.body.classList.remove('app-locked');document.getElementById('loginScreen')?.classList.add('hidden');startPresence();renderAll();updateRoleUI();toast(isOwner()?'تم تسجيل الدخول بحساب المالك':currentUser?.role==='manager'?'تم تسجيل الدخول بحساب المدير':'تم تسجيل الدخول بحساب المدرس')}
 function loginSubmit(ev){ev.preventDefault();const u=document.getElementById('loginUsername')?.value.trim(),p=document.getElementById('loginPassword')?.value||'';const err=document.getElementById('loginError');let user=null;if(!validPassword6(p)){if(err){err.textContent='كلمة المرور يجب أن تكون ٦ خانات بالضبط وتحتوي حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا.';err.style.display='block'}return}if(db.owner?.status==='مفعّل'&&u===db.owner.username&&p===db.owner.password){user={role:'owner',username:db.owner.username,name:db.owner.name}}else if(db.manager?.status==='مفعّل'&&u===db.manager.username&&p===db.manager.password){user={role:'manager',username:db.manager.username,name:db.manager.name}}else{const t=db.teachers.find(x=>x.active!==false&&x.username===u&&x.password===p);if(t)user={role:'teacher',id:t.id,username:t.username,name:t.name}}if(!user){if(err){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب غير مفعّل.';err.style.display='block'}return}if(err)err.style.display='none';authSession(user)}
 
@@ -2271,7 +2271,7 @@ window.addEventListener('DOMContentLoaded',()=>{loadDB();const session=getSessio
  function ensureLoader(){return{classList:{add(){},remove(){}}}}
  function pulseLoad(){}
  function net(){var o=document.getElementById('v31NetworkHint');if(o)o.remove()}
- window.addEventListener('beforeunload',()=>{try{if(currentUser?.role==='teacher')markTeacherOffline()}catch(e){}});
+ window.addEventListener('beforeunload',()=>{try{if(currentUser?.role==='teacher'||currentUser?.role==='manager')markTeacherOffline()}catch(e){}});
 window.addEventListener('DOMContentLoaded',function(){ensureLoader();net();window.addEventListener('online',net);window.addEventListener('offline',net);const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;c?.addEventListener?.('change',net);const original=window.show;if(typeof original==='function'&&!original.__v31wrapped){const wrapped=function(){pulseLoad(190);return original.apply(this,arguments)};wrapped.__v31wrapped=true;window.show=wrapped}});
 })();
 </script>
@@ -4663,10 +4663,10 @@ body.dark-mode .online-teachers-stat-card.owner-online-clickable:hover,body.dark
     if(changed){try{localStorage.setItem(PRESENCE_KEY,JSON.stringify(active))}catch(e){}}
     const teachers=Array.isArray(window.db?.teachers)?window.db.teachers:[];
     return Object.entries(active)
-      .filter(([id,v])=>teachers.some(t=>t&&t.id===id&&t.active!==false))
-      .map(([id,v])=>({id,name:String(v?.name||teachers.find(t=>t.id===id)?.name||'مدرس')}));
+      .filter(([id,v])=>v?.role==='manager'||teachers.some(t=>t&&t.id===id&&t.active!==false))
+      .map(([id,v])=>({id,role:v?.role==='manager'?'manager':'teacher',name:String(v?.name||teachers.find(t=>t.id===id)?.name||(v?.role==='manager'?'المدير':'مدرس'))}));
   }
-  function isOwner(){return window.currentUser?.role==='owner'}
+  function isOwner(){return window.currentUser?.role==='owner'||window.currentUser?.role==='manager'}
   function render(){
     const card=document.getElementById('onlineTeachersStatCard');
     const num=document.getElementById('statOnlineTeachers');
@@ -4674,6 +4674,11 @@ body.dark-mode .online-teachers-stat-card.owner-online-clickable:hover,body.dark
     if(!card||!num)return;
     const list=activeEntries();
     num.textContent=typeof arDigits==='function'?arDigits(list.length):String(list.length);
+    const mgrOn=list.some(t=>t.role==='manager'),tchOn=list.filter(t=>t.role!=='manager').length;
+    let bd=document.getElementById('statOnlineBreakdown');
+    if(!bd){bd=document.createElement('small');bd.id='statOnlineBreakdown';bd.style.cssText='display:block;margin-top:2px;font-size:11px;opacity:.85;font-weight:700';num.parentNode.appendChild(bd)}
+    const ad=n=>typeof arDigits==='function'?arDigits(n):String(n);
+    bd.textContent=(mgrOn?'المدير + ':'')+ad(tchOn)+' مدرس';
     const owner=isOwner();
     card.classList.toggle('owner-online-clickable',owner);
     card.setAttribute('tabindex',owner?'0':'-1');
@@ -4682,9 +4687,9 @@ body.dark-mode .online-teachers-stat-card.owner-online-clickable:hover,body.dark
     if(!owner||!panel){return}
     if(panel.hidden)return;
     const items=list.length
-      ? '<div class="online-teachers-owner-list">'+list.map(t=>'<div class="online-teacher-item"><span class="online-teacher-dot" aria-hidden="true"></span><span class="online-teacher-name">'+esc(t.name)+'</span></div>').join('')+'</div>'
-      : '<div class="online-teacher-empty">لا يوجد مدرسون متصلون حاليًا.</div>';
-    panel.innerHTML='<div class="online-teachers-owner-head"><div><h4>المدرسون المتصلون الآن</h4><div class="online-teachers-owner-sub">هذه القائمة متاحة للمالك فقط.</div></div><span class="pill ok">'+(typeof arDigits==='function'?arDigits(list.length):list.length)+' متصل</span></div>'+items;
+      ? '<div class="online-teachers-owner-list">'+list.map(t=>'<div class="online-teacher-item"><span class="online-teacher-dot" aria-hidden="true"></span><span class="online-teacher-name">'+esc(t.name)+(t.role==='manager'?' <small style="opacity:.75">(المدير)</small>':'')+'</span></div>').join('')+'</div>'
+      : '<div class="online-teacher-empty">لا يوجد متصلون حاليًا.</div>';
+    panel.innerHTML='<div class="online-teachers-owner-head"><div><h4>المتصلون الآن</h4><div class="online-teachers-owner-sub">المدير والمدرسون المتصلون (المالك غير مدرج). القائمة للمالك والمدير فقط.</div></div><span class="pill ok">'+(typeof arDigits==='function'?arDigits(list.length):list.length)+' متصل</span></div>'+items;
   }
   function toggle(){
     if(!isOwner())return;
@@ -6346,7 +6351,7 @@ window.loginSubmit=async function(ev){
 };
 window.logout=async function(){
   try{clearTimeout(timer);if(ready)await syncNow()}catch(e){}
-  try{if(currentUser&&currentUser.role==='teacher')await fs.doc('users/'+uid).update({lastSeen:0})}catch(e){}
+  try{if(currentUser&&(currentUser.role==='teacher'||currentUser.role==='manager'))await fs.doc('users/'+uid).update({lastSeen:0})}catch(e){}
   ready=false;window.__sirtiLoaded=false;
   try{sessionStorage.clear()}catch(e){}
   try{localStorage.removeItem('sirti_teacher_presence_v1')}catch(e){}
@@ -6369,18 +6374,18 @@ window.sirtiRefreshData=async function(){
 
 /* ---------- المتصلون الآن ---------- */
 window.markTeacherOnline=function(){
-  if(!currentUser||currentUser.role!=='teacher')return;
+  if(!currentUser||(currentUser.role!=='teacher'&&currentUser.role!=='manager'))return;
   var n=Date.now();if(n-lastSeenW<180000)return;lastSeenW=n;
   fs.doc('users/'+uid).update({lastSeen:n}).catch(function(){});
 };
-window.markTeacherOffline=function(){if(currentUser&&currentUser.role==='teacher')fs.doc('users/'+uid).update({lastSeen:0}).catch(function(){})};
+window.markTeacherOffline=function(){if(currentUser&&(currentUser.role==='teacher'||currentUser.role==='manager'))fs.doc('users/'+uid).update({lastSeen:0}).catch(function(){})};
 async function refreshUsers(){
   if(!ready||!isStaff())return;
   try{
     var us=await fs.collection('users').get(),now=Date.now(),map={};
-    us.forEach(function(doc){var x=doc.data();if(x.role!=='teacher')return;
+    us.forEach(function(doc){var x=doc.data();if(x.role!=='teacher'&&x.role!=='manager')return;
       var t=db.teachers.find(function(y){return y.id===doc.id});if(t)t.lastSeen=x.lastSeen||0;
-      if(x.lastSeen&&now-x.lastSeen<420000)map[doc.id]={name:x.name||'',username:x.username||'',ts:now+60000}});
+      if(x.lastSeen&&now-x.lastSeen<420000)map[doc.id]={name:x.name||'',username:x.username||'',role:x.role,ts:now+60000}});
     localStorage.setItem('sirti_teacher_presence_v1',JSON.stringify(map));
     if(typeof renderHome==='function'){var h=$('home');if(h&&h.classList.contains('active'))renderHome()}
   }catch(e){}
