@@ -1712,7 +1712,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
   </section>
 
   <section id="teacherRegister" class="view">
-    <div class="card"><div class="head"><div><h3>سجل المدرسين</h3><div class="muted">السجل يُبنى تلقائيًا من درجات الطلاب في المادة المحددة وبنفس جدول سجل المدرسين المتفق عليه.</div></div><div class="actions"><button class="btn primary" onclick="printTeacherRegister()">🖨️ طباعة السجل</button></div></div>
+    <div class="card"><div class="head"><div><h3>سجل المدرسين</h3><div class="muted">السجل يُبنى تلقائيًا من درجات الطلاب في المادة المحددة وبنفس جدول سجل المدرسين المتفق عليه.</div></div><div class="actions"><button class="btn primary" onclick="printTeacherRegister()">🖨️ طباعة السجل</button><button class="btn light" id="regPrintFullGradeBtn" type="button" onclick="printTeacherRegisterFullGrade()" title="طباعة الصف كاملًا بكل شعبه: أ ثم ب ثم ج">🖨️ طباعة الصف كامل</button></div></div>
       <div class="toolbar"><select class="control" id="regGrade" onchange="renderTeacherRegister()"></select><select class="control" id="regSection" onchange="renderTeacherRegister()"><option>أ</option><option>ب</option><option>ج</option></select><select class="control" id="regSubject" onchange="renderTeacherRegister()"></select></div>
       <div id="teacherRegisterContent" class="register-print"></div>
     </div>
@@ -3700,9 +3700,10 @@ function teacherRegisterPrintPages(){
   const pages=[];
   for(let p=0;p<totalPages;p++){
     const bodyRows=rows.slice(p*pageSize,(p+1)*pageSize).map(r=>r.outerHTML).join('');
-    const pageHeading=heading.replace('<em class="register-page-no"></em>',`<em class="register-page-no">الصفحة ${arDigits(p+1)} من ${arDigits(totalPages)}</em>`);
+    const pageHeading=heading.replace('<em class="register-page-no"></em>','');
+    const pageFoot=`<div class="register-page-foot"><span>صفحة ${arDigits(p+1)} من ${arDigits(totalPages)}</span></div>`;
     const last=p===totalPages-1;
-    pages.push(`<section class="teacher-register-page">${pageHeading}<table class="teacher-register-table" dir="rtl">${thead}<tbody>${bodyRows}</tbody>${last?summary:''}</table>${last?footer:''}</section>`);
+    pages.push(`<section class="teacher-register-page">${pageHeading}<table class="teacher-register-table" dir="rtl">${thead}<tbody>${bodyRows}</tbody>${last?summary:''}</table>${last?footer:''}${pageFoot}</section>`);
   }
   return pages.join('');
 }
@@ -4018,8 +4019,8 @@ function printAdminRecords(){
       html body.print-register .teacher-register-page .teacher-register-table{width:192mm!important;min-width:192mm!important;max-width:192mm!important;margin:0 auto!important;border-collapse:collapse!important;table-layout:fixed!important;direction:rtl!important;border:.5mm solid #1b2a49!important}
       html body.print-register .teacher-register-page .teacher-register-table th,html body.print-register .teacher-register-page .teacher-register-table td{border:.25mm solid #44506b!important;text-align:center!important;vertical-align:middle!important;padding:.5mm .4mm!important;line-height:1.15!important;overflow-wrap:anywhere!important;box-sizing:border-box!important;color:#111!important}
       html body.print-register .teacher-register-page .teacher-register-table thead th{height:15mm!important;background:linear-gradient(180deg,#f6f8fd,#dce5f4)!important;font-weight:900!important;font-size:9.6pt!important;color:#14213d!important;border-bottom:.5mm solid #1b2a49!important}
-      html body.print-register .teacher-register-page .teacher-register-table tbody td{height:9.7mm!important;font-size:11pt!important;font-weight:700!important;background:#fff!important}
-      html body.print-register .teacher-register-page:last-child .teacher-register-table tbody td{height:7.5mm!important}
+      html body.print-register .teacher-register-page .teacher-register-table tbody td{height:9mm!important;font-size:11pt!important;font-weight:700!important;background:#fff!important}
+      html body.print-register .teacher-register-page:last-child .teacher-register-table tbody td{height:7.2mm!important}
       html body.print-register .teacher-register-page .teacher-register-table .vtxt{display:inline-block!important;writing-mode:vertical-rl!important;transform:rotate(180deg)!important;white-space:nowrap!important;font-size:9.4pt!important;font-weight:900!important;line-height:1!important}
       html body.print-register .teacher-register-page .teacher-register-table th:nth-child(1),html body.print-register .teacher-register-page .teacher-register-table td:nth-child(1){width:9mm!important;padding:0!important;white-space:nowrap!important;overflow-wrap:normal!important}
       html body.print-register .teacher-register-page .teacher-register-table th:nth-child(2),html body.print-register .teacher-register-page .teacher-register-table td:nth-child(2){width:52mm!important;text-align:right!important;padding-right:2mm!important}
@@ -4038,11 +4039,45 @@ function printAdminRecords(){
       html body.print-register .register-footer .rf-cell.rf-empty{border:0!important;background:transparent!important;visibility:hidden!important}
       html body.print-register .register-footer .rf-cell b{display:block!important;padding:1.3mm 1mm!important;background:linear-gradient(180deg,#fdf1bd,#f1cf63)!important;border-bottom:.35mm solid #9a6f08!important;font-weight:900!important;color:#4a3300!important}
       html body.print-register .register-footer .rf-name{display:flex!important;flex:1 1 auto!important;align-items:center!important;justify-content:center!important;font-weight:800!important;padding:1mm!important;min-height:8mm!important;font-size:11pt!important}
+      html body.print-register .teacher-register-page{position:relative!important}
+      html body.print-register .teacher-register-page .register-page-foot{position:static!important;flex:0 0 auto!important;width:192mm!important;margin:auto auto 2mm!important;padding-top:2.5mm!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:3mm!important;direction:rtl!important}
+      html body.print-register .register-page-foot:before,html body.print-register .register-page-foot:after{content:""!important;flex:1 1 auto!important;height:0!important;border-top:.3mm solid #9a6f08!important}
+      html body.print-register .register-page-foot span{flex:0 0 auto!important;padding:.7mm 5mm!important;border:.3mm solid #9a6f08!important;border-radius:5mm!important;background:linear-gradient(180deg,#fdf1bd,#f1cf63)!important;color:#4a3300!important;font-size:8.5pt!important;font-weight:900!important;line-height:1.2!important}
       html body.print-register .teacher-register-page table{break-inside:auto!important}html body.print-register .teacher-register-page thead{display:table-header-group!important}html body.print-register .teacher-register-page tr{break-inside:avoid!important;page-break-inside:avoid!important}
 `;
     const w=openDedicatedPrintWindow('سجل المدرسين',pagesHtml,css);
     try{const d=document.getElementById('sirtiPrintFrame')?.contentDocument;if(d&&d.body){const st=d.createElement('style');st.id='sirti-v152-register-print';st.textContent='@page teacherRegisterPage{size:A4 portrait;margin:0}@page{size:A4 portrait;margin:0}'+css;d.body.appendChild(st)}}catch(e){console.error(e)}
     return w;
+  };
+
+  /* طباعة الصف كاملًا: كل الشعب (أ ثم ب ثم ج) للمادة المحددة في ملف واحد */
+  window.printTeacherRegisterFullGrade=function(){
+    const gradeEl=document.getElementById('regGrade'), secEl=document.getElementById('regSection'), subEl=document.getElementById('regSubject');
+    if(!gradeEl||!secEl||!subEl)return;
+    const isTeacher=currentUser?.role==='teacher';
+    const grade=gradeEl.value, subject=subEl.value;
+    const keepSection=secEl.value;
+    let sections=isTeacher?teacherAssignedSections(grade):[...secEl.options].map(o=>o.value||o.textContent);
+    const order=['أ','ب','ج','د','هـ'];
+    sections=[...new Set(sections)].sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib)});
+    sections=sections.filter(sec=>db.students.some(st=>st.grade===grade&&st.section===sec)&&(!isTeacher||teacherCanEditGrade(grade,sec,subject)));
+    if(!sections.length){toast('لا توجد شعب فيها طلاب لطباعتها');return}
+    let pagesHtml='';
+    try{
+      sections.forEach(sec=>{
+        if(![...secEl.options].some(o=>(o.value||o.textContent)===sec)){const o=document.createElement('option');o.textContent=sec;secEl.appendChild(o)}
+        secEl.value=sec;
+        pagesHtml+=teacherRegisterPrintPages();
+      });
+    }finally{
+      secEl.value=keepSection;
+      renderTeacherRegister();
+    }
+    if(!pagesHtml){toast('لا يوجد طلاب للطباعة');return}
+    /* نعيد استخدام نفس تنسيق طباعة السجل العادي */
+    const original=window.teacherRegisterPrintPages;
+    window.teacherRegisterPrintPages=function(){return pagesHtml};
+    try{return window.printTeacherRegister()}finally{window.teacherRegisterPrintPages=original}
   };
 
   window.printAdminRecords=function(){
@@ -4223,7 +4258,7 @@ window.savePermissionTarget=function(target){if(currentUser?.role!=='owner'){toa
 window.saveManager=function(){if(window.SIRTI_FB&&window.sirtiSaveManager)return window.sirtiSaveManager();if(currentUser?.role!=='owner'){toast('إدارة المدير للمالك فقط');return}const username=toLatin(document.getElementById('managerUsername').value.trim())||'manager',name=document.getElementById('managerName').value.trim()||'المدير',password=document.getElementById('managerPassword').value,confirmPass=document.getElementById('managerPasswordConfirm').value;if(password){if(!validPassword6(password)){toast('كلمة مرور المدير يجب أن تكون ٦ خانات: حرف كبير + حرف صغير + رقم + رمز.');return}if(password!==confirmPass){toast('تأكيد كلمة مرور المدير غير مطابق.');return}db.manager.password=password}db.manager.username=username;db.manager.name=name;db.manager.status=document.getElementById('managerStatus').value||'مفعّل';ensurePermissionState();saveDB();renderAccount();toast('تم حفظ حساب المدير')};
 window.applySirtiPermissionUI=function(){const u=currentUser;if(!u)return;document.querySelectorAll('.nav button[onclick*="show("]').forEach(btn=>{const m=btn.getAttribute('onclick')?.match(/show\(['"]([^'"]+)/);if(m)btn.style.display=guardView(m[1])?'flex':'none'});const editRules=[['#students button[onclick*="openStudentModal"],#students button[onclick*="saveStudent"],#students button[onclick*="deleteStudent"]','students_edit'],['#teachers button[onclick*="openTeacherModal"],#teachers button[onclick*="saveTeacher"],#teachers button[onclick*="deleteTeacher"]','teachers_edit'],['#grades button[onclick*="saveGrades"]','grades_edit'],['#settings button[onclick*="saveSettings"],#settings button[onclick*="chooseExcelFile"],#settings button[onclick*="downloadStudentTemplate"]','settings_edit'],['#subjects button[onclick*="addSubject"],#subjects button[onclick*="deleteSubject"]','subjects_edit']];editRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(u.role==='owner')return;const ok=window.sirtiCan(key,u);el.style.display=ok?'':'none'}));const printRules=[['#teacherRegister button','teacherRegister_print'],['#control button','control_print'],['#reports button','reports_print'],['#slips button','slips_print']];printRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/طباعة|print/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const exportRules=[['#teacherRegister button','teacherRegister_export'],['#control button','control_export'],['#reports button','reports_export']];exportRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/Excel|تصدير|export/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const settings=document.getElementById('settings');if(settings&&u.role!=='owner'&&!window.sirtiCan('settings_view',u))settings.style.display='none'};
 function guardFn(name,key){const old=window[name];if(typeof old!=='function'||old.__sirtiV91)return;const wrapped=function(){if(!window.sirtiCan(key,currentUser)){toast('ليس لديك صلاحية تنفيذ هذه العملية');return}return old.apply(this,arguments)};wrapped.__sirtiV91=true;window[name]=wrapped}
-function wrapActions(){[['saveStudent','students_edit'],['deleteStudent','students_edit'],['saveTeacher','teachers_edit'],['deleteTeacher','teachers_edit'],['addSubject','subjects_edit'],['deleteSubject','subjects_edit'],['saveGrades','grades_edit'],['saveSettings','settings_edit'],['printTeacherRegister','teacherRegister_print'],['exportTeacherRegister','teacherRegister_export'],['printControl','control_print'],['exportControl','control_export'],['printAdminRecords','reports_print'],['exportAdminRecords','reports_export'],['printSlips','slips_print']].forEach(([n,k])=>guardFn(n,k))}
+function wrapActions(){[['saveStudent','students_edit'],['deleteStudent','students_edit'],['saveTeacher','teachers_edit'],['deleteTeacher','teachers_edit'],['addSubject','subjects_edit'],['deleteSubject','subjects_edit'],['saveGrades','grades_edit'],['saveSettings','settings_edit'],['printTeacherRegister','teacherRegister_print'],['printTeacherRegisterFullGrade','teacherRegister_print'],['exportTeacherRegister','teacherRegister_export'],['printControl','control_print'],['exportControl','control_export'],['printAdminRecords','reports_print'],['exportAdminRecords','reports_export'],['printSlips','slips_print']].forEach(([n,k])=>guardFn(n,k))}
 // Keep the core DB migration compatible with old/local data.
 try{ensurePermissionState()}catch(e){console.warn(e)}
 wrapActions();
