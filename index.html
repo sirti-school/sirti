@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٦٤</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٦٥</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -4795,6 +4795,13 @@ body.dark-mode .decision-chip{background:rgba(112,135,239,.15);color:#b8c6ff}
   'use strict';
 
   function escLocal(v){return typeof esc==='function'?esc(v):String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  /* v165: formatLocal معرّفة داخل وحدة أخرى، فكانت تسبب ReferenceError بعد تطبيق درجات القرار */
+  function formatLocal(ms){
+    if(!ms) return 'غير محدد';
+    const d=new Date(ms);
+    if(Number.isNaN(d.getTime())) return 'غير محدد';
+    try{return new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short'}).format(d)}catch(_){return d.toLocaleString('ar-IQ')}
+  }
   function isOwner(){return currentUser?.role==='owner'}
   function canApply(){return isOwner() || (typeof window.sirtiCan==='function' && window.sirtiCan('decision_apply',currentUser))}
   function actor(){return {name:currentUser?.name||currentUser?.username||'غير معروف',username:currentUser?.username||'',role:currentUser?.role||'unknown'}}
@@ -4939,7 +4946,7 @@ body.dark-mode .decision-chip{background:rgba(112,135,239,.15);color:#b8c6ff}
     db.decisionAuditLog.push({at:now,by:a,pointsPerStudent:points,scope:scopeValue(),grade:document.getElementById('decisionGrade')?.value||null,section:document.getElementById('decisionSection')?.value||null,studentsAffected,totalSubjects,totalUsed,details});
     if(db.decisionAuditLog.length>500)db.decisionAuditLog.splice(0,db.decisionAuditLog.length-500);
     if(!saveDB())return;
-    renderAll();setTimeout(()=>{show('grades');renderDecisionPanel();applyDecisionUI();},0);
+    renderAll();setTimeout(()=>{show('grades');renderDecisionPanel();},0);
     toast(`تم تطبيق درجات القرار على ${formatPoints(studentsAffected)} طالب واستخدام ${formatPoints(totalUsed)} درجة`);
   }
   function clearDecisionGrades(){
@@ -4951,7 +4958,7 @@ body.dark-mode .decision-chip{background:rgba(112,135,239,.15);color:#b8c6ff}
     students.forEach(st=>{if(db.decisionAllocations?.[st.id]&&Object.keys(db.decisionAllocations[st.id]).length){delete db.decisionAllocations[st.id];removedStudents++;}});
     const now=new Date().toISOString();db.decisionAuditLog.push({at:now,by:actor(),action:'clear',scope:scopeValue(),grade:document.getElementById('decisionGrade')?.value||null,section:document.getElementById('decisionSection')?.value||null,studentsAffected:removedStudents});
     if(!saveDB())return;
-    renderAll();setTimeout(()=>{show('grades');renderDecisionPanel();applyDecisionUI();},0);
+    renderAll();setTimeout(()=>{show('grades');renderDecisionPanel();},0);
     toast(`تمت إزالة درجات القرار من ${formatPoints(removedStudents)} طالب`);
   }
   window.finalGrade=finalGrade;
