@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٦٥</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٦٨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1959,7 +1959,7 @@ function fillSelectOptions(elId,options,current=''){const el=document.getElement
 function configureTeacherSelectors(){if(!currentUser||currentUser.role!=='teacher')return;const grades=teacherAssignedGrades();[['gradeEntryGrade','gradeEntrySection','gradeEntrySubject'],['statsGrade','statsSection','statsSubject'],['regGrade','regSection','regSubject']].forEach(([g,su,sub])=>{const ge=document.getElementById(g),se=document.getElementById(su),sb=document.getElementById(sub);const og=ge?.value,os=se?.value,ob=sb?.value;fillSelectOptions(g,grades,og);const gv=ge?.value||grades[0]||'';const secs=teacherAssignedSections(gv);fillSelectOptions(su,secs,os);const sv=se?.value||secs[0]||'';fillSelectOptions(sub,teacherAssignedSubjects(gv,sv),ob)})}
 function teacherCanEditGrade(grade,section,subject){return isOwner()||teacherAssignments().some(a=>a.grade===grade&&a.section===section&&a.subject===subject)}
 
-function applyFirstIntermediateSectionCTransfer(){if(!db||!Array.isArray(db.students)||db.__firstIntermediateSectionCTransferV1)return false;const grade='الأول المتوسط';const source=db.students.filter(x=>x.grade===grade&&x.section==='ب');if(source.length<27)return false;const ordered=[...source].sort((a,b)=>studentCollator.compare(studentAlphabeticalKey(a.name),studentAlphabeticalKey(b.name)));db.sectionsByGrade=db.sectionsByGrade||{};db.sectionsByGrade[grade]=[...new Set([...(db.sectionsByGrade[grade]||sections),'ج'])];ordered.slice(26).forEach(st=>{st.section='ج'});db.__firstIntermediateSectionCTransferV1=true;saveDB();return true}
+function applyFirstIntermediateSectionCTransfer(){if(!db||!Array.isArray(db.students)||db.__firstIntermediateSectionCTransferV1)return false;if(currentUser&&currentUser.role==='teacher')return false;const grade='الأول المتوسط';const source=db.students.filter(x=>x.grade===grade&&x.section==='ب');if(source.length<27)return false;const ordered=[...source].sort((a,b)=>studentCollator.compare(studentAlphabeticalKey(a.name),studentAlphabeticalKey(b.name)));db.sectionsByGrade=db.sectionsByGrade||{};db.sectionsByGrade[grade]=[...new Set([...(db.sectionsByGrade[grade]||sections),'ج'])];ordered.slice(26).forEach(st=>{st.section='ج'});db.__firstIntermediateSectionCTransferV1=true;saveDB();return true}
 function renderAll(){applyFirstIntermediateSectionCTransfer();fillGradeSelect('studentGradeFilter',true);fillGradeSelect('subjectGradeSelect');fillGradeSelect('gradeEntryGrade');fillGradeSelect('statsGrade');fillGradeSelect('regGrade');fillGradeSelect('controlGrade');fillGradeSelect('adminGrade');fillGradeSelect('slipGrade');fillGradeSelect('importGrade');if(currentUser?.role==='owner'||currentUser?.role==='manager'){const defaults={studentGradeFilter:'',subjectGradeSelect:gradesList[0],gradeEntryGrade:gradesList[0],statsGrade:gradesList[0],regGrade:gradesList[4],controlGrade:gradesList[0],adminGrade:gradesList[0],slipGrade:gradesList[0],importGrade:gradesList[0]};Object.entries(defaults).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v})}else{const gs=teacherAssignedGrades();if(gs.length){['gradeEntryGrade','statsGrade','regGrade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=gs[0]});configureTeacherSelectors()}}refreshGradeEntrySelectors();renderHome();const active=document.querySelector('main > section.view.active')?.id||'home';const renderers={students:renderStudents,teachers:renderTeachers,classes:renderClasses,subjects:renderSubjects,grades:renderGradeEntry,teacherStats:renderTeacherStats,teacherRegister:renderTeacherRegister,control:renderControl,reports:renderAdminRecords,slips:renderSlips,settings:renderSettings,account:renderAccount};renderers[active]?.();applyArabicDigits(document.querySelector('main > section.view.active')||document.body);updateRoleUI();if(typeof window.forceAccountIsolation==='function')window.forceAccountIsolation()}
 
 function renderHome(){document.getElementById('statStudents').textContent=arDigits(db.students.length);document.getElementById('statTeachers').textContent=arDigits(db.teachers.length);document.getElementById('statOnlineTeachers').textContent=arDigits(onlineTeacherCount());document.getElementById('statUnsaved').textContent='٠';document.getElementById('homeGrades').innerHTML=gradesList.map((g,i)=>{const a=db.students.filter(s=>s.grade===g&&s.section==='أ').length,b=db.students.filter(s=>s.grade===g&&s.section==='ب').length;return `<div class="grade"><div class="gicon">${arDigits(i+1)}</div><div><b>${esc(g)}</b><small>شعبة أ • شعبة ب</small></div><div class="count">أ ${arDigits(a)} / ب ${arDigits(b)}</div></div>`}).join('');document.getElementById('homeChart').innerHTML=gradesList.map((g,i)=>{const total=db.students.filter(s=>s.grade===g).length||1;const filled=db.students.filter(s=>s.grade===g).filter(s=>Object.keys(s.grades||{}).length).length;const p=Math.round(filled/total*100);return `<div class="bar" style="height:${Math.max(8,p)}%"><span>${g.replace('المتوسط','').replace('الإعدادي','')}</span></div>`}).join('');const recent=[...db.students].slice(-5).reverse();document.getElementById('homeRecent').innerHTML=recent.length?`<div class="table-wrap"><table class="table"><thead><tr><th>الطالب</th><th>الصف</th><th>الشعبة</th><th>الحالة</th></tr></thead><tbody>${recent.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.grade)}</td><td>${esc(s.section)}</td><td><span class="pill ok">فعال</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا يوجد طلاب</div>'}
@@ -4214,6 +4214,7 @@ const PERMS={
  control_view:'عرض الكونترول',control_edit:'تعديل الكونترول',control_print:'طباعة الكونترول',control_export:'تصدير الكونترول',
  reports_view:'عرض سجلات الإدارة',reports_edit:'تعديل سجلات الإدارة',reports_print:'طباعة سجلات الإدارة',reports_export:'تصدير سجلات الإدارة',
  slips_view:'عرض القصاصات',slips_edit:'تعديل القصاصات',slips_print:'طباعة القصاصات',
+ exemption_view:'عرض قوائم الإعفاء',exemption_print:'طباعة قوائم الإعفاء',
  settings_view:'عرض الإعدادات',settings_edit:'تعديل الإعدادات'
 };
 const GROUPS={
@@ -4228,10 +4229,11 @@ const GROUPS={
  'الكونترول':['control_view','control_edit','control_print','control_export'],
  'سجلات الإدارة':['reports_view','reports_edit','reports_print','reports_export'],
  'القصاصات':['slips_view','slips_edit','slips_print'],
+ 'الإعفاء':['exemption_view','exemption_print'],
  'الإعدادات':['settings_view','settings_edit']
 };
-const MANAGER_DEFAULT={home_view:true,teacherStats_view:true,teacherRegister_view:true,teacherRegister_print:true,teacherRegister_export:true,control_view:true,control_print:true,control_export:true,reports_view:true,reports_print:true,reports_export:true,slips_view:true,slips_print:true};
-const MEMBER_DEFAULT={home_view:true,grades_view:true,grades_edit:true,teacherStats_view:true,teacherRegister_view:true,teacherRegister_print:true,teacherRegister_export:true};
+const MANAGER_DEFAULT={home_view:true,teacherStats_view:true,teacherRegister_view:true,teacherRegister_print:true,teacherRegister_export:true,control_view:true,control_print:true,control_export:true,reports_view:true,reports_print:true,reports_export:true,slips_view:true,slips_print:true,exemption_view:true,exemption_print:true};
+const MEMBER_DEFAULT={home_view:true,grades_view:true,grades_edit:true,teacherStats_view:true,teacherRegister_view:true,teacherRegister_print:true,teacherRegister_export:true,exemption_view:true,exemption_print:true};
 window.isManagerRole=()=>currentUser?.role==='manager';
 window.ownerOrCan=(key)=>currentUser?.role==='owner'||(typeof window.sirtiCan==='function'&&window.sirtiCan(key,currentUser));
 function ensurePermissionState(){
@@ -5961,6 +5963,7 @@ function gather(grade){
 function gradesToShow(){
   var c=cfg(),sel=(document.getElementById('exGradeSel')||{}).value||'';
   var gl=(typeof gradesList!=='undefined'?gradesList:c.grades).filter(function(g){return c.grades.indexOf(g)>-1});
+  var u0=me();if(u0&&u0.role==='teacher'){var t0=(db.teachers||[]).find(function(x){return x.id===u0.id})||(db.teachers||[]).find(function(x){return x.username===u0.username});var ag=((t0&&t0.assignments)||[]).map(function(a){return a.grade});gl=gl.filter(function(g){return ag.indexOf(g)>-1})}
   return sel?gl.filter(function(g){return g===sel}):gl;
 }
 function genTable(rows){
@@ -5978,19 +5981,22 @@ function indTable(rows){
   });
   return h+'</tbody></table></div>';
 }
+function scopeNote(g){var u=me();if(!u||u.role!=='teacher')return '';var t=(db.teachers||[]).find(function(x){return x.id===u.id})||(db.teachers||[]).find(function(x){return x.username===u.username});var secs=[];((t&&t.assignments)||[]).forEach(function(a){if(a.grade===g&&secs.indexOf(a.section)<0)secs.push(a.section)});return secs.length?'<div class="muted">شعبك: '+E(secs.join('، '))+'</div>':''}
 function renderExemptionPage(){
   var body=document.getElementById('exBody');if(!body||!window.db)return;
   var c=cfg();
   if(!c.enabled){body.innerHTML='<div class="empty">نظام الإعفاء موقوف حاليًا. يمكن للمالك تفعيله من الإعدادات.</div>';return}
   var sel=document.getElementById('exGradeSel');
-  if(sel&&sel.options.length<2){
+  if(sel){var keepSel=sel.value;
     var gl=(typeof gradesList!=='undefined'?gradesList:c.grades).filter(function(g){return c.grades.indexOf(g)>-1});
+    var u1=me();if(u1&&u1.role==='teacher'){var t1=(db.teachers||[]).find(function(x){return x.id===u1.id})||(db.teachers||[]).find(function(x){return x.username===u1.username});var ag1=((t1&&t1.assignments)||[]).map(function(a){return a.grade});gl=gl.filter(function(g){return ag1.indexOf(g)>-1})}
     sel.innerHTML='<option value="">جميع الصفوف</option>'+gl.map(function(g){return'<option value="'+E(g)+'">'+E(g)+'</option>'}).join('');
+    sel.value=[].some.call(sel.options,function(o){return o.value===keepSel})?keepSel:'';
   }
   var kind=(document.getElementById('exKindSel')||{}).value||'both',html='',any=false;
   gradesToShow().forEach(function(g){
     var d=gather(g);any=any||d.gen.length||d.ind.length;
-    html+='<div class="card" style="margin-top:12px"><div class="head"><div><h3>'+E(g)+'</h3></div></div>';
+    html+='<div class="card" style="margin-top:12px"><div class="head"><div><h3>'+E(g)+'</h3>'+(scopeNote(g))+'</div></div>';
     if(kind!=='ind')html+='<h4 style="margin:12px 0 6px">الإعفاء العام <span class="pill ok">'+fp(d.gen.length)+'</span></h4><div class="muted" style="margin-bottom:6px">مرتب حسب المعدل من الأعلى إلى الأقل.</div>'+genTable(d.gen);
     if(kind!=='gen')html+='<h4 style="margin:16px 0 6px">الإعفاء الفردي <span class="pill ok">'+fp(d.ind.length)+'</span></h4><div class="muted" style="margin-bottom:6px">مرتب أبجديًا، ويظهر أمام كل طالب المواد المعفى منها ودرجته فيها.</div>'+indTable(d.ind);
     html+='</div>';
@@ -6028,6 +6034,7 @@ function printCss(){return '@page{size:A4 portrait;margin:12mm 10mm}'+
 window.sirtiExemptionPrintHTML=printHTML;
 function doPrint(kind){
   if(!window.db)return;
+  var uP=me();if(uP&&uP.role!=='owner'&&typeof window.sirtiCan==='function'&&!window.sirtiCan('exemption_print',uP)){say('ليس لديك صلاحية طباعة قوائم الإعفاء');return}
   var html=printHTML(kind);
   if(!html){say('لا توجد صفوف للطباعة');return}
   openDedicatedPrintWindow(kind==='gen'?'كشف الإعفاء العام':'كشف الإعفاء الفردي',html,printCss());
@@ -6059,7 +6066,7 @@ function ensurePage(){
 var oGuard=window.guardView;
 window.guardView=function(id){
   var u=me();
-  if(id==='exemption'&&u&&(u.role==='owner'||u.role==='manager'||u.role==='teacher'))return true;
+  if(id==='exemption'&&u){if(u.role==='owner')return true;if(u.role==='manager'||u.role==='teacher')return typeof window.sirtiCan==='function'?window.sirtiCan('exemption_view',u):true}
   return oGuard.apply(this,arguments);
 };
 ensurePage();
@@ -6176,7 +6183,7 @@ function msg(e){var c=(e&&e.code)||'';
 /* ---------- قاعدة بيانات فارغة ---------- */
 function baseDB(){var d=freshDB();d.students=[];d.teachers=[];d.owner={username:'owner',name:'',email:'',status:'مفعّل',password:PH};d.manager={username:'manager',name:'المدير',status:'مفعّل',password:PH};return d}
 var MAIN_SKIP=['students','teachers','owner','manager','gradeAudit','gradeAuditLog','gradeAuditByStudent'];
-function mainPayload(){var o={};Object.keys(db).forEach(function(k){if(MAIN_SKIP.indexOf(k)<0)o[k]=db[k]});if(isStaff())o.publicStats={teachers:(db.teachers||[]).length,students:(db.students||[]).length};return clone(o)}
+function mainPayload(){var o={};Object.keys(db).forEach(function(k){if(MAIN_SKIP.indexOf(k)<0)o[k]=db[k]});if(isStaff()){if(me&&me.role==='owner')o.publicStats={teachers:(db.teachers||[]).length,students:(db.students||[]).length};else if(db.publicStats)o.publicStats=db.publicStats}return clone(o)}
 function allowFrom(as){var allow={},ck=[];(as||[]).forEach(function(a){var k=a.grade+'|'+a.section;if(!allow[k]){allow[k]=[];ck.push(k)}if(allow[k].indexOf(a.subject)<0)allow[k].push(a.subject)});return{allow:allow,classKeys:ck}}
 function teacherDoc(t,email){var a=allowFrom(t.assignments);return{role:'teacher',username:t.username,name:t.name,gender:t.gender||'male',active:t.active!==false,assignments:t.assignments||[],acl:a.allow,classKeys:a.classKeys,email:email,lastSeen:0}}
 function toTeacher(id,x){var f=(x.assignments&&x.assignments[0])||{};return{id:id,name:x.name||'',gender:x.gender||'male',username:x.username||'',password:'',assignments:x.assignments||[],subject:f.subject,grade:f.grade,section:f.section,active:x.active!==false,lastSeen:x.lastSeen||0,authEmail:x.email||''}}
@@ -6264,7 +6271,7 @@ async function loadAll(user){
   snap={js:{},obj:{},main:''};
   db.students.forEach(function(st){var c=cleanSt(st);snap.js[sid(st)]=JSON.stringify(c);snap.obj[sid(st)]=c});
   snap.main=JSON.stringify(mainPayload());
-  try{if(isStaff()){var st0=(ms.exists&&ms.data().publicStats)||{};if(st0.teachers!==db.teachers.length||st0.students!==db.students.length){snap.main='';window.__sirtiNeedMainSync=true}}}catch(e){}
+  try{if(me&&me.role==='owner'){var st0=(ms.exists&&ms.data().publicStats)||{};if(st0.teachers!==db.teachers.length||st0.students!==db.students.length){snap.main='';window.__sirtiNeedMainSync=true}}}catch(e){}
   synced=new WeakSet();db.gradeAuditLog.forEach(function(e){synced.add(e)});
 }
 
@@ -6872,6 +6879,63 @@ html body .login-screen .login-panel{flex:1 1 0!important;min-width:0!important}
   html body .login-screen{overflow-y:auto!important}
   body.dark-mode .login-screen{background:#0b1426!important}
   body.dark-mode .login-screen .login-card{background:rgba(15,25,46,.94)!important}
+}
+</style>
+<style id="sirti-v168-gold-theme">
+@media screen{
+:root{--gold:#c9a24a;--gold2:#e8cd85;--gold3:#9a7a2c;--navy:#14213d;--navy2:#1d3158;--gold-soft:rgba(201,162,74,.14)}
+body aside{background:linear-gradient(180deg,#101b34 0%,#16264a 60%,#101b34 100%)!important;border-left:1px solid rgba(201,162,74,.45)!important;box-shadow:-6px 0 30px rgba(10,18,40,.25)!important}
+body aside .nav button.active{background:linear-gradient(90deg,rgba(201,162,74,.22),rgba(201,162,74,.06))!important;color:#f5e3b0!important;box-shadow:inset 0 0 0 1px rgba(201,162,74,.5)!important}
+body aside .nav button.active::after,body aside .nav button.active::before{background:var(--gold)!important}
+body aside .nav button:hover{color:#f5e3b0!important}
+body aside .nav-label{color:#c9a24a!important;letter-spacing:.3px}
+body .top{border:1px solid rgba(201,162,74,.35)!important;border-top:3px solid var(--gold)!important}
+body .top h1,body .top h2{color:var(--navy)}
+body .card{border-color:rgba(201,162,74,.22)!important}
+body .stat-card{border-color:rgba(201,162,74,.28)!important;border-top:3px solid var(--gold)!important}
+body .btn.primary,body .tab.active{background:linear-gradient(135deg,#e8cd85 0%,#c9a24a 55%,#a88334 100%)!important;color:#1a1405!important;border:1px solid #9a7a2c!important;box-shadow:0 4px 12px rgba(168,131,52,.35)!important;text-shadow:none!important}
+body .btn.primary:hover{filter:brightness(1.06)}
+body .btn.light:hover,body .btn.secondary:hover{border-color:var(--gold)!important}
+body .table th{background:linear-gradient(180deg,#1b2d52,#14213d)!important;color:#f3e2b0!important;border-bottom:2px solid var(--gold)!important}
+body .modal{border-top:4px solid var(--gold)!important}
+body .modal-head h2,body .modal-head h3{color:var(--navy)}
+body input:focus,body select:focus,body textarea:focus{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(201,162,74,.25)!important;outline:none!important}
+body .bar,body .chart .bar,body [class*="bar-fill"]{background:linear-gradient(180deg,#e8cd85,#c9a24a 60%,#9a7a2c)!important}
+body .avatar{background:linear-gradient(135deg,#e8cd85,#c9a24a)!important;color:#1a1405!important;border:2px solid #fff!important}
+body ::selection{background:rgba(201,162,74,.35)}
+body .nav-label::before{content:"";display:inline-block;width:6px;height:6px;background:var(--gold);transform:rotate(45deg);margin-left:6px}
+/* dark */
+body.dark-mode{--gold-soft:rgba(201,162,74,.12)}
+body.dark-mode aside{background:linear-gradient(180deg,#0a1224,#0f1a33 60%,#0a1224)!important}
+body.dark-mode .top{border-color:rgba(201,162,74,.4)!important}
+body.dark-mode .top h1,body.dark-mode .top h2,body.dark-mode .modal-head h2,body.dark-mode .modal-head h3{color:#f6e6b8!important}
+body.dark-mode .card,body.dark-mode .stat-card{border-color:rgba(201,162,74,.28)!important}
+body.dark-mode .btn.light,body.dark-mode .btn.secondary{border-color:rgba(201,162,74,.4)!important}
+body.dark-mode .modal{border-top-color:var(--gold)!important}
+body.dark-mode .modal label,body.dark-mode .modal .field label{color:#dfe8f7!important}
+/* first-run overlay + inline overlays dark contrast */
+body.dark-mode #sirti-setup>div,body.dark-mode [id^="sirti-"]>div[style*="background:#fff"]{background:#111d31!important;color:#eef4ff!important;border:1px solid rgba(201,162,74,.45)!important}
+body.dark-mode #sirti-setup label,body.dark-mode #sirti-setup p,body.dark-mode #sirti-setup h3{color:#eef4ff!important}
+body.dark-mode #sirti-setup input:not([type=checkbox]){background:#0a1220!important;color:#fff!important;border:1px solid #385170!important}
+#sirti-setup>div{border-top:4px solid #c9a24a!important}
+#sirti-setup [data-ok]{background:linear-gradient(135deg,#e8cd85,#c9a24a 60%,#a88334)!important;color:#1a1405!important}
+}
+@media screen{
+body .btn.primary.grade-entry-launch,body .grade-entry-launch{background:linear-gradient(135deg,#e8cd85 0%,#c9a24a 55%,#a88334 100%)!important;color:#1a1405!important;border:1px solid #9a7a2c!important;box-shadow:0 4px 12px rgba(168,131,52,.35)!important}
+body .stat-card{position:relative;box-shadow:inset 0 3px 0 #c9a24a,0 6px 18px rgba(20,33,61,.06)!important;border-top-width:1px!important}
+body .stat-icon.blue{background:rgba(201,162,74,.18)!important}
+body .stat-card .stat-value,body .stat-card b{color:inherit}
+body .badge,body .pill{border-color:rgba(201,162,74,.35)}
+}
+@media screen{
+body.dark-mode .btn.primary,body.dark-mode .tab.active,body.dark-mode .btn.primary.grade-entry-launch{background:linear-gradient(135deg,#e8cd85 0%,#c9a24a 55%,#a88334 100%)!important;color:#1a1405!important;border:1px solid #9a7a2c!important}
+body.dark-mode aside .nav button.active,body.dark-mode body aside .nav button.active{background:linear-gradient(90deg,rgba(201,162,74,.25),rgba(201,162,74,.06))!important;color:#f5e3b0!important;box-shadow:inset 0 0 0 1px rgba(201,162,74,.5)!important}
+body.dark-mode .table th{background:linear-gradient(180deg,#1b2d52,#0f1a33)!important;color:#f3e2b0!important;border-bottom:2px solid #c9a24a!important}
+}
+@media screen{
+body .checkbox-row{display:flex!important;align-items:center;gap:8px;white-space:nowrap}
+body .checkbox-row input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px;flex:none;accent-color:#c9a24a}
+body input[type=checkbox]{accent-color:#c9a24a}
 }
 </style>
 </body>
