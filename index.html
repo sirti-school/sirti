@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٧٠</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٧٥</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -6495,6 +6495,8 @@ window.sirtiSaveTeacher=async function(id){
     window.teacherModalAssignments=[];saveDB();closeModal();renderAll();say('تم حفظ حساب المدرس والتكليفات الدراسية');
   }catch(e){console.error(e);say(e&&e.code==='dup'?'اسم المستخدم مستخدم لحساب آخر.':'تعذر حفظ الحساب: '+msg(e))}
 };
+window.__sirtiCreateTeacher=createTeacher;
+window.__sirtiUpdateTeacherDoc=async function(old,t){await fs.doc('users/'+old.id).update(teacherDoc(t,old.authEmail))};
 window.sirtiToggleTeacher=async function(id){
   var t=db.teachers.find(function(x){return x.id===id});if(!t)return;
   try{await fs.doc('users/'+id).update({active:!t.active});t.active=!t.active;saveDB();renderTeachers();applyArabicDigits($('teachers'));say(t.active?'تم تفعيل الحساب':'تم تعطيل الحساب')}
@@ -6974,6 +6976,78 @@ window.renderTeacherRegister=function(){var r=o.apply(this,arguments);
 try{var box=document.getElementById('teacherRegisterContent');var old=document.getElementById('sirtiDirNote');if(old)old.remove();
 if(box&&window.currentUser&&currentUser.role==='teacher'&&!(window.db&&db.teacherDirectory&&db.teacherDirectory.length)){var n=document.createElement('div');n.id='sirtiDirNote';n.className='no-print';n.style.cssText='margin:8px 0;padding:9px 12px;border:1px solid #c9a24a;background:#fff8e6;color:#5c4510;border-radius:10px;font-size:12px;font-weight:700';n.textContent='لم يصل بعد دليل المدرسين من الإدارة، لذلك لن يظهر اسم المدرس الآخر. يكفي أن يفتح المالك الموقع مرة واحدة بحسابه ثم تعيد أنت فتح الصفحة.';box.parentNode.insertBefore(n,box)}}catch(e){}
 return r}})();
+</script>
+<script id="sirti-v171-import-schedule">
+(function(){
+var PLAN=[];
+function plan(){return PLAN}
+function genPw(){var U='ABCDEFGHJKLMNPQRSTUVWXYZ',L='abcdefghijkmnpqrstuvwxyz',D='23456789',S='@#$%&*!?';
+ function pick(s){var a=new Uint32Array(1);crypto.getRandomValues(a);return s[a[0]%s.length]}
+ var c=[pick(U),pick(L),pick(L),pick(D),pick(D),pick(S)];
+ for(var i=c.length-1;i>0;i--){var a=new Uint32Array(1);crypto.getRandomValues(a);var j=a[0]%(i+1);var t=c[i];c[i]=c[j];c[j]=t}
+ return c.join('')}
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function secs(t){var m={};t.assignments.forEach(function(a){(m[a.grade+' '+a.subject]=m[a.grade+' '+a.subject]||[]).push(a.section)});return Object.keys(m).map(function(k){return k+' ('+m[k].join('،')+')'}).join(' — ')}
+function overlay(html){var o=document.getElementById('sirtiImportOv');if(o)o.remove();o=document.createElement('div');o.id='sirtiImportOv';
+ o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(10,18,40,.75);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl;font-family:Cairo,Tahoma,sans-serif';
+ o.innerHTML='<div style="background:#fff;color:#172033;border-radius:16px;border-top:4px solid #c9a24a;max-width:860px;width:100%;max-height:92vh;overflow:auto;padding:18px">'+html+'</div>';document.body.appendChild(o);return o}
+function exists(t){return (db.teachers||[]).find(function(x){return (x.name===t.name||t.name.indexOf(x.name+' ')===0)&&(x.assignments||[]).some(function(a){return t.assignments.some(function(b){return b.subject===a.subject})})})}
+function open(){
+ if(!window.currentUser||currentUser.role!=='owner'){alert('هذا الإجراء للمالك فقط');return}
+ var P=plan(),rows=P.map(function(t,i){var ex=exists(t);return '<tr><td>'+(i+1)+'</td><td>'+esc(t.name)+'</td><td dir="ltr">'+esc(t.username)+'</td><td style="font-size:12px">'+esc(secs(t))+'</td><td>'+(ex?'موجود — تُضاف التكليفات الناقصة':'جديد')+'</td></tr>'}).join('');
+ var o=overlay('<h3 style="margin:0 0 6px">استيراد المدرسين من جدول الدروس الأسبوعي</h3><p style="font-size:13px;color:#475169;margin:0 0 10px">سيُنشأ حساب لكل مدرس بتكليفاته (الصف والشعبة والمادة) حسب الجدول. إن وُجد مدرس بنفس الاسم والمادة تُضاف إليه التكليفات الناقصة فقط ولا تتغير كلمة مروره. كلمات المرور تُولَّد عشوائياً وتظهر لك مرة واحدة بعد التنفيذ.</p><div style="overflow:auto;max-height:50vh"><table style="width:100%;border-collapse:collapse;font-size:13px" border="1" bordercolor="#d8deea"><tr style="background:#14213d;color:#f3e2b0"><th>#</th><th>المدرس</th><th>اسم المستخدم</th><th>التكليفات</th><th>الحالة</th></tr>'+rows+'</table></div><div style="margin-top:12px;display:flex;gap:8px"><button id="sirtiImpGo" style="flex:1;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#e8cd85,#c9a24a,#a88334);font-weight:800;cursor:pointer">تنفيذ الاستيراد ('+P.length+' حساب)</button><button id="sirtiImpX" style="padding:12px 18px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">إلغاء</button></div><div id="sirtiImpMsg" style="margin-top:8px;font-size:13px"></div>');
+ o.querySelector('#sirtiImpX').onclick=function(){try{localStorage.setItem('sirti_import_seen','1')}catch(e){}o.remove()};
+ o.querySelector('#sirtiImpGo').onclick=function(){run(P,o)};
+}
+async function run(P,o){
+ var btn=o.querySelector('#sirtiImpGo'),msg=o.querySelector('#sirtiImpMsg');btn.disabled=true;var res=[],i=0;
+ for(var t of P){i++;msg.textContent='جارٍ التنفيذ '+i+' / '+P.length+' ...';
+  try{
+   var ex=exists(t);
+   if(ex){var have=ex.assignments||[],add=t.assignments.filter(function(a){return !have.some(function(h){return h.grade===a.grade&&h.section===a.section&&h.subject===a.subject})});
+     if(ex.name!==t.name&&t.name.indexOf(ex.name+' ')===0)ex.name=t.name;
+     if(add.length||ex.name===t.name){ex.assignments=have.concat(add);var f=ex.assignments[0];ex.subject=f.subject;ex.grade=f.grade;ex.section=f.section;
+       if(window.__sirtiUpdateTeacherDoc)await window.__sirtiUpdateTeacherDoc(ex,{name:ex.name,gender:ex.gender||'male',username:ex.username,assignments:ex.assignments,active:ex.active!==false,subject:f.subject,grade:f.grade,section:f.section})}
+     res.push({t:t,status:'موجود'+(add.length?' — أُضيفت '+add.length+' تكليفات':' — لا جديد'),user:ex.username,pw:'(دون تغيير)'});continue}
+   var un=t.username,k=0;while((db.teachers||[]).some(function(x){return String(x.username).toLowerCase()===un})){k++;un=t.username+k}
+   var pw=genPw(),f2=t.assignments[0],obj={name:t.name,gender:t.gender,username:un,assignments:t.assignments,active:true,subject:f2.subject,grade:f2.grade,section:f2.section};
+   if(window.__sirtiCreateTeacher){var r=await window.__sirtiCreateTeacher(obj,pw);db.teachers.push(Object.assign({id:r.id,password:'',lastSeen:0,authEmail:r.email},obj))}
+   else db.teachers.push(Object.assign({id:'T'+Date.now()+'_'+i,password:pw},obj));
+   res.push({t:t,status:'تم الإنشاء',user:un,pw:pw});
+  }catch(e){res.push({t:t,status:'فشل: '+((e&&e.code==='dup')?'اسم المستخدم مستخدم':(e&&e.message)||e),user:t.username,pw:''})}
+ }
+ try{saveDB();renderAll()}catch(e){}
+ try{localStorage.setItem('sirti_import_seen','1')}catch(e){}
+ done(res)}
+function csv(res){return '\ufeff'+['المدرس,اسم المستخدم,كلمة المرور,الحالة'].concat(res.map(function(r){return [r.t.name,r.user,r.pw,r.status].map(function(x){return '"'+String(x).replace(/"/g,'""')+'"'}).join(',')})).join('\n')}
+function done(res){
+ var ok=res.filter(function(r){return r.status==='تم الإنشاء'}).length;
+ var rows=res.map(function(r,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(r.t.name)+'</td><td dir="ltr">'+esc(r.user)+'</td><td dir="ltr" style="font-family:monospace;font-weight:700">'+esc(r.pw)+'</td><td style="font-size:12px">'+esc(r.status)+'</td></tr>'}).join('');
+ var o=overlay('<h3 style="margin:0 0 6px">اكتمل الاستيراد — '+ok+' حساب جديد</h3><p style="font-size:13px;color:#8f1d2c;margin:0 0 8px;font-weight:700">احفظ هذه القائمة الآن: كلمات المرور لا تظهر مرة أخرى.</p><div style="overflow:auto;max-height:55vh"><table id="sirtiImpRes" style="width:100%;border-collapse:collapse;font-size:13px" border="1" bordercolor="#d8deea"><tr style="background:#14213d;color:#f3e2b0"><th>#</th><th>المدرس</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr>'+rows+'</table></div><div style="margin-top:12px;display:flex;gap:8px"><button id="sirtiImpCsv" style="flex:1;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#e8cd85,#c9a24a,#a88334);font-weight:800;cursor:pointer">تحميل القائمة (CSV)</button><button id="sirtiImpPr" style="padding:12px 16px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">طباعة</button><button id="sirtiImpX2" style="padding:12px 16px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">إغلاق</button></div>');
+ window.__sirtiImportResult=res;
+ o.querySelector('#sirtiImpX2').onclick=function(){o.remove()};
+ o.querySelector('#sirtiImpCsv').onclick=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv(res)],{type:'text/csv;charset=utf-8'}));a.download='sirti_teachers_accounts.csv';document.body.appendChild(a);a.click();a.remove()};
+ o.querySelector('#sirtiImpPr').onclick=function(){var tb=res.map(function(r,k){return '<tr><td style="width:8%">'+(k+1)+'</td><td style="width:30%">'+esc(r.t.name)+'</td><td style="width:28%;direction:ltr;text-align:center">'+esc(r.user)+'</td><td style="width:22%;direction:ltr;text-align:center;font-family:monospace;font-weight:700;letter-spacing:1px">'+esc(r.pw)+'</td><td style="width:12%;font-size:10px">'+(r.status==='تم الإنشاء'?'جديد':'موجود')+'</td></tr>'}).join('');
+  var css='@page{size:A4 portrait;margin:10mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Cairo,Tahoma,sans-serif;direction:rtl}h2{text-align:center;margin:0 0 4mm;font-size:18px}table{width:100%;table-layout:fixed;border-collapse:collapse;margin:0 auto;font-size:12px}th{background:#14213d;color:#f3e2b0;border:1px solid #14213d;padding:5px}td{border:1px solid #888;padding:5px;text-align:center;word-break:break-all}tr{page-break-inside:avoid}';
+  var html='<h2>حسابات المدرسين — سيرتي</h2><table><thead><tr><th style="width:8%">#</th><th style="width:30%">المدرس</th><th style="width:28%">اسم المستخدم</th><th style="width:22%">كلمة المرور</th><th style="width:12%">الحالة</th></tr></thead><tbody>'+tb+'</tbody></table>';
+  try{var old=document.getElementById('sirtiCredFrame');if(old)old.remove();var fr=document.createElement('iframe');fr.id='sirtiCredFrame';fr.style.cssText='position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:0';document.body.appendChild(fr);
+   var d=fr.contentDocument;d.open();d.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>حسابات المدرسين</title><style>'+css+'</style></head><body>'+html+'</body></html>');d.close();
+   setTimeout(function(){try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.print()}},400)}catch(e){window.print()}}}
+function pick(){if(!window.currentUser||currentUser.role!=='owner'){alert('هذا الإجراء للمالك فقط');return}
+ var f=document.createElement('input');f.type='file';f.accept='.json,application/json';
+ f.onchange=function(){var fl=f.files[0];if(!fl)return;var r=new FileReader();r.onload=function(){try{var j=JSON.parse(r.result),L=Array.isArray(j)?j:j.teachers;
+  PLAN=(L||[]).filter(function(t){return t&&t.name&&t.username&&Array.isArray(t.assignments)&&t.assignments.length}).map(function(t){return{name:String(t.name),username:String(t.username).toLowerCase(),gender:t.gender==='female'?'female':'male',assignments:t.assignments.map(function(a){return{grade:a.grade,section:a.section,subject:a.subject}})}});
+  if(!PLAN.length){alert('الملف لا يحتوي مدرسين صالحين');return}
+  var o=overlay('<h3 style="margin:0 0 6px">جارٍ إنشاء الحسابات...</h3><button id="sirtiImpGo" style="display:none"></button><div id="sirtiImpMsg" style="font-size:14px;margin-top:8px">يرجى الانتظار وعدم إغلاق الصفحة</div>');run(PLAN,o)}catch(e){alert('ملف غير صالح')}};r.readAsText(fl)};f.click()}
+window.sirtiImportSchedule=pick;
+
+var orig=window.renderTeachers;
+function addBtn(){try{if(!window.currentUser||currentUser.role!=='owner'||document.getElementById('sirtiImportBtn'))return;
+ var b=[].slice.call(document.querySelectorAll('#teachers button')).find(function(x){return /إضافة مدرس/.test(x.textContent)});if(!b)return;
+ var n=document.createElement('button');n.id='sirtiImportBtn';n.className='btn light';n.type='button';n.textContent='📥 استيراد حسابات من ملف';n.onclick=pick;n.style.marginInlineEnd='8px';b.parentNode.insertBefore(n,b)}catch(e){}}
+
+if(typeof orig==='function'){window.renderTeachers=function(){var r=orig.apply(this,arguments);addBtn();return r}}
+})();
 </script>
 </body>
 
