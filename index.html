@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٧٥</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٨٣</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1600,7 +1600,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       <p class="login-subtitle">أدخل بيانات الحساب المسجل مسبقًا للوصول إلى المنصة.</p>
       <form onsubmit="loginSubmit(event)" autocomplete="off" novalidate>
         <div class="login-field enhanced"><label for="loginUsername">اسم المستخدم / الرقم التعريفي</label><div class="login-input-wrap"><span>◉</span><input id="loginUsername" name="sirti_login_id" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="أدخل اسم المستخدم" required></div></div>
-        <div class="login-field enhanced"><label for="loginPassword">كلمة المرور</label><div class="login-input-wrap"><span>🔒</span><input id="loginPassword" name="sirti_login_secret" type="password" autocomplete="off" inputmode="text" maxlength="6" minlength="6" placeholder="ادخل كلمة السر" required><button type="button" class="login-eye" onclick="toggleLoginPassword()" aria-label="إظهار كلمة المرور">◉</button></div></div>
+        <div class="login-field enhanced"><label for="loginPassword">كلمة المرور</label><div class="login-input-wrap"><span>🔒</span><input id="loginPassword" name="sirti_login_secret" type="password" autocomplete="off" inputmode="text" maxlength="32" placeholder="ادخل كلمة السر" required><button type="button" class="login-eye" onclick="toggleLoginPassword()" aria-label="إظهار كلمة المرور">◉</button></div></div>
         <div class="login-remember-row"><label class="login-remember"><input id="rememberLogin" type="checkbox"> <span>تذكّر اسم المستخدم على هذا المتصفح</span></label><button type="button" class="login-clear-remember" onclick="clearRememberedLogin()">مسح المحفوظ</button></div>
         <button class="login-submit" type="submit"><span>دخول إلى المنصة</span><b>←</b></button>
         <div id="loginError" class="login-error" role="alert"></div>
@@ -1776,8 +1776,8 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
         <div class="field"><label>اسم مستخدم المالك</label><input id="ownerUsername" data-no-arabic-digits="true" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
         <div class="field"><label>اسم المالك</label><input id="ownerName"></div>
         <div class="field"><label>البريد الإلكتروني</label><input id="ownerEmail" data-no-arabic-digits="true" type="email" placeholder="اختياري"></div>
-        <div class="field"><label>كلمة المرور الجديدة</label><input id="ownerPassword" type="password" autocomplete="new-password" maxlength="6" minlength="6" placeholder="اتركها فارغة إذا لا تريد التغيير"></div>
-        <div class="field"><label>تأكيد كلمة المرور الجديدة</label><input id="ownerPasswordConfirm" type="password" autocomplete="new-password" maxlength="6" minlength="6" placeholder="أعد كتابة كلمة المرور الجديدة"></div>
+        <div class="field"><label>كلمة المرور الجديدة</label><input id="ownerPassword" type="password" autocomplete="new-password" maxlength="32" placeholder="اتركها فارغة إذا لا تريد التغيير"></div>
+        <div class="field"><label>تأكيد كلمة المرور الجديدة</label><input id="ownerPasswordConfirm" type="password" autocomplete="new-password" maxlength="32" placeholder="أعد كتابة كلمة المرور الجديدة"></div>
         <div class="field"><label>الحالة</label><select id="ownerStatus"><option>مفعّل</option><option>معطّل</option></select></div>
       </div>
       <div class="password-rule-hint">كلمة المرور الجديدة: ٦ خانات بالضبط، وتحتوي حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا. ترك الحقل فارغًا يعني الإبقاء على كلمة المرور الحالية.</div>
@@ -1789,8 +1789,8 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       <div class="formgrid">
         <div class="field"><label>اسم مستخدم المدير</label><input id="managerUsername" data-no-arabic-digits="true" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
         <div class="field"><label>اسم المدير</label><input id="managerName"></div>
-        <div class="field"><label>كلمة مرور المدير الجديدة</label><input id="managerPassword" type="password" maxlength="6" minlength="6" autocomplete="new-password" placeholder="اتركها فارغة إذا لا تريد التغيير"></div>
-        <div class="field"><label>تأكيد كلمة مرور المدير</label><input id="managerPasswordConfirm" type="password" maxlength="6" minlength="6" autocomplete="new-password" placeholder="أعد كتابة كلمة المرور الجديدة"></div>
+        <div class="field"><label>كلمة مرور المدير الجديدة</label><input id="managerPassword" type="password" maxlength="32" autocomplete="new-password" placeholder="اتركها فارغة إذا لا تريد التغيير"></div>
+        <div class="field"><label>تأكيد كلمة مرور المدير</label><input id="managerPasswordConfirm" type="password" maxlength="32" autocomplete="new-password" placeholder="أعد كتابة كلمة المرور الجديدة"></div>
         <div class="field"><label>الحالة</label><select id="managerStatus"><option>مفعّل</option><option>معطّل</option></select></div>
       </div>
       <div class="password-rule-hint">يمكن للمالك تغيير الحساب أو تعطيله في أي وقت. عند أول تشغيل يُطلب منك تعيين كلمة مرور لحسابي المالك والمدير.</div>
@@ -1901,6 +1901,8 @@ let currentUser=null;
 function getSession(){try{return JSON.parse(sessionStorage.getItem('sirti_session')||'null')}catch(e){return null}}
 function isOwner(){return currentUser?.role==='owner'}
 function currentTeacher(){return currentUser?.role==='teacher'?db.teachers.find(t=>t.id===currentUser.id):null}
+var PWSTRONG_RULE='كلمة مرور المالك والمدير: من ١٠ إلى ٣٢ خانة وتحتوي حرفاً كبيراً وحرفاً صغيراً ورقماً ورمزاً.';
+function validStrongPw(p){return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,32}$/.test(String(p||''))}
 function validPassword6(p){return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6}$/.test(String(p||''))}
 const PRESENCE_KEY='sirti_teacher_presence_v1';
 let presenceTimer=null;
@@ -1911,7 +1913,7 @@ function markTeacherOffline(){if(!currentUser||currentUser.role!=='teacher')retu
 function onlineTeacherCount(){const now=Date.now(),map=readPresence(),active={};Object.entries(map).forEach(([id,v])=>{if(v&&now-(Number(v.ts)||0)<45000)active[id]=v});if(Object.keys(active).length!==Object.keys(map).length)writePresence(active);return Object.keys(active).filter(id=>db.teachers.some(t=>t.id===id&&t.active!==false)).length}
 function startPresence(){clearInterval(presenceTimer);if(currentUser?.role==='teacher'||currentUser?.role==='manager'){markTeacherOnline();presenceTimer=setInterval(markTeacherOnline,15000)}}
 function authSession(user){currentUser=user;sessionStorage.setItem('sirti_session',JSON.stringify(user));document.body.classList.remove('app-locked');document.getElementById('loginScreen')?.classList.add('hidden');startPresence();renderAll();updateRoleUI();toast(isOwner()?'تم تسجيل الدخول بحساب المالك':currentUser?.role==='manager'?'تم تسجيل الدخول بحساب المدير':'تم تسجيل الدخول بحساب المدرس')}
-function loginSubmit(ev){ev.preventDefault();const u=document.getElementById('loginUsername')?.value.trim(),p=document.getElementById('loginPassword')?.value||'';const err=document.getElementById('loginError');let user=null;if(!validPassword6(p)){if(err){err.textContent='كلمة المرور يجب أن تكون ٦ خانات بالضبط وتحتوي حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا.';err.style.display='block'}return}if(db.owner?.status==='مفعّل'&&u===db.owner.username&&p===db.owner.password){user={role:'owner',username:db.owner.username,name:db.owner.name}}else if(db.manager?.status==='مفعّل'&&u===db.manager.username&&p===db.manager.password){user={role:'manager',username:db.manager.username,name:db.manager.name}}else{const t=db.teachers.find(x=>x.active!==false&&x.username===u&&x.password===p);if(t)user={role:'teacher',id:t.id,username:t.username,name:t.name}}if(!user){if(err){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب غير مفعّل.';err.style.display='block'}return}if(err)err.style.display='none';authSession(user)}
+function loginSubmit(ev){ev.preventDefault();const u=document.getElementById('loginUsername')?.value.trim(),p=document.getElementById('loginPassword')?.value||'';const err=document.getElementById('loginError');let user=null;if(!/^.{6,32}$/.test(p)){if(err){err.textContent='كلمة المرور يجب أن تكون من ٦ إلى ٣٢ خانة.';err.style.display='block'}return}if(db.owner?.status==='مفعّل'&&u===db.owner.username&&p===db.owner.password){user={role:'owner',username:db.owner.username,name:db.owner.name}}else if(db.manager?.status==='مفعّل'&&u===db.manager.username&&p===db.manager.password){user={role:'manager',username:db.manager.username,name:db.manager.name}}else{const t=db.teachers.find(x=>x.active!==false&&x.username===u&&x.password===p);if(t)user={role:'teacher',id:t.id,username:t.username,name:t.name}}if(!user){if(err){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب غير مفعّل.';err.style.display='block'}return}if(err)err.style.display='none';authSession(user)}
 
 function logout(){markTeacherOffline();sessionStorage.removeItem('sirti_session');currentUser=null;clearInterval(presenceTimer);document.body.classList.add('app-locked');document.getElementById('loginScreen')?.classList.remove('hidden');document.getElementById('loginPassword').value='';document.getElementById('loginUsername').value='';document.getElementById('loginUsername').focus();toast('تم تسجيل الخروج')}
 function currentTeacherRecord(){if(!currentUser||currentUser.role!=='teacher')return null;return db.teachers.find(t=>t&&t.id===currentUser.id)||null}
@@ -3035,7 +3037,7 @@ function renderAccount(){const section=document.getElementById('account');if(!se
 
 function saveSettings(){if(!ownerOrCan('settings_edit')){toast('ليس لديك صلاحية تعديل الإعدادات');return}db.settings.systemName=document.getElementById('settingSystemName').value.trim()||'سيرتي';db.settings.year=document.getElementById('settingYear').value.trim()||'2026–2027';db.settings.schoolName=document.getElementById('settingSchool').value.trim()||'ثانوية السيرة النبوية المختلطة';db.settings.principalName=document.getElementById('settingPrincipal').value.trim();db.settings.creatorAr=document.getElementById('settingCreatorAr').value.trim();db.settings.creatorEn=document.getElementById('settingCreatorEn').value.trim();const p=Number(toLatin(document.getElementById('settingPassMark').value));db.settings.passMark=Number.isFinite(p)?Math.min(100,Math.max(0,Math.round(p))):50;saveDB();renderAll();toast('تم حفظ الإعدادات بأعداد صحيحة')}
 
-function saveOwner(){if(window.SIRTI_FB&&window.sirtiSaveOwner)return window.sirtiSaveOwner();if(currentUser?.role!=='owner'){toast('هذا الإجراء للمالك فقط');return}const username=toLatin(document.getElementById('ownerUsername').value.trim())||'owner',name=document.getElementById('ownerName').value.trim()||'حسن ثامر',email=document.getElementById('ownerEmail').value.trim(),password=document.getElementById('ownerPassword').value,confirmPass=document.getElementById('ownerPasswordConfirm').value;if(password){if(!validPassword6(password)){toast('كلمة مرور المالك يجب أن تكون ٦ خانات: حرف كبير + حرف صغير + رقم + رمز.');return}if(password!==confirmPass){toast('تأكيد كلمة المرور غير مطابق.');return}db.owner.password=password}db.owner.username=username;db.owner.name=name;db.owner.email=email;db.owner.status=document.getElementById('ownerStatus').value||'مفعّل';saveDB();currentUser={...currentUser,username:username,name:name};sessionStorage.setItem('sirti_session',JSON.stringify(currentUser));updateRoleUI();renderAccount();toast('تم حفظ معلومات حساب المالك')}
+function saveOwner(){if(window.SIRTI_FB&&window.sirtiSaveOwner)return window.sirtiSaveOwner();if(currentUser?.role!=='owner'){toast('هذا الإجراء للمالك فقط');return}const username=toLatin(document.getElementById('ownerUsername').value.trim())||'owner',name=document.getElementById('ownerName').value.trim()||'حسن ثامر',email=document.getElementById('ownerEmail').value.trim(),password=document.getElementById('ownerPassword').value,confirmPass=document.getElementById('ownerPasswordConfirm').value;if(password){if(!validStrongPw(password)){toast(PWSTRONG_RULE);return}if(password!==confirmPass){toast('تأكيد كلمة المرور غير مطابق.');return}db.owner.password=password}db.owner.username=username;db.owner.name=name;db.owner.email=email;db.owner.status=document.getElementById('ownerStatus').value||'مفعّل';saveDB();currentUser={...currentUser,username:username,name:name};sessionStorage.setItem('sirti_session',JSON.stringify(currentUser));updateRoleUI();renderAccount();toast('تم حفظ معلومات حساب المالك')}
 
 function renderAdminRecords(){const grade=document.getElementById('adminGrade')?.value||gradesList[0],section=document.getElementById('adminSection')?.value||'أ';const list=db.students.filter(s=>s.grade===grade&&s.section===section);document.getElementById('adminRecordsPreview').innerHTML=list.length?list.map((s,i)=>adminPageHTML(s,i+1,db.subjects[grade]||[])).join(''):'<div class="card empty">لا يوجد طلاب في هذا الصف وهذه الشعبة.</div>';applyArabicDigits(document.getElementById('reports'))}
 function adminPageHTML(st,index,subjects){const rows=subjects.map(sub=>{const c1=avgCourse(st,sub,1),mid=gradeVal(st,sub,'mid'),c2=avgCourse(st,sub,2),annual=annualStudy(st,sub),annualRaw=annualStudyBeforeDecision(st,sub),final=gradeVal(st,sub,'final'),fg=finalGrade(st,sub),fgRaw=finalGradeBeforeDecision(st,sub),completion=secondRoundGrade(st,sub),afterCompletion=gradeAfterCompletion(st,sub),afterCompletionRaw=gradeAfterCompletionBeforeDecision(st,sub);return `<tr><td class="subject">${esc(sub)}</td><td>${arNum(c1)}</td><td>${arNum(mid)}</td><td>${arNum(c2)}</td><td>${decisionGradeDisplay(st,sub,'annual',annualRaw,annual)}</td><td>${arNum(final)}</td><td>${decisionGradeDisplay(st,sub,'final',fgRaw,fg)}</td><td>${arNum(completion)}</td><td>${completionDecisionDisplay(st,sub,afterCompletionRaw,afterCompletion)}</td><td class="notes"></td></tr>`}).join('');return `<article class="admin-a4-page"><div class="admin-head"><div class="right">الإدارة<br><b>${esc(db.settings.schoolName)}</b></div><div class="center"><h1>سجل درجات الإدارة</h1><b>للعام الدراسي ${esc(db.settings.year)}</b></div><div class="left"><div class="page-box"><small>رقم الصفحة</small><span>${arDigits(index)}</span></div></div></div><div class="student-meta"><div><b>اسم الطالب/ة</b>&nbsp; ${esc(st.name)}</div><div><b>الصف والشعبة</b>&nbsp; ${esc(st.grade)} (${esc(st.section)})</div><div><b>رقمه في القيد</b>&nbsp; __________________</div><div><b>العام</b>&nbsp; ${esc(db.settings.year)}</div></div><table class="admin-table"><thead><tr><th class="subject">المادة الدراسية</th><th class="numcol"><span class="vertical">معدل الفصل الأول<br>١٠٠</span></th><th class="numcol"><span class="vertical">معدل نصف السنة<br>١٠٠</span></th><th class="numcol"><span class="vertical">معدل الفصل الثاني<br>١٠٠</span></th><th class="numcol"><span class="vertical">السعي السنوي<br>١٠٠</span></th><th class="numcol"><span class="vertical">الامتحان النهائي<br>١٠٠</span></th><th class="numcol"><span class="vertical">الدرجة النهائية<br>١٠٠</span></th><th class="numcol"><span class="vertical">درجة الإكمال<br>١٠٠</span></th><th class="numcol"><span class="vertical">الدرجة بعد الإكمال<br>١٠٠</span></th><th class="notes">الملاحظات</th></tr></thead><tbody>${rows}<tr class="result-row"><td class="label-cell">نتيجة الدور الأول</td><td colspan="9"></td></tr><tr class="result-row"><td class="label-cell">نتيجة الدور الثاني</td><td colspan="9"></td></tr></tbody></table><div class="admin-footer"><div>درجة السلوك<b>________________</b></div><div>درجة المواطنة النهائية<b>________________</b></div><div>المدير<b>${esc(db.settings.principalName)}</b></div></div><div class="admin-note">السعي السنوي = (معدل الفصل الأول + نصف السنة + معدل الفصل الثاني) ÷ ٣. امتحان نهاية السنة لا يدخل في السعي السنوي. الدرجة النهائية = (السعي السنوي + الامتحان النهائي) ÷ ٢. درجة الإكمال = درجة امتحان الدور الثاني، والدرجة بعد الإكمال = (السعي السنوي + درجة الإكمال) ÷ ٢، وتُضاف إليها درجات قرار الدور الثاني (إن وُجدت) حتى حد النجاح.</div></article>`}
@@ -3853,7 +3855,7 @@ function printAdminRecords(){
 (function(){
 
   function isValidPassword6(p){
-    return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6}$/.test(String(p||''));
+    return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,32}$/.test(String(p||''));
   }
 
   function ensureDB(){
@@ -3896,7 +3898,7 @@ function printAdminRecords(){
     const u=(document.getElementById('loginUsername')?.value||'').trim();
     const p=document.getElementById('loginPassword')?.value||'';
     if(!u){showLoginError('ادخل اسم المستخدم أو الرقم التعريفي.');return false}
-    if(!isValidPassword6(p)){showLoginError('ادخل كلمة سر من ٦ خانات.');return false}
+    if(!isValidPassword6(p)){showLoginError('ادخل كلمة سر من ٦ إلى ٣٢ خانة.');return false}
     let user=null;
     const o=d?.owner||{};
     if(String(o.username||'owner')===u && String(o.password||'')===p && o.status!=='معطّل'){
@@ -3983,7 +3985,7 @@ function printAdminRecords(){
     const u=document.getElementById('loginUsername');
     const p=document.getElementById('loginPassword');
     if(u){u.value='';u.setAttribute('autocomplete','off');u.setAttribute('name','sirti_user_77');u.spellcheck=false}
-    if(p){p.value='';p.setAttribute('autocomplete','new-password');p.setAttribute('name','sirti_secret_77');p.setAttribute('placeholder','ادخل كلمة السر');p.maxLength=6;p.minLength=6}
+    if(p){p.value='';p.setAttribute('autocomplete','new-password');p.setAttribute('name','sirti_secret_77');p.setAttribute('placeholder','ادخل كلمة السر');p.maxLength=32;p.minLength=0}
     const s=currentSession();
     if(sessionIsValid(s,d)){
       window.currentUser=currentUser=s;
@@ -4258,7 +4260,7 @@ window.renderSelectedMemberPermissions=function(){if(currentUser?.role!=='owner'
 window.setPermissionTargetAll=function(target,value){const root=target==='manager'?document.getElementById('permissionCenter'):document.getElementById('selectedMemberPermissions');if(!root)return;root.querySelectorAll('input[data-perm-key]').forEach(x=>x.checked=!!value)};
 window.setPermissionTargetDefaults=function(target){const root=target==='manager'?document.getElementById('permissionCenter'):document.getElementById('selectedMemberPermissions');if(!root)return;const role=target==='manager'?'manager':'teacher',id=target.startsWith('member:')?target.slice(7):undefined;const p=defaultPerms(role,id);root.querySelectorAll('input[data-perm-key]').forEach(x=>x.checked=p[x.dataset.permKey]===true)};
 window.savePermissionTarget=function(target){if(currentUser?.role!=='owner'){toast('الصلاحيات يملك تعديلها المالك فقط');return}ensurePermissionState();const root=target==='manager'?document.getElementById('permissionCenter'):document.getElementById('selectedMemberPermissions');if(!root)return;const result={};root.querySelectorAll('input[data-perm-key]').forEach(x=>result[x.dataset.permKey]=x.checked);if(target==='manager')db.permissions.manager=result;else{const id=target.slice(7);if(!id)return;db.permissions.members[id]=result}saveDB();updateRoleUI();renderAccount();toast('تم حفظ الصلاحيات')};
-window.saveManager=function(){if(window.SIRTI_FB&&window.sirtiSaveManager)return window.sirtiSaveManager();if(currentUser?.role!=='owner'){toast('إدارة المدير للمالك فقط');return}const username=toLatin(document.getElementById('managerUsername').value.trim())||'manager',name=document.getElementById('managerName').value.trim()||'المدير',password=document.getElementById('managerPassword').value,confirmPass=document.getElementById('managerPasswordConfirm').value;if(password){if(!validPassword6(password)){toast('كلمة مرور المدير يجب أن تكون ٦ خانات: حرف كبير + حرف صغير + رقم + رمز.');return}if(password!==confirmPass){toast('تأكيد كلمة مرور المدير غير مطابق.');return}db.manager.password=password}db.manager.username=username;db.manager.name=name;db.manager.status=document.getElementById('managerStatus').value||'مفعّل';ensurePermissionState();saveDB();renderAccount();toast('تم حفظ حساب المدير')};
+window.saveManager=function(){if(window.SIRTI_FB&&window.sirtiSaveManager)return window.sirtiSaveManager();if(currentUser?.role!=='owner'){toast('إدارة المدير للمالك فقط');return}const username=toLatin(document.getElementById('managerUsername').value.trim())||'manager',name=document.getElementById('managerName').value.trim()||'المدير',password=document.getElementById('managerPassword').value,confirmPass=document.getElementById('managerPasswordConfirm').value;if(password){if(!validStrongPw(password)){toast(PWSTRONG_RULE);return}if(password!==confirmPass){toast('تأكيد كلمة مرور المدير غير مطابق.');return}db.manager.password=password}db.manager.username=username;db.manager.name=name;db.manager.status=document.getElementById('managerStatus').value||'مفعّل';ensurePermissionState();saveDB();renderAccount();toast('تم حفظ حساب المدير')};
 window.applySirtiPermissionUI=function(){const u=currentUser;if(!u)return;document.querySelectorAll('.nav button[onclick*="show("]').forEach(btn=>{const m=btn.getAttribute('onclick')?.match(/show\(['"]([^'"]+)/);if(m)btn.style.display=guardView(m[1])?'flex':'none'});const editRules=[['#students button[onclick*="openStudentModal"],#students button[onclick*="saveStudent"],#students button[onclick*="deleteStudent"]','students_edit'],['#teachers button[onclick*="openTeacherModal"],#teachers button[onclick*="saveTeacher"],#teachers button[onclick*="deleteTeacher"]','teachers_edit'],['#grades button[onclick*="saveGrades"]','grades_edit'],['#settings button[onclick*="saveSettings"],#settings button[onclick*="chooseExcelFile"],#settings button[onclick*="downloadStudentTemplate"]','settings_edit'],['#subjects button[onclick*="addSubject"],#subjects button[onclick*="deleteSubject"]','subjects_edit']];editRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(u.role==='owner')return;const ok=window.sirtiCan(key,u);el.style.display=ok?'':'none'}));const printRules=[['#teacherRegister button','teacherRegister_print'],['#control button','control_print'],['#reports button','reports_print'],['#slips button','slips_print']];printRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/طباعة|print/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const exportRules=[['#teacherRegister button','teacherRegister_export'],['#control button','control_export'],['#reports button','reports_export']];exportRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/Excel|تصدير|export/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const settings=document.getElementById('settings');if(settings&&u.role!=='owner'&&!window.sirtiCan('settings_view',u))settings.style.display='none'};
 function guardFn(name,key){const old=window[name];if(typeof old!=='function'||old.__sirtiV91)return;const wrapped=function(){if(!window.sirtiCan(key,currentUser)){toast('ليس لديك صلاحية تنفيذ هذه العملية');return}return old.apply(this,arguments)};wrapped.__sirtiV91=true;window[name]=wrapped}
 function wrapActions(){[['saveStudent','students_edit'],['deleteStudent','students_edit'],['saveTeacher','teachers_edit'],['deleteTeacher','teachers_edit'],['addSubject','subjects_edit'],['deleteSubject','subjects_edit'],['saveGrades','grades_edit'],['saveSettings','settings_edit'],['printTeacherRegister','teacherRegister_print'],['printTeacherRegisterFullGrade','teacherRegister_print'],['exportTeacherRegister','teacherRegister_export'],['printControl','control_print'],['exportControl','control_export'],['printAdminRecords','reports_print'],['exportAdminRecords','reports_export'],['printSlips','slips_print']].forEach(([n,k])=>guardFn(n,k))}
@@ -5450,7 +5452,7 @@ function overlay(id,title,intro,fields,okLabel,onOk,extraBtn){
   var o=document.createElement('div');o.id=id;
   o.setAttribute('style','position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl;font-family:Cairo,Tahoma,sans-serif');
   var h='<div style="background:#fff;color:#172033;border-radius:16px;max-width:420px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)"><h3 style="margin:0 0 6px;font-size:18px">'+title+'</h3><p style="margin:0 0 14px;color:#5b6577;font-size:13px;line-height:1.7">'+intro+'</p>';
-  fields.forEach(function(f){h+='<label style="display:block;font-size:13px;font-weight:700;margin:10px 0 4px">'+f.label+'</label><input data-k="'+f.key+'" type="password" maxlength="6" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfd8e6;border-radius:10px;font-size:15px;background:#fff;color:#172033">'});
+  fields.forEach(function(f){h+='<label style="display:block;font-size:13px;font-weight:700;margin:10px 0 4px">'+f.label+'</label><input data-k="'+f.key+'" type="password" maxlength="32" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfd8e6;border-radius:10px;font-size:15px;background:#fff;color:#172033">'});
   h+='<label style="display:flex;gap:6px;align-items:center;font-size:12px;margin-top:10px;color:#5b6577"><input type="checkbox" data-show> إظهار كلمات المرور</label><div data-err style="color:#b42318;font-size:13px;margin-top:10px;min-height:18px"></div><div style="display:flex;gap:8px;margin-top:8px"><button data-ok type="button" style="flex:1;padding:11px;border:0;border-radius:10px;background:#3157d5;color:#fff;font-weight:700;font-size:14px;cursor:pointer">'+okLabel+'</button>'+(extraBtn?'<button data-x type="button" style="padding:11px 14px;border:1px solid #cfd8e6;border-radius:10px;background:#fff;color:#172033;font-size:14px;cursor:pointer">'+extraBtn.label+'</button>':'')+'</div></div>';
   o.innerHTML=h;document.body.appendChild(o);
   var err=o.querySelector('[data-err]');
@@ -5463,7 +5465,7 @@ function overlay(id,title,intro,fields,okLabel,onOk,extraBtn){
   var first=o.querySelector('input[data-k]');if(first)first.focus();
 }
 function checkPair(p,c,who){
-  if(!okPw(p))return who+': '+PW_RULE;
+  if(!validStrongPw(p))return who+': '+PWSTRONG_RULE;
   if(isOldDefault(p))return who+': لا يمكن استخدام كلمة المرور الافتراضية القديمة.';
   if(p!==c)return who+': تأكيد كلمة المرور غير مطابق.';
   return '';
@@ -6273,6 +6275,7 @@ async function loadAll(user){
   db.students.forEach(function(st){var c=cleanSt(st);snap.js[sid(st)]=JSON.stringify(c);snap.obj[sid(st)]=c});
   snap.main=JSON.stringify(mainPayload());
   try{if(me&&me.role==='owner'){var st0=(ms.exists&&ms.data().publicStats)||{};var dirNow=JSON.stringify(mainPayload().teacherDirectory||[]),dirOld=JSON.stringify((ms.exists&&ms.data().teacherDirectory)||[]);if(st0.teachers!==db.teachers.length||st0.students!==db.students.length||dirNow!==dirOld){snap.main='';window.__sirtiNeedMainSync=true}}}catch(e){}
+  try{if(me&&me.role==='owner'&&window.__sirtiWipeSecrets)setTimeout(window.__sirtiWipeSecrets,3000)}catch(e){}
   synced=new WeakSet();db.gradeAuditLog.forEach(function(e){synced.add(e)});
 }
 
@@ -6450,6 +6453,15 @@ async function createAuthUser(email,pw){
   return id;
 }
 async function mapFree(key,exceptUid){var m=await fs.doc('loginmap/'+key).get();return !m.exists||(exceptUid&&m.data().uid===exceptUid)}
+window.__sirtiWipeSecrets=async function(){
+  try{if(!(me&&me.role==='owner'))return;if(localStorage.getItem('sirti_secrets_wiped_v1'))return;await fs.doc('secrets/teacherPasswords').delete();localStorage.setItem('sirti_secrets_wiped_v1','1')}catch(e){console.warn('secrets wipe',e)}};
+window.__sirtiResetTeacherPw=async function(old,pw){
+  var key=uKey(old.username),email=newMail(key),nid=await createAuthUser(email,pw);
+  var b=fs.batch();b.set(fs.doc('users/'+nid),teacherDoc(old,email));b.delete(fs.doc('users/'+old.id));
+  b.set(fs.doc('loginmap/'+key),{email:email,uid:nid,role:'teacher'});await b.commit();
+  var oldId=old.id;old.id=nid;old.authEmail=email;
+  if(db.permissions&&db.permissions.members&&db.permissions.members[oldId]){db.permissions.members[nid]=db.permissions.members[oldId];delete db.permissions.members[oldId]}
+};
 async function createTeacher(t,pw){
   var key=uKey(t.username);
   if(!(await mapFree(key)))throw {code:'dup'};
@@ -6474,6 +6486,7 @@ window.sirtiSaveTeacher=async function(id){
     if(!old){
       var r=await createTeacher(t,password);
       db.teachers.push(Object.assign({id:r.id,password:'',lastSeen:0,authEmail:r.email},t));
+      try{if(window.__sirtiAfterCreate)setTimeout(function(){window.__sirtiAfterCreate(t,password)},400)}catch(e){}
     }else if(password){
       var key=username,oldKey=uKey(old.username);
       if(key!==oldKey&&!(await mapFree(key)))throw {code:'dup'};
@@ -6495,8 +6508,7 @@ window.sirtiSaveTeacher=async function(id){
     window.teacherModalAssignments=[];saveDB();closeModal();renderAll();say('تم حفظ حساب المدرس والتكليفات الدراسية');
   }catch(e){console.error(e);say(e&&e.code==='dup'?'اسم المستخدم مستخدم لحساب آخر.':'تعذر حفظ الحساب: '+msg(e))}
 };
-window.__sirtiCreateTeacher=createTeacher;
-window.__sirtiUpdateTeacherDoc=async function(old,t){await fs.doc('users/'+old.id).update(teacherDoc(t,old.authEmail))};
+
 window.sirtiToggleTeacher=async function(id){
   var t=db.teachers.find(function(x){return x.id===id});if(!t)return;
   try{await fs.doc('users/'+id).update({active:!t.active});t.active=!t.active;saveDB();renderTeachers();applyArabicDigits($('teachers'));say(t.active?'تم تفعيل الحساب':'تم تعطيل الحساب')}
@@ -6516,7 +6528,7 @@ window.sirtiSaveOwner=async function(){
   try{
     var username=uKey(toLatin($('ownerUsername').value))||'owner',name=$('ownerName').value.trim()||'المالك',email=$('ownerEmail').value.trim(),pw=toLatin($('ownerPassword').value),cf=toLatin($('ownerPasswordConfirm').value);
     if(!okUser(username)){say('اسم المستخدم: حروف إنجليزية صغيرة وأرقام و . _ - فقط.');return}
-    if(pw||cf){if(!validPassword6(pw)){say('كلمة المرور: '+PWRULE);return}if(pw!==cf){say('تأكيد كلمة المرور غير مطابق.');return}}
+    if(pw||cf){if(!validStrongPw(pw)){say(PWSTRONG_RULE);return}if(pw!==cf){say('تأكيد كلمة المرور غير مطابق.');return}}
     var oldKey=uKey(db.owner.username);
     if(username!==oldKey&&!(await mapFree(username)))throw {code:'dup'};
     if(pw)await auth.currentUser.updatePassword(pw);
@@ -6535,7 +6547,7 @@ window.sirtiSaveManager=async function(){
   try{
     var username=uKey(toLatin($('managerUsername').value))||'manager',name=$('managerName').value.trim()||'المدير',pw=toLatin($('managerPassword').value),cf=toLatin($('managerPasswordConfirm').value),active=$('managerStatus').value!=='معطّل';
     if(!okUser(username)){say('اسم المستخدم: حروف إنجليزية صغيرة وأرقام و . _ - فقط.');return}
-    if(pw||cf){if(!validPassword6(pw)){say('كلمة مرور المدير: '+PWRULE);return}if(pw!==cf){say('تأكيد كلمة المرور غير مطابق.');return}}
+    if(pw||cf){if(!validStrongPw(pw)){say(PWSTRONG_RULE);return}if(pw!==cf){say('تأكيد كلمة المرور غير مطابق.');return}}
     var m=db.manager,exists=!!m._uid;
     if(!exists&&!pw){say('أدخل كلمة مرور لحساب المدير الجديد');return}
     var doc={role:'manager',username:username,name:name,gender:'male',active:active,lastSeen:0},oldKey=exists?uKey(m.username):'';
@@ -6564,7 +6576,7 @@ function overlay(title,intro,fields,okLabel,onOk){
   var o=document.createElement('div');o.id='sirtiClaimBox';
   o.setAttribute('style','position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl;font-family:Cairo,Tahoma,sans-serif');
   var h='<div style="background:#fff;color:#172033;border-radius:16px;max-width:420px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)"><h3 style="margin:0 0 6px;font-size:18px"></h3><p data-i style="margin:0 0 14px;color:#5b6577;font-size:13px;line-height:1.7"></p>';
-  fields.forEach(function(f){h+='<label style="display:block;font-size:13px;font-weight:700;margin:10px 0 4px"></label><input data-k="'+f.k+'" type="'+f.t+'" '+(f.t==='password'?'maxlength="6" autocomplete="new-password"':'autocomplete="off"')+' style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfd8e6;border-radius:10px;font-size:15px;background:#fff;color:#172033">'});
+  fields.forEach(function(f){h+='<label style="display:block;font-size:13px;font-weight:700;margin:10px 0 4px"></label><input data-k="'+f.k+'" type="'+f.t+'" '+(f.t==='password'?'maxlength="32" autocomplete="new-password"':'autocomplete="off"')+' style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cfd8e6;border-radius:10px;font-size:15px;background:#fff;color:#172033">'});
   h+='<div data-err style="color:#b42318;font-size:13px;margin-top:10px;min-height:18px"></div><div style="display:flex;gap:8px;margin-top:8px"><button data-ok type="button" style="flex:1;padding:11px;border:0;border-radius:10px;background:#3157d5;color:#fff;font-weight:700;font-size:14px;cursor:pointer"></button><button data-x type="button" style="padding:11px 16px;border:1px solid #cfd8e6;border-radius:10px;background:#fff;color:#172033;cursor:pointer">إلغاء</button></div></div>';
   o.innerHTML=h;
   o.querySelector('h3').textContent=title;o.querySelector('[data-i]').textContent=intro;
@@ -6583,7 +6595,7 @@ async function claimOwner(v){
   var key=uKey(toLatin(v.u));
   if(!okUser(key))return 'اسم المستخدم: حروف إنجليزية صغيرة وأرقام و . _ - فقط (من ٢ إلى ٣٢ خانة).';
   if(!String(v.n||'').trim())return 'اكتب اسم المالك.';
-  if(!validPassword6(v.p))return PWRULE;
+  if(!validStrongPw(v.p))return PWSTRONG_RULE;
   if(v.p!==v.c)return 'تأكيد كلمة المرور غير مطابق.';
   claiming=true;
   try{
@@ -6977,76 +6989,70 @@ try{var box=document.getElementById('teacherRegisterContent');var old=document.g
 if(box&&window.currentUser&&currentUser.role==='teacher'&&!(window.db&&db.teacherDirectory&&db.teacherDirectory.length)){var n=document.createElement('div');n.id='sirtiDirNote';n.className='no-print';n.style.cssText='margin:8px 0;padding:9px 12px;border:1px solid #c9a24a;background:#fff8e6;color:#5c4510;border-radius:10px;font-size:12px;font-weight:700';n.textContent='لم يصل بعد دليل المدرسين من الإدارة، لذلك لن يظهر اسم المدرس الآخر. يكفي أن يفتح المالك الموقع مرة واحدة بحسابه ثم تعيد أنت فتح الصفحة.';box.parentNode.insertBefore(n,box)}}catch(e){}
 return r}})();
 </script>
-<script id="sirti-v171-import-schedule">
+<script id="sirti-v181-teachers-sort">
 (function(){
-var PLAN=[];
-function plan(){return PLAN}
+var KEY='sirti_teacher_sort';
+function mode(){try{return localStorage.getItem(KEY)||'name'}catch(e){return'name'}}
+function setMode(m){try{localStorage.setItem(KEY,m)}catch(e){}}
+function ar(a,b){return String(a||'').localeCompare(String(b||''),'ar')}
+function subjOrder(){var o=[];try{(gradesList||[]).forEach(function(g){((db.subjects||{})[g]||[]).forEach(function(s){if(o.indexOf(s)<0)o.push(s)})})}catch(e){}return o}
+function first(t){var a=(t.assignments||[])[0];return a&&a.subject}
+function sortTeachers(){try{var ts=db.teachers;if(!Array.isArray(ts))return;var so=subjOrder(),m=mode();
+ ts.sort(function(a,b){if(m==='subject'){var ia=so.indexOf(first(a)),ib=so.indexOf(first(b));ia=ia<0?99:ia;ib=ib<0?99:ib;if(ia!==ib)return ia-ib}return ar(a.name,b.name)})}catch(e){}}
+function bar(){try{var host=document.getElementById('teachers');if(!host||!window.currentUser||(currentUser.role!=='owner'&&currentUser.role!=='manager'))return;
+ var old=document.getElementById('sirtiTchBar');if(old)old.remove();
+ var tbl=host.querySelector('table');if(!tbl)return;var anchor=tbl.closest('.table-wrap,.table-scroll,.scroll')||tbl;
+ var d=document.createElement('div');d.id='sirtiTchBar';d.style.cssText='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0';
+ d.innerHTML='<label style="font-size:12px;font-weight:700">الترتيب:</label><select id="sirtiTchSort" class="control" style="min-width:170px"><option value="name">أبجدي (حسب الاسم)</option><option value="subject">حسب المادة ثم الأبجدي</option></select>';
+ anchor.parentNode.insertBefore(d,anchor);
+ var sel=d.querySelector('#sirtiTchSort');sel.value=mode();sel.onchange=function(){setMode(sel.value);window.renderTeachers()}}catch(e){}}
+var orig=window.renderTeachers;
+if(typeof orig==='function'){window.renderTeachers=function(){sortTeachers();var r=orig.apply(this,arguments);bar();return r}}
+})();
+</script>
+<script id="sirti-v182-accounts-sheet">
+(function(){
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ar(a,b){return String(a||'').localeCompare(String(b||''),'ar')}
 function genPw(){var U='ABCDEFGHJKLMNPQRSTUVWXYZ',L='abcdefghijkmnpqrstuvwxyz',D='23456789',S='@#$%&*!?';
  function pick(s){var a=new Uint32Array(1);crypto.getRandomValues(a);return s[a[0]%s.length]}
  var c=[pick(U),pick(L),pick(L),pick(D),pick(D),pick(S)];
- for(var i=c.length-1;i>0;i--){var a=new Uint32Array(1);crypto.getRandomValues(a);var j=a[0]%(i+1);var t=c[i];c[i]=c[j];c[j]=t}
- return c.join('')}
-function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function secs(t){var m={};t.assignments.forEach(function(a){(m[a.grade+' '+a.subject]=m[a.grade+' '+a.subject]||[]).push(a.section)});return Object.keys(m).map(function(k){return k+' ('+m[k].join('،')+')'}).join(' — ')}
-function overlay(html){var o=document.getElementById('sirtiImportOv');if(o)o.remove();o=document.createElement('div');o.id='sirtiImportOv';
- o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(10,18,40,.75);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl;font-family:Cairo,Tahoma,sans-serif';
- o.innerHTML='<div style="background:#fff;color:#172033;border-radius:16px;border-top:4px solid #c9a24a;max-width:860px;width:100%;max-height:92vh;overflow:auto;padding:18px">'+html+'</div>';document.body.appendChild(o);return o}
-function exists(t){return (db.teachers||[]).find(function(x){return (x.name===t.name||t.name.indexOf(x.name+' ')===0)&&(x.assignments||[]).some(function(a){return t.assignments.some(function(b){return b.subject===a.subject})})})}
-function open(){
+ for(var i=c.length-1;i>0;i--){var a=new Uint32Array(1);crypto.getRandomValues(a);var j=a[0]%(i+1);var t=c[i];c[i]=c[j];c[j]=t}return c.join('')}
+function subs(t){var m=[];(t.assignments||[]).forEach(function(a){if(a&&a.subject&&m.indexOf(a.subject)<0)m.push(a.subject)});return m.join('، ')}
+function printSheet(items,title){
+ var sch=(db.settings&&db.settings.schoolName)||'';
+ var rows=items.map(function(x,i){return '<tr><td style="width:6%">'+(i+1)+'</td><td style="width:26%">'+esc(x.t.name)+'</td><td style="width:22%;font-size:10px">'+esc(subs(x.t))+'</td><td style="width:23%;direction:ltr;text-align:center">'+esc(x.t.username)+'</td><td style="width:23%;direction:ltr;text-align:center;font-family:monospace;font-weight:700;letter-spacing:1px">'+esc(x.pw)+'</td></tr>'}).join('');
+ var css='@page{size:A4 portrait;margin:10mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Cairo,Tahoma,sans-serif;direction:rtl}h2{text-align:center;margin:0 0 1mm;font-size:17px}p.s{text-align:center;margin:0 0 4mm;font-size:11px;color:#8f1d2c;font-weight:700}table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px}th{background:#14213d;color:#f3e2b0;border:1px solid #14213d;padding:5px}td{border:1px solid #888;padding:5px;text-align:center;word-break:break-all}tr{page-break-inside:avoid}thead{display:table-header-group}';
+ var html='<h2>'+esc(title)+' — '+esc(sch)+'</h2><p class="s">سرّي: سلّم كل مدرس بياناته فقط، ولا تحتفظ بهذه الورقة بعد التسليم.</p><table><thead><tr><th style="width:6%">#</th><th style="width:26%">المدرس</th><th style="width:22%">المادة</th><th style="width:23%">اسم المستخدم</th><th style="width:23%">كلمة المرور</th></tr></thead><tbody>'+rows+'</tbody></table>';
+ var old=document.getElementById('sirtiAccFrame');if(old)old.remove();var fr=document.createElement('iframe');fr.id='sirtiAccFrame';fr.style.cssText='position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:0';document.body.appendChild(fr);
+ var d=fr.contentDocument;d.open();d.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>كشف الحسابات</title><style>'+css+'</style></head><body>'+html+'</body></html>');d.close();
+ setTimeout(function(){try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.print()}setTimeout(function(){try{fr.remove()}catch(e){}},60000)},400)}
+function choose(L){return new Promise(function(res){
+ var o=document.createElement('div');o.id='sirtiAccPick';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(10,18,40,.75);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl;font-family:Cairo,Tahoma,sans-serif';
+ var rows=L.map(function(t,i){return '<label style="display:flex;gap:8px;align-items:center;padding:5px 4px;border-bottom:1px solid #eef1f6;font-size:13px"><input type="checkbox" data-i="'+i+'" checked> <span style="flex:1">'+esc(t.name)+'</span><span style="color:#667;font-size:11px" dir="ltr">'+esc(t.username)+'</span></label>'}).join('');
+ o.innerHTML='<div style="background:#fff;color:#172033;border-radius:16px;border-top:4px solid #c9a24a;max-width:520px;width:100%;max-height:90vh;display:flex;flex-direction:column;padding:16px"><h3 style="margin:0 0 4px">كشف الحسابات</h3><p style="margin:0 0 8px;font-size:12.5px;color:#8f1d2c;font-weight:700">سيتم توليد كلمة مرور جديدة لكل مدرس تختاره، وتتوقف كلمة مروره الحالية. لا تُحفظ الكلمات في أي مكان.</p><label style="font-size:13px;font-weight:700;margin-bottom:4px"><input type="checkbox" id="sirtiAccAll" checked> تحديد الكل</label><div style="overflow:auto;flex:1;border:1px solid #dde3ee;border-radius:8px;padding:2px 8px">'+rows+'</div><div style="display:flex;gap:8px;margin-top:10px"><button id="sirtiAccGo" style="flex:1;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#e8cd85,#c9a24a,#a88334);font-weight:800;cursor:pointer">توليد وطباعة الكشف</button><button id="sirtiAccNo" style="padding:11px 16px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">إلغاء</button></div></div>';
+ document.body.appendChild(o);
+ o.querySelector('#sirtiAccAll').onchange=function(e){o.querySelectorAll('input[data-i]').forEach(function(c){c.checked=e.target.checked})};
+ o.querySelector('#sirtiAccNo').onclick=function(){o.remove();res([])};
+ o.querySelector('#sirtiAccGo').onclick=function(){var r=[];o.querySelectorAll('input[data-i]').forEach(function(c){if(c.checked)r.push(L[+c.dataset.i])});o.remove();res(r)}})}
+async function allWithNewPw(){
  if(!window.currentUser||currentUser.role!=='owner'){alert('هذا الإجراء للمالك فقط');return}
- var P=plan(),rows=P.map(function(t,i){var ex=exists(t);return '<tr><td>'+(i+1)+'</td><td>'+esc(t.name)+'</td><td dir="ltr">'+esc(t.username)+'</td><td style="font-size:12px">'+esc(secs(t))+'</td><td>'+(ex?'موجود — تُضاف التكليفات الناقصة':'جديد')+'</td></tr>'}).join('');
- var o=overlay('<h3 style="margin:0 0 6px">استيراد المدرسين من جدول الدروس الأسبوعي</h3><p style="font-size:13px;color:#475169;margin:0 0 10px">سيُنشأ حساب لكل مدرس بتكليفاته (الصف والشعبة والمادة) حسب الجدول. إن وُجد مدرس بنفس الاسم والمادة تُضاف إليه التكليفات الناقصة فقط ولا تتغير كلمة مروره. كلمات المرور تُولَّد عشوائياً وتظهر لك مرة واحدة بعد التنفيذ.</p><div style="overflow:auto;max-height:50vh"><table style="width:100%;border-collapse:collapse;font-size:13px" border="1" bordercolor="#d8deea"><tr style="background:#14213d;color:#f3e2b0"><th>#</th><th>المدرس</th><th>اسم المستخدم</th><th>التكليفات</th><th>الحالة</th></tr>'+rows+'</table></div><div style="margin-top:12px;display:flex;gap:8px"><button id="sirtiImpGo" style="flex:1;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#e8cd85,#c9a24a,#a88334);font-weight:800;cursor:pointer">تنفيذ الاستيراد ('+P.length+' حساب)</button><button id="sirtiImpX" style="padding:12px 18px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">إلغاء</button></div><div id="sirtiImpMsg" style="margin-top:8px;font-size:13px"></div>');
- o.querySelector('#sirtiImpX').onclick=function(){try{localStorage.setItem('sirti_import_seen','1')}catch(e){}o.remove()};
- o.querySelector('#sirtiImpGo').onclick=function(){run(P,o)};
-}
-async function run(P,o){
- var btn=o.querySelector('#sirtiImpGo'),msg=o.querySelector('#sirtiImpMsg');btn.disabled=true;var res=[],i=0;
- for(var t of P){i++;msg.textContent='جارٍ التنفيذ '+i+' / '+P.length+' ...';
-  try{
-   var ex=exists(t);
-   if(ex){var have=ex.assignments||[],add=t.assignments.filter(function(a){return !have.some(function(h){return h.grade===a.grade&&h.section===a.section&&h.subject===a.subject})});
-     if(ex.name!==t.name&&t.name.indexOf(ex.name+' ')===0)ex.name=t.name;
-     if(add.length||ex.name===t.name){ex.assignments=have.concat(add);var f=ex.assignments[0];ex.subject=f.subject;ex.grade=f.grade;ex.section=f.section;
-       if(window.__sirtiUpdateTeacherDoc)await window.__sirtiUpdateTeacherDoc(ex,{name:ex.name,gender:ex.gender||'male',username:ex.username,assignments:ex.assignments,active:ex.active!==false,subject:f.subject,grade:f.grade,section:f.section})}
-     res.push({t:t,status:'موجود'+(add.length?' — أُضيفت '+add.length+' تكليفات':' — لا جديد'),user:ex.username,pw:'(دون تغيير)'});continue}
-   var un=t.username,k=0;while((db.teachers||[]).some(function(x){return String(x.username).toLowerCase()===un})){k++;un=t.username+k}
-   var pw=genPw(),f2=t.assignments[0],obj={name:t.name,gender:t.gender,username:un,assignments:t.assignments,active:true,subject:f2.subject,grade:f2.grade,section:f2.section};
-   if(window.__sirtiCreateTeacher){var r=await window.__sirtiCreateTeacher(obj,pw);db.teachers.push(Object.assign({id:r.id,password:'',lastSeen:0,authEmail:r.email},obj))}
-   else db.teachers.push(Object.assign({id:'T'+Date.now()+'_'+i,password:pw},obj));
-   res.push({t:t,status:'تم الإنشاء',user:un,pw:pw});
-  }catch(e){res.push({t:t,status:'فشل: '+((e&&e.code==='dup')?'اسم المستخدم مستخدم':(e&&e.message)||e),user:t.username,pw:''})}
- }
+ var L0=(db.teachers||[]).filter(function(t){return t.active!==false}).slice().sort(function(a,b){return ar(a.name,b.name)});
+ if(!L0.length){alert('لا يوجد مدرسون فعّالون');return}
+ var L=await choose(L0);if(!L.length)return;
+ if(!confirm('تأكيد: توليد كلمات مرور جديدة لـ '+L.length+' مدرس؟'))return;
+ var msg=document.createElement('div');msg.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(10,18,40,.75);display:flex;align-items:center;justify-content:center;color:#fff;font:700 16px Cairo,Tahoma,sans-serif;direction:rtl';document.body.appendChild(msg);
+ var out=[],fail=0,i=0;
+ for(var t of L){i++;msg.textContent='جارٍ توليد كلمات المرور '+i+' / '+L.length+' ...';var pw=genPw();
+  try{if(window.__sirtiResetTeacherPw)await window.__sirtiResetTeacherPw(t,pw);else t.password=pw;out.push({t:t,pw:pw})}catch(e){fail++;out.push({t:t,pw:'(فشل التغيير)'})}}
  try{saveDB();renderAll()}catch(e){}
- try{localStorage.setItem('sirti_import_seen','1')}catch(e){}
- done(res)}
-function csv(res){return '\ufeff'+['المدرس,اسم المستخدم,كلمة المرور,الحالة'].concat(res.map(function(r){return [r.t.name,r.user,r.pw,r.status].map(function(x){return '"'+String(x).replace(/"/g,'""')+'"'}).join(',')})).join('\n')}
-function done(res){
- var ok=res.filter(function(r){return r.status==='تم الإنشاء'}).length;
- var rows=res.map(function(r,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(r.t.name)+'</td><td dir="ltr">'+esc(r.user)+'</td><td dir="ltr" style="font-family:monospace;font-weight:700">'+esc(r.pw)+'</td><td style="font-size:12px">'+esc(r.status)+'</td></tr>'}).join('');
- var o=overlay('<h3 style="margin:0 0 6px">اكتمل الاستيراد — '+ok+' حساب جديد</h3><p style="font-size:13px;color:#8f1d2c;margin:0 0 8px;font-weight:700">احفظ هذه القائمة الآن: كلمات المرور لا تظهر مرة أخرى.</p><div style="overflow:auto;max-height:55vh"><table id="sirtiImpRes" style="width:100%;border-collapse:collapse;font-size:13px" border="1" bordercolor="#d8deea"><tr style="background:#14213d;color:#f3e2b0"><th>#</th><th>المدرس</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الحالة</th></tr>'+rows+'</table></div><div style="margin-top:12px;display:flex;gap:8px"><button id="sirtiImpCsv" style="flex:1;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#e8cd85,#c9a24a,#a88334);font-weight:800;cursor:pointer">تحميل القائمة (CSV)</button><button id="sirtiImpPr" style="padding:12px 16px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">طباعة</button><button id="sirtiImpX2" style="padding:12px 16px;border:1px solid #9fb0cc;border-radius:10px;background:#fff;cursor:pointer">إغلاق</button></div>');
- window.__sirtiImportResult=res;
- o.querySelector('#sirtiImpX2').onclick=function(){o.remove()};
- o.querySelector('#sirtiImpCsv').onclick=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv(res)],{type:'text/csv;charset=utf-8'}));a.download='sirti_teachers_accounts.csv';document.body.appendChild(a);a.click();a.remove()};
- o.querySelector('#sirtiImpPr').onclick=function(){var tb=res.map(function(r,k){return '<tr><td style="width:8%">'+(k+1)+'</td><td style="width:30%">'+esc(r.t.name)+'</td><td style="width:28%;direction:ltr;text-align:center">'+esc(r.user)+'</td><td style="width:22%;direction:ltr;text-align:center;font-family:monospace;font-weight:700;letter-spacing:1px">'+esc(r.pw)+'</td><td style="width:12%;font-size:10px">'+(r.status==='تم الإنشاء'?'جديد':'موجود')+'</td></tr>'}).join('');
-  var css='@page{size:A4 portrait;margin:10mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Cairo,Tahoma,sans-serif;direction:rtl}h2{text-align:center;margin:0 0 4mm;font-size:18px}table{width:100%;table-layout:fixed;border-collapse:collapse;margin:0 auto;font-size:12px}th{background:#14213d;color:#f3e2b0;border:1px solid #14213d;padding:5px}td{border:1px solid #888;padding:5px;text-align:center;word-break:break-all}tr{page-break-inside:avoid}';
-  var html='<h2>حسابات المدرسين — سيرتي</h2><table><thead><tr><th style="width:8%">#</th><th style="width:30%">المدرس</th><th style="width:28%">اسم المستخدم</th><th style="width:22%">كلمة المرور</th><th style="width:12%">الحالة</th></tr></thead><tbody>'+tb+'</tbody></table>';
-  try{var old=document.getElementById('sirtiCredFrame');if(old)old.remove();var fr=document.createElement('iframe');fr.id='sirtiCredFrame';fr.style.cssText='position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:0';document.body.appendChild(fr);
-   var d=fr.contentDocument;d.open();d.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>حسابات المدرسين</title><style>'+css+'</style></head><body>'+html+'</body></html>');d.close();
-   setTimeout(function(){try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.print()}},400)}catch(e){window.print()}}}
-function pick(){if(!window.currentUser||currentUser.role!=='owner'){alert('هذا الإجراء للمالك فقط');return}
- var f=document.createElement('input');f.type='file';f.accept='.json,application/json';
- f.onchange=function(){var fl=f.files[0];if(!fl)return;var r=new FileReader();r.onload=function(){try{var j=JSON.parse(r.result),L=Array.isArray(j)?j:j.teachers;
-  PLAN=(L||[]).filter(function(t){return t&&t.name&&t.username&&Array.isArray(t.assignments)&&t.assignments.length}).map(function(t){return{name:String(t.name),username:String(t.username).toLowerCase(),gender:t.gender==='female'?'female':'male',assignments:t.assignments.map(function(a){return{grade:a.grade,section:a.section,subject:a.subject}})}});
-  if(!PLAN.length){alert('الملف لا يحتوي مدرسين صالحين');return}
-  var o=overlay('<h3 style="margin:0 0 6px">جارٍ إنشاء الحسابات...</h3><button id="sirtiImpGo" style="display:none"></button><div id="sirtiImpMsg" style="font-size:14px;margin-top:8px">يرجى الانتظار وعدم إغلاق الصفحة</div>');run(PLAN,o)}catch(e){alert('ملف غير صالح')}};r.readAsText(fl)};f.click()}
-window.sirtiImportSchedule=pick;
-
+ msg.remove();if(fail)alert('تعذر تغيير '+fail+' حساب، وعليها عبارة (فشل التغيير).');
+ printSheet(out,'كشف حسابات المدرسين')}
+window.__sirtiAfterCreate=function(t,pw){try{if(!window.currentUser||currentUser.role!=='owner')return;if(confirm('تم إنشاء حساب «'+t.name+'». هل تريد طباعة بيانات الدخول (اسم المستخدم وكلمة المرور) الآن؟ لن تظهر كلمة المرور مرة أخرى.'))printSheet([{t:t,pw:pw}],'بيانات دخول مدرس')}catch(e){}};
+function bar(){try{var d=document.getElementById('sirtiTchBar');if(!d||d.querySelector('#sirtiAccBtn')||!window.currentUser||currentUser.role!=='owner')return;
+ var b=document.createElement('button');b.type='button';b.className='btn light';b.id='sirtiAccBtn';b.textContent='🖨 كشف الحسابات (للمالك)';b.onclick=allWithNewPw;d.appendChild(b)}catch(e){}}
 var orig=window.renderTeachers;
-function addBtn(){try{if(!window.currentUser||currentUser.role!=='owner'||document.getElementById('sirtiImportBtn'))return;
- var b=[].slice.call(document.querySelectorAll('#teachers button')).find(function(x){return /إضافة مدرس/.test(x.textContent)});if(!b)return;
- var n=document.createElement('button');n.id='sirtiImportBtn';n.className='btn light';n.type='button';n.textContent='📥 استيراد حسابات من ملف';n.onclick=pick;n.style.marginInlineEnd='8px';b.parentNode.insertBefore(n,b)}catch(e){}}
-
-if(typeof orig==='function'){window.renderTeachers=function(){var r=orig.apply(this,arguments);addBtn();return r}}
+if(typeof orig==='function'){window.renderTeachers=function(){var r=orig.apply(this,arguments);bar();return r}}
 })();
 </script>
 </body>
