@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
@@ -11,7 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٨٨</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٨٩</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -5333,7 +5335,7 @@ body.dark-mode #sirtiBackToTop{background:rgba(18,31,50,.94);color:#eef4ff;borde
   function updateThemeChrome(){
     const dark=document.body.classList.contains('dark-mode');
     document.documentElement.dataset.theme=dark?'dark':'light';
-    document.documentElement.style.colorScheme=dark?'dark':'light';
+    document.documentElement.style.colorScheme=dark?'dark':'only light';
     let meta=document.querySelector('meta[name="theme-color"]');
     if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
     meta.content=dark?'#0b1424':'#f4f7fb';
@@ -7142,33 +7144,43 @@ body.dark-mode #loginScreen .login-error{background:#3a1520!important;color:#ffb
 body.dark-mode #loginScreen .login-panel{background:#0a1224!important}
 body.dark-mode #loginScreen .login-footer{color:#8b97ad!important}
 }
-/* ===== زر الوضع الليلي الثابت (هاتف) ===== */
-#sirtiThemeFab{display:none}
+/* ===== v189: زر الوضع الليلي في الشريط العلوي بجانب اسم الحساب (يظهر بعد تسجيل الدخول فقط) ===== */
+#sirtiThemeTop{display:none}
+body.app-locked #sirtiThemeTop,#loginScreen #sirtiThemeTop{display:none!important}
 @media screen and (max-width:860px){
 html body .theme-toggle,html body .login-theme-toggle{display:none!important}
-html body #sirtiThemeFab{display:flex!important;position:fixed!important;left:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:100000;width:42px;height:42px;padding:0!important;margin:0!important;border-radius:50%!important;align-items:center;justify-content:center;font-size:20px;line-height:1;cursor:pointer;
+html body:not(.app-locked) #sirtiThemeTop{display:inline-flex!important;flex:0 0 auto;align-items:center;justify-content:center;width:40px;height:40px;min-width:40px;padding:0!important;margin:0 4px!important;border-radius:50%!important;font-size:20px;line-height:1;cursor:pointer;
  border:1px solid var(--g-4)!important;color:var(--g-ink);
  background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 38%),linear-gradient(180deg,var(--g-1),var(--g-2) 50%,var(--g-3))!important;
- box-shadow:inset 0 -3px 4px rgba(150,95,0,.45),0 3px 0 var(--g-4),0 8px 14px rgba(0,0,0,.3)!important;-webkit-tap-highlight-color:transparent;transition:transform .12s,box-shadow .12s}
-html body #sirtiThemeFab:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(150,95,0,.5),0 1px 0 var(--g-4),0 3px 6px rgba(0,0,0,.3)!important}
-html body.dark-mode #sirtiThemeFab{background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.35) 0,rgba(255,255,255,0) 40%),linear-gradient(180deg,#22385c,#0f1c34)!important;border-color:var(--g-2)!important;color:var(--g-1);box-shadow:inset 0 -3px 4px rgba(0,0,0,.5),0 3px 0 rgba(120,80,0,.8),0 0 14px rgba(255,208,46,.35),0 8px 14px rgba(0,0,0,.45)!important}
-html body:not(.app-locked) main{padding-bottom:72px!important}
+ box-shadow:inset 0 -3px 4px rgba(150,95,0,.45),0 2px 0 var(--g-4),0 5px 9px rgba(0,0,0,.25)!important;-webkit-tap-highlight-color:transparent;transition:transform .12s,box-shadow .12s}
+html body:not(.app-locked) #sirtiThemeTop:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(150,95,0,.5),0 1px 0 var(--g-4),0 3px 6px rgba(0,0,0,.3)!important}
+html body.dark-mode:not(.app-locked) #sirtiThemeTop{background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.35) 0,rgba(255,255,255,0) 40%),linear-gradient(180deg,#22385c,#0f1c34)!important;border-color:var(--g-2)!important;color:var(--g-1);box-shadow:inset 0 -3px 4px rgba(0,0,0,.5),0 2px 0 rgba(120,80,0,.8),0 0 12px rgba(255,208,46,.35)!important}
 }
-@media print{#sirtiThemeFab{display:none!important}}
+@media print{#sirtiThemeTop{display:none!important}}
+/* v189: منع تغميق المتصفح التلقائي (Auto Dark / Force Dark) على الهاتف في الوضع النهاري — الوضع الليلي يُدار من الموقع نفسه */
+html{color-scheme:only light!important}
+html[data-theme="dark"]{color-scheme:dark!important}
+/* v189: إصلاح تسجيل الدخول على الهاتف — قاعدة v186 كانت تُبقي شاشة الدخول ظاهرة فوق التطبيق بعد النجاح */
+html body #loginScreen.login-screen.hidden{display:none!important;visibility:hidden!important;pointer-events:none!important}
 </style>
 <script id="sirti-v188-theme-fab">
 (function(){
  var MOON='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a.6.6 0 0 0-.8-.7A9.6 9.6 0 1 0 21.2 15a.6.6 0 0 0-.7-.8z" fill="#3b2600"/></svg>',SUN='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="#ffd02e"/><g stroke="#ffd02e" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>';
- function mk(){if(document.getElementById('sirtiThemeFab')||!document.body)return;
-  var b=document.createElement('button');b.type='button';b.id='sirtiThemeFab';b.setAttribute('aria-label','تبديل الوضع الليلي');
+ function mk(){
+  if(document.getElementById('sirtiThemeTop'))return;
+  var top=document.querySelector('.top');if(!top)return;
+  var b=document.createElement('button');b.type='button';b.id='sirtiThemeTop';b.setAttribute('aria-label','تبديل الوضع الليلي');
   function sync(){var d=document.body.classList.contains('dark-mode');b.innerHTML=d?SUN:MOON;b.title=d?'التحويل إلى الوضع النهاري':'التحويل إلى الوضع الليلي';b.setAttribute('aria-pressed',d?'true':'false')}
   b.addEventListener('click',function(){
    var d=!document.body.classList.contains('dark-mode');
    var t=document.getElementById('sidebarThemeToggle')||document.getElementById('topThemeToggle');
    if(t){t.click()}else{document.body.classList.toggle('dark-mode',d);try{localStorage.setItem('sirti_theme',d?'dark':'light')}catch(e){}}
    sync()});
-  document.body.appendChild(b);sync();
-  try{new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']})}catch(e){}}
+  var ua=document.getElementById('topUserAccountShortcut');
+  if(ua&&ua.parentNode===top)ua.insertAdjacentElement('afterend',b);else top.appendChild(b);
+  sync();
+  try{new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']})}catch(e){}
+ }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(mk,0)});else setTimeout(mk,0);
  window.addEventListener('load',mk);
 })();
