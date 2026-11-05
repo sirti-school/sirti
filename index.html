@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٠</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩١</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1607,7 +1607,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer</div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v191</span></div>
   </div>
 </div>
 <div class="app">
@@ -1915,7 +1915,7 @@ function startPresence(){clearInterval(presenceTimer);if(currentUser?.role==='te
 function authSession(user){currentUser=user;sessionStorage.setItem('sirti_session',JSON.stringify(user));document.body.classList.remove('app-locked');document.getElementById('loginScreen')?.classList.add('hidden');startPresence();renderAll();updateRoleUI();toast(isOwner()?'تم تسجيل الدخول بحساب المالك':currentUser?.role==='manager'?'تم تسجيل الدخول بحساب المدير':'تم تسجيل الدخول بحساب المدرس')}
 function loginSubmit(ev){ev.preventDefault();const u=document.getElementById('loginUsername')?.value.trim(),p=document.getElementById('loginPassword')?.value||'';const err=document.getElementById('loginError');let user=null;if(!/^.{6,32}$/.test(p)){if(err){err.textContent='كلمة المرور يجب أن تكون من ٦ إلى ٣٢ خانة.';err.style.display='block'}return}if(db.owner?.status==='مفعّل'&&u===db.owner.username&&p===db.owner.password){user={role:'owner',username:db.owner.username,name:db.owner.name}}else if(db.manager?.status==='مفعّل'&&u===db.manager.username&&p===db.manager.password){user={role:'manager',username:db.manager.username,name:db.manager.name}}else{const t=db.teachers.find(x=>x.active!==false&&x.username===u&&x.password===p);if(t)user={role:'teacher',id:t.id,username:t.username,name:t.name}}if(!user){if(err){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب غير مفعّل.';err.style.display='block'}return}if(err)err.style.display='none';authSession(user)}
 
-function logout(){markTeacherOffline();sessionStorage.removeItem('sirti_session');currentUser=null;clearInterval(presenceTimer);document.body.classList.add('app-locked');document.getElementById('loginScreen')?.classList.remove('hidden');document.getElementById('loginPassword').value='';document.getElementById('loginUsername').value='';document.getElementById('loginUsername').focus();toast('تم تسجيل الخروج')}
+function logout(){markTeacherOffline();sessionStorage.removeItem('sirti_session');currentUser=null;clearInterval(presenceTimer);document.body.classList.add('app-locked');(function(l){if(l){l.classList.remove('hidden');l.style.removeProperty('display');l.style.removeProperty('visibility');l.style.removeProperty('pointer-events')}})(document.getElementById('loginScreen'));document.getElementById('loginPassword').value='';document.getElementById('loginUsername').value='';document.getElementById('loginUsername').focus();toast('تم تسجيل الخروج')}
 function currentTeacherRecord(){if(!currentUser||currentUser.role!=='teacher')return null;return db.teachers.find(t=>t&&t.id===currentUser.id)||null}
 function teacherTitle(){const t=currentTeacherRecord();return (t?.gender==='female'?'مدرسة':'مدرس')}
 function updateRoleUI(){const u=currentUser||null,role=u?.role||'',owner=role==='owner',manager=role==='manager',teacher=role==='teacher';const badge=document.getElementById('roleBadge');if(badge)badge.textContent=owner?'المالك — صلاحيات كاملة':manager?'المدير — حسب الصلاحيات الممنوحة':teacher?(teacherTitle()+': '+(u?.name||'')):'';document.querySelectorAll('.owner').forEach(x=>x.style.display=owner?'flex':'none');document.querySelectorAll('.owner-only').forEach(x=>x.style.display=owner?'':'none');document.querySelectorAll('.logout').forEach(x=>{x.style.display='block';x.onclick=logout});document.querySelectorAll('.nav button[onclick*="show("]').forEach(btn=>{const m=btn.getAttribute('onclick')?.match(/show\(['"]([^'"]+)/);if(!m)return;const id=m[1];btn.style.display=guardView(id)?'flex':'none'});const r=[...document.querySelectorAll('.nav button')].find(b=>(b.getAttribute('onclick')||'').includes("show('teacherRegister'"));if(r){const sp=r.querySelector('span');if(sp)sp.textContent=teacher?'سجلي الخاص':'سجل المدرسين'}const top=document.getElementById('topUserName');if(top)top.textContent=owner?(db.owner?.name||u?.name||'حسن ثامر'):(u?.name||'');const topAvatar=document.getElementById('topUserAvatar');if(topAvatar){const n=String(owner?(db.owner?.name||u?.name||'حسن ثامر'):(u?.name||'')).trim();topAvatar.textContent=n?n.charAt(0):'ح'}const shortcut=document.getElementById('topUserAccountShortcut');if(shortcut){shortcut.style.display=owner?'flex':'none';shortcut.onclick=owner?()=>show('account',shortcut):null}if(teacher)configureTeacherSelectors();if(typeof window.applySirtiPermissionUI==='function')window.applySirtiPermissionUI();}
@@ -3970,7 +3970,7 @@ function printAdminRecords(){
     try{clearInterval(presenceTimer)}catch(e){}
     currentUser=null;window.currentUser=null;
     document.body.classList.add('app-locked');
-    document.getElementById('loginScreen')?.classList.remove('hidden');
+    (function(l){if(l){l.classList.remove('hidden');l.style.removeProperty('display');l.style.removeProperty('visibility');l.style.removeProperty('pointer-events')}})(document.getElementById('loginScreen'));
     const remembered=document.getElementById('rememberLogin')?.checked===true;
     const p=document.getElementById('loginPassword');if(p)p.value='';
     const u=document.getElementById('loginUsername');if(u&&!remembered){u.value='';u.focus()}else if(u){u.focus()}
@@ -4000,7 +4000,7 @@ function printAdminRecords(){
       try{sessionStorage.removeItem('sirti_session')}catch(e){}
       currentUser=null;window.currentUser=null;
       document.body.classList.add('app-locked');
-      document.getElementById('loginScreen')?.classList.remove('hidden');
+      (function(l){if(l){l.classList.remove('hidden');l.style.removeProperty('display');l.style.removeProperty('visibility');l.style.removeProperty('pointer-events')}})(document.getElementById('loginScreen'));
     }
   }
 
@@ -6384,7 +6384,7 @@ async function enter(user){
     window.currentUser=currentUser;
     window.__sirtiLoaded=true;ready=true;setSetupFlag(true);
     document.body.classList.remove('app-locked');
-    var ls=$('loginScreen');if(ls)ls.classList.add('hidden');
+    var ls=$('loginScreen');if(ls){ls.classList.add('hidden');ls.style.setProperty('display','none','important');ls.style.setProperty('visibility','hidden','important');ls.style.setProperty('pointer-events','none','important')}
     var le=$('loginError');if(le)le.style.display='none';
     var lp=$('loginPassword');if(lp)lp.value='';
     try{startPresence()}catch(e){}
