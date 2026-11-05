@@ -3,8 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="only light">
-<meta name="supported-color-schemes" content="light">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
@@ -2035,7 +2033,7 @@ function renderGradeEntry(){
     const state=timerLocked?(window.sirtiExamTimerMessage?.(exam)||'خارج فترة السماح'):(canByPermission?'قابلة للتعديل':'قراءة فقط');
     const audit=getStudentGradeAudit(st.id,grade,section,subject,exam);
     const auditHtml=audit?`<div class="grade-last-edit" title="آخر عملية تعديل على درجة هذا الطالب في هذه المادة والامتحان"><span class="grade-last-edit-badge">✓ تم تعديلها</span><span>${esc(formatAuditDate(audit.at))}</span><span>— ${esc(audit.byName||'غير معروف')}</span></div>`:'<div class="grade-last-edit grade-last-edit-empty">لم تُسجل عملية تعديل سابقة لهذه الدرجة</div>';
-    return `<tr><td>${esc(st.name)}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px">${auditHtml}</div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
+    return `<tr><td>${esc(st.name)}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" enterkeyhint="next" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px">${auditHtml}</div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
   }).join('')}</tbody></table></div>${editable?'<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" onclick="saveGrades()">حفظ الدرجات</button><button class="btn light" type="button" onclick="clearGradeInputs()">مسح الحقول</button></div>':''}`:'<div class="empty">لا يوجد طلاب في هذه الشعبة</div>';
   if(window.sirtiRenderExamTimerUI)window.sirtiRenderExamTimerUI();
   if(typeof window.sirtiRenderOwnerExamWindowControls==='function')window.sirtiRenderOwnerExamWindowControls();
@@ -5335,7 +5333,7 @@ body.dark-mode #sirtiBackToTop{background:rgba(18,31,50,.94);color:#eef4ff;borde
   function updateThemeChrome(){
     const dark=document.body.classList.contains('dark-mode');
     document.documentElement.dataset.theme=dark?'dark':'light';
-    document.documentElement.style.colorScheme=dark?'dark':'only light';
+    document.documentElement.style.colorScheme=dark?'dark':'light';
     let meta=document.querySelector('meta[name="theme-color"]');
     if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
     meta.content=dark?'#0b1424':'#f4f7fb';
@@ -7144,46 +7142,85 @@ body.dark-mode #loginScreen .login-error{background:#3a1520!important;color:#ffb
 body.dark-mode #loginScreen .login-panel{background:#0a1224!important}
 body.dark-mode #loginScreen .login-footer{color:#8b97ad!important}
 }
-/* ===== v189: زر الوضع الليلي في الشريط العلوي بجانب اسم الحساب (يظهر بعد تسجيل الدخول فقط) ===== */
-#sirtiThemeTop{display:none}
-body.app-locked #sirtiThemeTop,#loginScreen #sirtiThemeTop{display:none!important}
+/* ===== زر الوضع الليلي في الأعلى بجانب اسم الحساب (هاتف) ===== */
+#sirtiTopTheme{display:none}
 @media screen and (max-width:860px){
 html body .theme-toggle,html body .login-theme-toggle{display:none!important}
-html body:not(.app-locked) #sirtiThemeTop{display:inline-flex!important;flex:0 0 auto;align-items:center;justify-content:center;width:40px;height:40px;min-width:40px;padding:0!important;margin:0 4px!important;border-radius:50%!important;font-size:20px;line-height:1;cursor:pointer;
+html body #sirtiTopTheme{display:inline-flex!important;align-items:center;justify-content:center;flex:none;width:34px;height:34px;padding:0!important;margin:0 6px 0 0!important;vertical-align:middle;border-radius:50%!important;cursor:pointer;
  border:1px solid var(--g-4)!important;color:var(--g-ink);
  background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 38%),linear-gradient(180deg,var(--g-1),var(--g-2) 50%,var(--g-3))!important;
- box-shadow:inset 0 -3px 4px rgba(150,95,0,.45),0 2px 0 var(--g-4),0 5px 9px rgba(0,0,0,.25)!important;-webkit-tap-highlight-color:transparent;transition:transform .12s,box-shadow .12s}
-html body:not(.app-locked) #sirtiThemeTop:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(150,95,0,.5),0 1px 0 var(--g-4),0 3px 6px rgba(0,0,0,.3)!important}
-html body.dark-mode:not(.app-locked) #sirtiThemeTop{background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.35) 0,rgba(255,255,255,0) 40%),linear-gradient(180deg,#22385c,#0f1c34)!important;border-color:var(--g-2)!important;color:var(--g-1);box-shadow:inset 0 -3px 4px rgba(0,0,0,.5),0 2px 0 rgba(120,80,0,.8),0 0 12px rgba(255,208,46,.35)!important}
+ box-shadow:inset 0 -3px 4px rgba(150,95,0,.45),0 3px 0 var(--g-4),0 6px 10px rgba(0,0,0,.22)!important;-webkit-tap-highlight-color:transparent;transition:transform .12s,box-shadow .12s}
+html body #sirtiTopTheme svg{width:20px;height:20px}
+html body #sirtiTopTheme:active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(150,95,0,.5),0 1px 0 var(--g-4)!important}
+html body.dark-mode #sirtiTopTheme{background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.35) 0,rgba(255,255,255,0) 40%),linear-gradient(180deg,#22385c,#0f1c34)!important;border-color:var(--g-2)!important;color:var(--g-1);box-shadow:inset 0 -3px 4px rgba(0,0,0,.5),0 3px 0 rgba(120,80,0,.8),0 0 12px rgba(255,208,46,.35)!important}
 }
-@media print{#sirtiThemeTop{display:none!important}}
-/* v189: منع تغميق المتصفح التلقائي (Auto Dark / Force Dark) على الهاتف في الوضع النهاري — الوضع الليلي يُدار من الموقع نفسه */
-html{color-scheme:only light!important}
-html[data-theme="dark"]{color-scheme:dark!important}
-/* v189: إصلاح تسجيل الدخول على الهاتف — قاعدة v186 كانت تُبقي شاشة الدخول ظاهرة فوق التطبيق بعد النجاح */
-html body #loginScreen.login-screen.hidden{display:none!important;visibility:hidden!important;pointer-events:none!important}
+@media print{#sirtiTopTheme{display:none!important}}
 </style>
 <script id="sirti-v188-theme-fab">
 (function(){
  var MOON='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a.6.6 0 0 0-.8-.7A9.6 9.6 0 1 0 21.2 15a.6.6 0 0 0-.7-.8z" fill="#3b2600"/></svg>',SUN='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.4" fill="#ffd02e"/><g stroke="#ffd02e" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg>';
- function mk(){
-  if(document.getElementById('sirtiThemeTop'))return;
-  var top=document.querySelector('.top');if(!top)return;
-  var b=document.createElement('button');b.type='button';b.id='sirtiThemeTop';b.setAttribute('aria-label','تبديل الوضع الليلي');
+ function mk(){var rb=document.getElementById('roleBadge');if(!rb||!rb.parentNode||document.getElementById('sirtiTopTheme'))return;
+  var b=document.createElement('button');b.type='button';b.id='sirtiTopTheme';b.setAttribute('aria-label','تبديل الوضع الليلي');
   function sync(){var d=document.body.classList.contains('dark-mode');b.innerHTML=d?SUN:MOON;b.title=d?'التحويل إلى الوضع النهاري':'التحويل إلى الوضع الليلي';b.setAttribute('aria-pressed',d?'true':'false')}
-  b.addEventListener('click',function(){
+  b.addEventListener('click',function(e){e.stopPropagation();
    var d=!document.body.classList.contains('dark-mode');
    var t=document.getElementById('sidebarThemeToggle')||document.getElementById('topThemeToggle');
-   if(t){t.click()}else{document.body.classList.toggle('dark-mode',d);try{localStorage.setItem('sirti_theme',d?'dark':'light')}catch(e){}}
+   if(t){t.click()}else{document.body.classList.toggle('dark-mode',d);try{localStorage.setItem('sirti_theme',d?'dark':'light')}catch(x){}}
    sync()});
-  var ua=document.getElementById('topUserAccountShortcut');
-  if(ua&&ua.parentNode===top)ua.insertAdjacentElement('afterend',b);else top.appendChild(b);
-  sync();
-  try{new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']})}catch(e){}
- }
+  rb.parentNode.insertBefore(b,rb.nextSibling);sync();
+  try{new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']})}catch(e){}}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(mk,0)});else setTimeout(mk,0);
  window.addEventListener('load',mk);
 })();
+</script>
+<style id="sirti-v189-grade-entry-mobile">
+/* v189: جدول إدخال الدرجات على الهاتف — اسم الطالب وخانة الدرجة في سطر واحد بلا تمرير جانبي */
+@media screen and (max-width:860px){
+html body #gradeEntryTable .table-wrap{overflow:visible!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+html body #gradeEntryTable table.table{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important}
+html body #gradeEntryTable table.table thead{display:none!important}
+html body #gradeEntryTable table.table tbody{display:block!important;counter-reset:ger}
+html body #gradeEntryTable table.table tr{display:grid!important;grid-template-columns:minmax(0,1fr) 92px;column-gap:10px;row-gap:2px;align-items:center;
+ margin:0 0 8px!important;padding:9px 12px!important;border-radius:16px!important;
+ background:linear-gradient(180deg,#fffef9,#fff8e1)!important;border:1px solid rgba(214,160,20,.5)!important;
+ box-shadow:inset 0 1px 0 #fff,0 3px 0 rgba(190,130,0,.28),0 6px 12px rgba(150,95,0,.1)!important}
+html body #gradeEntryTable table.table tr:nth-child(even){background:linear-gradient(180deg,#fffdf2,#fff3cf)!important}
+html body #gradeEntryTable table.table td{display:block!important;border:0!important;padding:0!important;background:transparent!important;width:auto!important;min-width:0!important}
+html body #gradeEntryTable table.table td:nth-child(1){grid-column:1;grid-row:1;font-weight:800;font-size:15px;line-height:1.55;color:#1d2b45;word-break:break-word}
+html body #gradeEntryTable table.table td:nth-child(1)::before{counter-increment:ger;content:counter(ger,arabic-indic);display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;margin-inline-end:8px;padding:0 4px;border-radius:50%;font-size:12px;font-weight:800;color:#3b2600;background:linear-gradient(180deg,#ffe67d,#f2a900);box-shadow:inset 0 1px 0 #fff7c9,0 1px 2px rgba(150,95,0,.4)}
+html body #gradeEntryTable table.table td:nth-child(2){display:contents!important}
+html body #gradeEntryTable .grade-cell{display:contents!important}
+html body #gradeEntryTable .grade-input{grid-column:2;grid-row:1;width:92px!important;max-width:100%!important;height:48px;padding:0 6px!important;text-align:center;font-size:22px!important;font-weight:800;letter-spacing:.5px;border-radius:14px!important;
+ background:linear-gradient(180deg,#fffdf4,#fff6d6)!important;border:2px solid rgba(214,160,20,.75)!important;color:#1d2b45!important;box-shadow:inset 0 2px 5px rgba(150,95,0,.18)!important;-moz-appearance:textfield}
+html body #gradeEntryTable .grade-input:focus{border-color:#f2a900!important;box-shadow:inset 0 2px 4px rgba(150,95,0,.12),0 0 0 4px rgba(255,208,46,.5)!important}
+html body #gradeEntryTable .grade-input[readonly],html body #gradeEntryTable .grade-input[disabled]{opacity:.65;background:#f1ecd9!important}
+html body #gradeEntryTable .grade-last-edit{grid-column:1/-1;grid-row:2;font-size:11px!important;line-height:1.4;color:#8a7440!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important}
+html body #gradeEntryTable .grade-last-edit-empty{display:none!important}
+html body #gradeEntryTable table.table td:nth-child(3){grid-column:1/-1;grid-row:3;justify-self:start}
+html body #gradeEntryTable table.table td:nth-child(3) .pill.ok{display:none!important}
+html body #gradeEntryTable table.table td:nth-child(3):has(.pill.ok){display:none!important}
+html body #gradeEntryTable table.table td:nth-child(3) .pill{font-size:10px!important;padding:2px 8px!important;white-space:normal}
+html body #gradeEntryTable .actions{position:sticky;bottom:8px;z-index:20;display:flex;gap:8px;padding:8px;border-radius:16px;background:rgba(255,250,230,.92);backdrop-filter:blur(6px);border:1px solid rgba(214,160,20,.5);box-shadow:0 8px 20px rgba(150,95,0,.2)}
+html body #gradeEntryTable .actions .btn{flex:1;min-height:46px}
+html body #grades .card{padding:12px!important}
+html body #grades,html body #grades .card,html body #gradeEntryTable{max-width:100%;box-sizing:border-box}
+}
+@media screen and (max-width:860px){
+html body.dark-mode #gradeEntryTable table.table tr,html body.dark-mode #gradeEntryTable table.table tr:nth-child(even){background:linear-gradient(180deg,#16284a,#0f1d38)!important;border-color:rgba(255,208,46,.4)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 3px 0 rgba(120,80,0,.6),0 6px 12px rgba(0,0,0,.35)!important}
+html body.dark-mode #gradeEntryTable table.table td:nth-child(1){color:#f3f6ff}
+html body.dark-mode #gradeEntryTable .grade-input{background:linear-gradient(180deg,#0b1424,#101c31)!important;color:#fff!important;border-color:rgba(255,208,46,.6)!important;box-shadow:inset 0 2px 5px rgba(0,0,0,.5)!important}
+html body.dark-mode #gradeEntryTable .grade-last-edit{color:#a9b6cf!important}
+html body.dark-mode #gradeEntryTable .actions{background:rgba(15,29,56,.94);border-color:rgba(255,208,46,.45)}
+}
+</style>
+<script id="sirti-v189-grade-enter">
+/* Enter / "التالي" ينقل إلى خانة الطالب التالي */
+document.addEventListener('keydown',function(e){
+ var t=e.target;if(!t||!t.classList||!t.classList.contains('grade-input'))return;
+ if(e.key!=='Enter')return;e.preventDefault();
+ var all=[].slice.call(document.querySelectorAll('#gradeEntryTable .grade-input:not([readonly]):not([disabled])')),i=all.indexOf(t);
+ if(i>=0&&i<all.length-1){all[i+1].focus();try{all[i+1].select()}catch(_){}}else{t.blur()}
+});
 </script>
 <script id="sirti-v170-dir-note">
 (function(){var o=window.renderTeacherRegister;if(typeof o!=='function')return;
