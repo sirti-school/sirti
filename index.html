@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٨٩</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٠</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -7042,6 +7042,11 @@ body #loginScreen .login-card h2{font-size:18px!important}
 body #loginScreen .login-input-wrap{height:34px!important}
 body #loginScreen .login-submit,body #loginScreen .login-card button[type=submit]{height:36px!important}
 }
+</style>
+<style id="sirti-v190-login-hide">
+/* v190: إصلاح بقاء شاشة الدخول ظاهرة بعد تسجيل الدخول على الهاتف (قاعدة v186 كانت تتغلب على .hidden) */
+html body #loginScreen.login-screen.hidden{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body:not(.app-locked) #loginScreen.login-screen{display:none!important}
 </style>
 <style id="sirti-v187-gold3d">
 /* v187: ذهبي ناصع لامع ثلاثي الأبعاد */
