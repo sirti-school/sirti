@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩١</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٣</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1607,7 +1607,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v191</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v193</span></div>
   </div>
 </div>
 <div class="app">
@@ -6152,7 +6152,7 @@ function loginErr(m){var e=$('loginError');if(e){e.textContent=m;e.style.display
 if(typeof firebase==='undefined'){document.addEventListener('DOMContentLoaded',function(){loginErr('تعذر تحميل خدمة Firebase. تحقق من الإنترنت ثم أعد تحميل الصفحة.')});return}
 firebase.initializeApp(CFG);
 var auth=firebase.auth(),fs=firebase.firestore(),FV=firebase.firestore.FieldValue,FP=firebase.firestore.FieldPath;
-try{fs.settings({experimentalAutoDetectLongPolling:true})}catch(e){console.warn('firestore settings',e)}
+try{fs.settings({experimentalForceLongPolling:true,merge:true})}catch(e){console.warn('firestore settings',e)}
 try{console.info('Sirti build 2026-10-05b')}catch(e){}
 var secApp=firebase.initializeApp(CFG,'sirti-secondary'),secAuth=secApp.auth();
 var persistReady=Promise.resolve(auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)).catch(function(){});
@@ -6182,6 +6182,7 @@ function msg(e){var c=(e&&e.code)||'';
   if(c==='auth/unauthorized-domain')return 'هذا النطاق غير مسموح في Firebase. أضفه في Authentication ← Settings ← Authorized domains.';
   if(c==='auth/invalid-api-key'||c==='auth/api-key-not-valid.-please-pass-a-valid-api-key.')return 'مفتاح Firebase في الملف غير صالح.';
   if(c==='permission-denied')return 'الخادم رفض العملية: تأكد أنك نشرت قواعد Firestore (Publish).';
+  if(!c&&e&&e.message&&e instanceof Error)return 'خطأ داخلي أثناء تحميل الموقع: '+String(e.message).slice(0,140);
   if(c==='auth/invalid-credential'||c==='auth/wrong-password'||c==='auth/user-not-found'||c==='auth/invalid-email'||!c)return BAD;
   return 'تعذر تنفيذ العملية ('+c+').'}
 
@@ -6389,10 +6390,10 @@ async function enter(user){
     var lp=$('loginPassword');if(lp)lp.value='';
     try{startPresence()}catch(e){}
     if(window.__sirtiNeedMainSync){window.__sirtiNeedMainSync=false;setTimeout(function(){try{syncNow()}catch(e){}},2500)}
-    renderAll();updateRoleUI();addRefreshBtn();
+    [renderAll,updateRoleUI,addRefreshBtn].forEach(function(fn){try{fn()}catch(err){console.error('sirti post-login step failed',err);window.__sirtiLastErr=String(err&&err.message||err)}});
     say(me.role==='owner'?'تم تسجيل الدخول بحساب المالك':me.role==='manager'?'تم تسجيل الدخول بحساب المدير':'تم تسجيل الدخول بحساب المدرس');
-    if(isStaff()){clearInterval(usersTimer);usersTimer=setInterval(refreshUsers,120000);refreshUsers()}
-    if(me.role==='owner')setTimeout(offerMigration,600);
+    try{if(isStaff()){clearInterval(usersTimer);usersTimer=setInterval(refreshUsers,120000);refreshUsers()}}catch(err){console.error(err)}
+    try{if(me.role==='owner')setTimeout(offerMigration,600)}catch(err){console.error(err)}
   }finally{loading(false)}
 }
 auth.onAuthStateChanged(async function(user){
@@ -7000,7 +7001,7 @@ body #loginScreen .login-card button[type=submit],body #loginScreen .login-submi
 <style id="sirti-v186-login-fit">
 /* v186: شاشة الدخول على الهاتف تملأ الشاشة كاملة بلا تمرير */
 @media screen and (max-width:860px){
-html,body{overscroll-behavior:none}
+html:has(body.app-locked),body.app-locked{overscroll-behavior:none}
 body #loginScreen.login-screen{position:fixed!important;inset:0!important;width:100%!important;max-width:100%!important;height:100dvh!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:0!important;margin:0!important}
 body #loginScreen .login-visual{display:flex!important;flex:1 1 0!important;height:auto!important;min-height:64px!important;max-height:none!important;width:100%!important;min-width:0!important;overflow:hidden!important}
 body #loginScreen .login-visual-content{padding:8px 14px 26px!important;width:100%!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center}
