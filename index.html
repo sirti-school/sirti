@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٧</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1598,7 +1598,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v197</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v198</span></div>
   </div>
 </div>
 <div class="app">
@@ -2003,7 +2003,7 @@ function addSubject(){const grade=document.getElementById('subjectGradeSelect').
 function editSubject(encodedGrade,i){const grade=decodeURIComponent(encodedGrade),current=db.subjects[grade]?.[i];if(!current)return;const name=prompt('اكتب الاسم الجديد للمادة:',current);if(name===null)return;const clean=name.trim();if(!clean){toast('اسم المادة لا يمكن أن يكون فارغًا');return}if(db.subjects[grade].some((x,idx)=>idx!==i&&x===clean)){toast('المادة موجودة مسبقًا');return}db.subjects[grade][i]=clean;saveDB();renderAll();document.getElementById('subjectGradeSelect').value=grade;renderSubjects();toast('تم تعديل اسم المادة')}
 function deleteSubject(encodedGrade,i){const grade=decodeURIComponent(encodedGrade),s=db.subjects[grade]?.[i];if(!s)return;if(confirm(`حذف المادة ${s} من ${grade}؟`)){db.subjects[grade].splice(i,1);saveDB();renderAll();document.getElementById('subjectGradeSelect').value=grade;renderSubjects();toast('تم حذف المادة')}}
 function refreshGradeEntrySelectors(){const g=document.getElementById('gradeEntryGrade')?.value||gradesList[0];fillSubjectSelect('gradeEntrySubject',g);const examEl=document.getElementById('gradeEntryExam');if(!examEl)return;const savedExam=examEl.value||exams[0].id;if(!examEl.options.length)examEl.innerHTML=exams.map(e=>`<option value="${e.id}">${e.label}</option>`).join('');if(!examEl.querySelector('option[value="secondRound"]'))examEl.insertAdjacentHTML('beforeend','<option value="secondRound">الدور الثاني — درجة الإكمال</option>');examEl.value=[...examEl.options].some(o=>o.value===savedExam)?savedExam:exams[0].id;}
-function formatAuditDate(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return 'وقت غير معروف';try{return new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short'}).format(d)}catch(e){return d.toLocaleString('ar-IQ')}}
+function formatAuditDate(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return 'وقت غير معروف';try{const f=new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true}).formatToParts(d).reduce((o,p)=>(o[p.type]=p.value,o),{});return arDigits(f.day+'/'+f.month+'/'+f.year+' — '+String(f.hour).padStart(2,'0')+':'+f.minute+':'+f.second)+' '+(String(f.dayPeriod).toLowerCase()==='pm'?'م':'ص')}catch(e){return d.toLocaleString('ar-IQ')}}
 function studentGradeAuditKey(studentId,grade,section,subject,exam){return [studentId,grade,section,subject,exam].map(v=>String(v??'')).join('|')}
 function getStudentGradeAudit(studentId,grade,section,subject,exam){const key=studentGradeAuditKey(studentId,grade,section,subject,exam);return db?.gradeAuditByStudent?.[key]||null}
 
@@ -2032,14 +2032,14 @@ function renderGradeEntry(){
   if(!subject){document.getElementById('gradeEntryTable').innerHTML='<div class="empty">لا توجد مادة محددة.</div>';if(window.sirtiRenderExamTimerUI)window.sirtiRenderExamTimerUI();return}
   const list=db.students.filter(s=>s.grade===grade&&s.section===section);
   const editable=canByPermission&&!timerLocked;
-  const entryTitle=isSecondRound?'درجة الدور الثاني — الإكمال':'الدرجة الصحيحة وآخر تعديل';
+  const entryTitle=isSecondRound?'درجة الدور الثاني — الإكمال':'الدرجة';
   document.getElementById('gradeEntryTable').innerHTML=list.length?`<div class="table-wrap"><table class="table"><thead><tr><th>الطالب</th><th>${entryTitle}</th><th>الحالة</th></tr></thead><tbody>${list.map(st=>{
     const v=st.grades?.[subject]?.[exam]??'';
     const baseDisabled=editable?'':'disabled';
     const state=timerLocked?(window.sirtiExamTimerMessage?.(exam)||'خارج فترة السماح'):(canByPermission?'قابلة للتعديل':'قراءة فقط');
     const audit=getStudentGradeAudit(st.id,grade,section,subject,exam);
-    const auditHtml=audit?`<div class="grade-last-edit" title="آخر عملية تعديل على درجة هذا الطالب في هذه المادة والامتحان"><span class="grade-last-edit-badge">✓ تم تعديلها</span><span>${esc(formatAuditDate(audit.at))}</span><span>— ${esc(audit.byName||'غير معروف')}</span></div>`:'<div class="grade-last-edit grade-last-edit-empty">لم تُسجل عملية تعديل سابقة لهذه الدرجة</div>';
-    return `<tr><td>${esc(st.name)}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" enterkeyhint="next" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px">${auditHtml}</div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
+    const auditHtml=audit?`<div class="grade-last-edit" title="آخر عملية تعديل على درجة هذا الطالب في هذه المادة والامتحان"><span class="grade-last-edit-badge">✓ آخر تعديل</span><span class="gle-date">${esc(formatAuditDate(audit.at))}</span><span class="gle-by">بواسطة: ${esc(audit.byName||'غير معروف')}</span></div>`:'<div class="grade-last-edit grade-last-edit-empty">لم تُسجل عملية تعديل سابقة لهذه الدرجة</div>';
+    return `<tr><td><div class="grade-name-line">${esc(st.name)}</div>${auditHtml}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" enterkeyhint="next" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px"></div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
   }).join('')}</tbody></table></div>${editable?'<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" onclick="saveGrades()">حفظ الدرجات</button><button class="btn light" type="button" onclick="clearGradeInputs()">مسح الحقول</button></div>':''}`:'<div class="empty">لا يوجد طلاب في هذه الشعبة</div>';
   if(window.sirtiRenderExamTimerUI)window.sirtiRenderExamTimerUI();
   if(typeof window.sirtiRenderOwnerExamWindowControls==='function')window.sirtiRenderOwnerExamWindowControls();
@@ -2073,7 +2073,7 @@ function saveGrades(){
   if(!db.gradeAudit||typeof db.gradeAudit!=='object')db.gradeAudit={};
   if(!Array.isArray(db.gradeAuditLog))db.gradeAuditLog=[];
   if(!db.gradeAuditByStudent||typeof db.gradeAuditByStudent!=='object')db.gradeAuditByStudent={};
-  const nowIso=new Date().toISOString();
+  const nowIso=window.sirtiNowIso?window.sirtiNowIso():new Date().toISOString();
   const actor={name:currentUser?.name||currentUser?.username||'غير معروف',role:currentUser?.role||'unknown',username:currentUser?.username||''};
   const auditKey=typeof window.sirtiGradeAuditKey==='function'?window.sirtiGradeAuditKey(grade,section,subject,exam):[grade,section,subject,exam].join('|');
   const previousAudit=db.gradeAudit[auditKey];
@@ -5614,7 +5614,7 @@ function augment(){
     if(ex){
       td.innerHTML='<span class="pill ok">'+(ex.type==='general'?'إعفاء عام':'إعفاء فردي')+'</span>';
       inp.value=String(ex.value);inp.disabled=true;inp.classList.remove('grade-input');inp.classList.add('grade-input-exempt');
-      var cell=inp.closest('.grade-cell'),hint=cell&&cell.querySelector('.grade-last-edit');
+      var hint=tr.querySelector('.grade-last-edit');
       if(hint){hint.className='grade-last-edit grade-last-edit-empty';hint.textContent='معفى من الامتحان النهائي — تُملأ الخانة بدرجة السعي السنوي ('+(typeof arNum==='function'?arNum(ex.value):ex.value)+')'}
     }else{td.innerHTML='<span class="muted">—</span>'}
     tr.insertBefore(td,tr.children[2]||null);
@@ -7092,6 +7092,7 @@ function load(){
   render();
 }
 function noteText(c){var EM=c.m.reduce(function(a,b){return a+b},0);if(c.md==='s'){var t=EM+c.dm;return 'الدرجة = (الامتحان الشهري من '+arDigits(EM)+' + اليومي من '+arDigits(c.dm)+') = من '+arDigits(t)+(t!==100?' ثم تُحوَّل إلى ١٠٠':'')+'.'}return 'الدرجة = (اليومي من '+arDigits(c.dm)+' محوَّلًا إلى ١٠٠ + الامتحان من '+arDigits(EM)+' محوَّلًا إلى ١٠٠) ÷ ٢.'}
+function auditLine(st){var a=getStudentGradeAudit(st.id,S.grade,S.section,S.subject,S.exam);return a?'<div class="grade-last-edit"><span class="grade-last-edit-badge">✓ آخر تعديل</span><span class="gle-date">'+esc(formatAuditDate(a.at))+'</span><span class="gle-by">بواسطة: '+esc(a.byName||'غير معروف')+'</span></div>':''}
 function render(){
   if(!S)return;var c=S.cfg,lk=locked(),dis=lk?'disabled':'',n=c.m.length,i;
   var h='<div class="mc-cfg"><div class="mc-cfg-h"><span>تقسيم الامتحان والدرجة اليومية</span></div>';
@@ -7107,7 +7108,7 @@ function render(){
   $('mcCfg').innerHTML=h+(lk?'<div class="mc-lock">'+esc(lk)+' — العرض فقط.</div>':'');
   var cols=n+2,b='<div class="mc-rows" style="--mcn:'+cols+'">';
   if(!S.list.length)b='<div class="empty">لا يوجد طلاب في هذه الشعبة</div>';
-  else{S.list.forEach(function(st,k){var r=S.rows[st.id];b+='<div class="mc-row" data-st="'+esc(st.id)+'"><div class="mc-name"><span class="mc-no">'+arDigits(k+1)+'</span>'+esc(st.name)+'</div>';
+  else{S.list.forEach(function(st,k){var r=S.rows[st.id];b+='<div class="mc-row" data-st="'+esc(st.id)+'"><div class="mc-name"><span class="mc-no">'+arDigits(k+1)+'</span>'+esc(st.name)+auditLine(st)+'</div>';
     for(i=0;i<n;i++)b+='<div class="mc-cell"><label>'+(c.md==='s'?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(c.m[i])+'</label><input class="mc-in" inputmode="decimal" enterkeyhint="next" data-p="'+i+'" value="'+esc(r.p[i])+'" '+dis+'></div>';
     b+='<div class="mc-cell"><label>اليومي / '+arDigits(c.dm)+'</label><input class="mc-in" inputmode="decimal" enterkeyhint="next" data-d value="'+esc(r.d)+'" '+dis+'></div><div class="mc-cell"><label>الشهر / ١٠٠</label><div class="mc-res" data-res>—</div></div></div>'});
     b+='</div><div class="mc-foot"><div class="mc-sum" id="mcSum"></div>'+(lk?'':'<div class="actions"><button class="btn primary" type="button" id="mcSave">حفظ الآن</button></div>')+'</div>'}
@@ -7120,6 +7121,7 @@ function refreshRow(el){var id=el.getAttribute('data-st'),r=S.rows[id],c=S.cfg,i
   var res=el.querySelector('[data-res]'),out=bad?null:calc(r,c);
   if(out===null){res.textContent=bad?'!':'—';res.className='mc-res'}else{res.textContent=arDigits(out);res.className='mc-res '+(out>=((db.settings&&db.settings.passMark)||50)?'ok':'fail')}
   el.__bad=bad;el.__out=out}
+function refreshAudit(){document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var st=S.list.find(function(x){return String(x.id)===el.getAttribute('data-st')});var nm=el.querySelector('.mc-name'),old=nm.querySelector('.grade-last-edit');if(old)old.remove();nm.insertAdjacentHTML('beforeend',auditLine(st))})}
 function refreshAll(){if(!S)return;var rows=document.querySelectorAll('#mcBody .mc-row'),done=0,sum=0,bad=0;rows.forEach(function(el){refreshRow(el);if(el.__bad)bad++;if(el.__out!==null&&el.__out!==undefined){done++;sum+=el.__out}});
   var note=$('mcNote');if(note)note.textContent=noteText(S.cfg);
   var s=$('mcSum');if(s)s.textContent='المكتمل: '+arDigits(done)+' من '+arDigits(S.list.length)+(done?' — المعدل: '+arDigits((sum/done).toFixed(1)):'')+(bad?' — أخطاء: '+arDigits(bad):'')}
@@ -7143,10 +7145,10 @@ function save(auto){
   if(!changes.length){if(!auto)toast('لا توجد تغييرات جديدة لحفظها');return}
   changes.forEach(function(x){var st=x.st;st.grades=st.grades||{};st.grades[sub]=st.grades[sub]||{};if(x.nw)st.grades[sub]['_'+ex]=x.nw;else delete st.grades[sub]['_'+ex];if(x.finChanged)st.grades[sub][ex]=x.fin});
   if(!db.gradeAudit||typeof db.gradeAudit!=='object')db.gradeAudit={};if(!Array.isArray(db.gradeAuditLog))db.gradeAuditLog=[];if(!db.gradeAuditByStudent||typeof db.gradeAuditByStudent!=='object')db.gradeAuditByStudent={};
-  var iso=new Date().toISOString(),actor={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
+  var iso=window.sirtiNowIso?window.sirtiNowIso():new Date().toISOString(),actor={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
   var akey=typeof window.sirtiGradeAuditKey==='function'?window.sirtiGradeAuditKey(S.grade,S.section,sub,ex):[S.grade,S.section,sub,ex].join('|');
   var prevA=db.gradeAudit[akey],prevS={};
-  changes.forEach(function(x){if(!x.finChanged)return;var k=studentGradeAuditKey(x.st.id,S.grade,S.section,sub,ex);prevS[k]=db.gradeAuditByStudent[k];db.gradeAuditByStudent[k]={at:iso,grade:S.grade,section:S.section,subject:sub,exam:ex,studentId:x.st.id,studentName:x.st.name||'',changedFrom:x.oldFin===undefined?null:x.oldFin,changedTo:x.fin,byName:actor.name,byRole:actor.role,byUsername:actor.username}});
+  changes.forEach(function(x){var k=studentGradeAuditKey(x.st.id,S.grade,S.section,sub,ex);prevS[k]=db.gradeAuditByStudent[k];db.gradeAuditByStudent[k]={at:iso,grade:S.grade,section:S.section,subject:sub,exam:ex,studentId:x.st.id,studentName:x.st.name||'',changedFrom:x.oldFin===undefined?null:x.oldFin,changedTo:x.finChanged?x.fin:(x.oldFin===undefined?null:x.oldFin),byName:actor.name,byRole:actor.role,byUsername:actor.username}});
   var entry={at:iso,grade:S.grade,section:S.section,subject:sub,exam:ex,changedCount:changes.length,byName:actor.name,byRole:actor.role,byUsername:actor.username};
   db.gradeAudit[akey]=entry;db.gradeAuditLog.push(entry);if(db.gradeAuditLog.length>1000)db.gradeAuditLog.splice(0,db.gradeAuditLog.length-1000);
   var ok=saveDB();
@@ -7154,7 +7156,7 @@ function save(auto){
     if(prevA)db.gradeAudit[akey]=prevA;else delete db.gradeAudit[akey];Object.keys(prevS).forEach(function(k){if(prevS[k]===undefined)delete db.gradeAuditByStudent[k];else db.gradeAuditByStudent[k]=prevS[k]});db.gradeAuditLog.pop();toast('تعذر حفظ الدرجات محليًا؛ لم يتم اعتماد التعديل');return}
   ['renderHome','renderTeacherStats','renderTeacherRegister','renderAdminRecords','renderSlips'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){console.error(f,e)}});
   toast(auto?'✓ حُفظ تلقائيًا':'تم الحفظ وترحيل '+arDigits(changes.filter(function(x){return x.finChanged}).length)+' درجة إلى خانة الشهر'+(incomplete?'. '+arDigits(incomplete)+' طالب غير مكتمل لم تُرحَّل درجته':''));
-  if(!auto)load();
+  if(auto)refreshAudit();else load();
 }
 document.addEventListener('input',function(e){var t=e.target;if(!S||!t||!t.closest||!t.closest('#monthlyCalc'))return;
   var row=t.closest('.mc-row');
@@ -7174,6 +7176,27 @@ titles.monthlyCalc=['حاسب الدرجات الشهرية','تقسيم الا�
 var og=window.guardView||guardView;guardView=function(id){return og(id==='monthlyCalc'?'grades':id)};
 var os=window.show||show;
 show=function(id,btn){var r=os.apply(this,arguments);if(id==='monthlyCalc'&&$('monthlyCalc').classList.contains('active'))load();return r};
+})();
+</script>
+<style id="sirti-v198-audit-line">
+html body #gradeEntryTable .grade-last-edit,html body #monthlyCalc .grade-last-edit{display:flex!important;flex-wrap:wrap;gap:4px 8px;align-items:center;margin-top:3px!important;font-size:11px!important;font-weight:600;line-height:1.5}
+#gradeEntryTable .grade-name-line{display:inline}
+#gradeEntryTable .gle-date,#monthlyCalc .gle-date{direction:rtl;unicode-bidi:isolate}
+#monthlyCalc .grade-last-edit{color:var(--muted,#7c8799)}
+#monthlyCalc .grade-last-edit-badge{border:1px solid #b8dfd1;background:#e9f8f2;color:#167552;border-radius:999px;padding:0 7px;font-size:10px}
+body.dark-mode #monthlyCalc .grade-last-edit{color:#a9b6cf}
+</style>
+<script id="sirti-v198-server-clock">
+(function(){
+var anchor=null,tries=0;
+function sync(){try{var a=window.firebase&&firebase.auth&&firebase.auth(),u=a&&a.currentUser;if(!u||!u.getIdTokenResult||tries++>12)return Promise.resolve();var p0=performance.now();return u.getIdTokenResult(true).then(function(r){var iat=r&&r.claims&&Number(r.claims.iat);if(!iat)return;var p1=performance.now();anchor={ms:iat*1000+(p1-p0)/2,perf:p1}}).catch(function(){})}catch(e){return Promise.resolve()}}
+window.sirtiNowMs=function(){return anchor?Math.round(anchor.ms+(performance.now()-anchor.perf)):Date.now()};
+window.sirtiNowIso=function(){return new Date(window.sirtiNowMs()).toISOString()};
+window.sirtiClockSynced=function(){return !!anchor};
+setInterval(function(){if(!document.hidden)sync()},5*60*1000);
+setInterval(function(){if(!anchor)sync()},4000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)sync()});
+setTimeout(sync,1500);
 })();
 </script>
 </body>
