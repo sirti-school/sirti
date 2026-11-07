@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ١٩٩</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٠</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1598,7 +1598,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v199</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v200</span></div>
   </div>
 </div>
 <div class="app">
@@ -5929,6 +5929,15 @@ function sanitizeStudents(arr){
       var e=g[sub];if(!e||typeof e!=='object'||Array.isArray(e)){delete g[sub];return}
       Object.keys(e).forEach(function(k){
         if(!/^[A-Za-z0-9_]{1,24}$/.test(k)){delete e[k];return}
+        if(k.charAt(0)==='_'){var mo=e[k],cl=null;
+          if(mo&&typeof mo==='object'&&!Array.isArray(mo)){
+            var nn=function(x){return (x===null||x===undefined||x==='')?null:(typeof x==='number'&&isFinite(x)&&x>=0&&x<=100?x:undefined)};
+            cl={};
+            if(mo.p!==undefined){if(Array.isArray(mo.p)&&mo.p.length<=3){cl.p=mo.p.map(nn);if(cl.p.indexOf(undefined)>-1)cl=null}else cl=null}
+            if(cl&&mo.d!==undefined){var dd=nn(mo.d);if(dd===undefined)cl=null;else cl.d=dd}
+            if(cl&&mo.c!==undefined){var cc=mo.c;if(cc&&Array.isArray(cc.m)&&cc.m.length>=1&&cc.m.length<=3&&cc.m.every(function(x){return typeof x==='number'&&x>0&&x<=100})&&typeof cc.dm==='number'&&cc.dm>0&&cc.dm<=100&&(cc.md==='s'||cc.md==='a'))cl.c={m:cc.m.slice(),dm:cc.dm,md:cc.md};else cl=null}
+          }
+          if(cl)e[k]=cl;else delete e[k];return}
         var v=e[k];if(v===null||v==='')return;
         if(typeof v==='number'){if(!isFinite(v)||v<0||v>100)delete e[k];return}
         var t=String(v);if(t.length>8){delete e[k];return}
@@ -7076,7 +7085,7 @@ function num(v){var s=toLatin(String(v==null?'':v)).trim().replace(/,/g,'.');if(
 function cfgOk(c){if(!c||!c.m||!c.m.length||c.m.length>3)return false;var t=0;for(var i=0;i<c.m.length;i++){if(!(c.m[i]>0&&c.m[i]<=100))return false;t+=c.m[i]}if(t>100)return false;return c.dm>0&&c.dm<=100&&(c.md==='s'||c.md==='a')}
 function calc(row,c){var n=c.m.length,e=0,i;for(i=0;i<n;i++){var p=num(row.p[i]);if(p===null||isNaN(p)||p>c.m[i])return null;e+=p}var d=num(row.d);if(d===null||isNaN(d)||d>c.dm)return null;var EM=c.m.reduce(function(a,b){return a+b},0),r;if(c.md==='s')r=(e+d)/(EM+c.dm)*100;else r=((d/c.dm)+(e/EM))/2*100;return Math.max(0,Math.min(100,Math.round(r+1e-9)))}
 function stored(st,subject,exam){var o=st.grades&&st.grades[subject]&&st.grades[subject]['_'+exam];return o&&typeof o==='object'?o:null}
-function findCfg(list,subject,exam){var i,j,o,ms=MONTHS();for(i=0;i<list.length;i++){o=stored(list[i],subject,exam);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}for(j=0;j<ms.length;j++){for(i=0;i<list.length;i++){o=stored(list[i],subject,ms[j].id);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}}return defCfg(subject)}
+function findCfg(list,subject,exam){var i,j,o,ms=MONTHS();for(i=0;i<list.length;i++){o=stored(list[i],subject,exam);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}for(j=0;j<ms.length;j++){for(i=0;i<list.length;i++){o=stored(list[i],subject,ms[j].id);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}}for(var q=0;q<db.students.length;q++){var gg=db.students[q].grades&&db.students[q].grades[subject];if(!gg)continue;for(var kk in gg){if(kk.charAt(0)==='_'&&gg[kk]&&gg[kk].c&&cfgOk(gg[kk].c))return JSON.parse(JSON.stringify(gg[kk].c))}}return defCfg(subject)}
 function locked(){if(!S)return 'x';if(!ownerOrCan('grades_edit'))return 'ليس لديك صلاحية تعديل الدرجات';if(isT()&&!teacherCanEditGrade(S.grade,S.section,S.subject))return 'هذه المادة غير مكلَّف بها في هذه الشعبة';if(currentUser.role!=='owner'&&typeof window.sirtiExamTimerBlocksUser==='function'&&window.sirtiExamTimerBlocksUser(S.exam))return (window.sirtiExamTimerMessage&&window.sirtiExamTimerMessage(S.exam))||'خارج فترة السماح';return ''}
 function load(){
   if(!currentUser||!$('mcGrade'))return;
