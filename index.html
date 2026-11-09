@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠١</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٢</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1598,7 +1598,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v201</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v202</span></div>
   </div>
 </div>
 <div class="app">
@@ -7126,7 +7126,7 @@ function refreshRow(el){var id=el.getAttribute('data-st'),r=S.rows[id],c=S.cfg,i
   var ins=el.querySelectorAll('.mc-in');
   for(i=0;i<ins.length;i++){var inp=ins[i],isD=inp.hasAttribute('data-d'),mx=isD?c.dm:c.m[+inp.getAttribute('data-p')],v=num(inp.value),b=isNaN(v)||(v!==null&&v>mx);inp.classList.toggle('bad',b);if(b)bad=true}
   var res=el.querySelector('[data-res]'),out=bad?null:calc(r,c);
-  if(out===null){res.textContent=bad?'!':'—';res.className='mc-res'}else{res.textContent=arDigits(out);res.className='mc-res '+(out>=((db.settings&&db.settings.passMark)||50)?'ok':'fail')}
+  if(out===null){res.textContent=bad?'!':'—';res.className='mc-res'}else{res.textContent=String(out);res.className='mc-res '+(out>=((db.settings&&db.settings.passMark)||50)?'ok':'fail')}
   el.__bad=bad;el.__out=out}
 function refreshAudit(){document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var st=S.list.find(function(x){return String(x.id)===el.getAttribute('data-st')});var nm=el.querySelector('.mc-name'),old=nm.querySelector('.grade-last-edit');if(old)old.remove();nm.insertAdjacentHTML('beforeend',auditLine(st))})}
 function refreshAll(){if(!S)return;document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var sm=S.cfg.md==='a';el.querySelectorAll('[data-p]').forEach(function(inp){var i=+inp.getAttribute('data-p'),l=inp.previousElementSibling;if(l)l.textContent=(sm?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(S.cfg.m[i])});var d=el.querySelector('[data-d]');if(d&&d.previousElementSibling)d.previousElementSibling.textContent='اليومي / '+arDigits(S.cfg.dm)});var stt=$('mcState');if(stt){var ok=S.saved&&S.saved===JSON.stringify(S.cfg);stt.textContent=ok?'✓ التقسيم محفوظ':'غير محفوظ بعد';stt.className='mc-state '+(ok?'ok':'no')}var rows=document.querySelectorAll('#mcBody .mc-row'),done=0,sum=0,bad=0;rows.forEach(function(el){refreshRow(el);if(el.__bad)bad++;if(el.__out!==null&&el.__out!==undefined){done++;sum+=el.__out}});
