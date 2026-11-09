@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٢</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٣</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1598,7 +1598,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v202</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v203</span></div>
   </div>
 </div>
 <div class="app">
@@ -2081,13 +2081,14 @@ function saveGrades(){
   changes.forEach(c=>{
     const key=studentGradeAuditKey(c.st.id,grade,section,subject,exam);
     previousStudentAudits[key]=db.gradeAuditByStudent[key];
+    c.st.grades[subject]=c.st.grades[subject]||{};c.prevStamp=c.st.grades[subject]['_a_'+exam];c.st.grades[subject]['_a_'+exam]={at:nowIso,n:actor.name,r:actor.role,u:actor.username};
     db.gradeAuditByStudent[key]={at:nowIso,grade,section,subject,exam,studentId:c.st.id,studentName:c.st.name||'',changedFrom:c.oldValue===undefined?null:c.oldValue,changedTo:c.value,byName:actor.name,byRole:actor.role,byUsername:actor.username};
   });
   const logEntry={at:nowIso,grade,section,subject,exam,changedCount:changes.length,byName:actor.name,byRole:actor.role,byUsername:actor.username};
   db.gradeAudit[auditKey]=logEntry; db.gradeAuditLog.push(logEntry); if(db.gradeAuditLog.length>1000)db.gradeAuditLog.splice(0,db.gradeAuditLog.length-1000);
   const ok=saveDB();
   if(!ok){
-    changes.forEach(c=>{c.st.grades=c.st.grades||{};if(c.hadSubject)c.st.grades[subject][exam]=c.oldValue;else if(c.st.grades[subject]){delete c.st.grades[subject][exam];if(Object.keys(c.st.grades[subject]).length===0)delete c.st.grades[subject]}});
+    changes.forEach(c=>{c.st.grades=c.st.grades||{};if(c.st.grades[subject]){if(c.prevStamp===undefined)delete c.st.grades[subject]['_a_'+exam];else c.st.grades[subject]['_a_'+exam]=c.prevStamp}if(c.hadSubject)c.st.grades[subject][exam]=c.oldValue;else if(c.st.grades[subject]){delete c.st.grades[subject][exam];if(Object.keys(c.st.grades[subject]).length===0)delete c.st.grades[subject]}});
     if(previousAudit)db.gradeAudit[auditKey]=previousAudit;else delete db.gradeAudit[auditKey];
     Object.entries(previousStudentAudits).forEach(([key,val])=>{if(val===undefined)delete db.gradeAuditByStudent[key];else db.gradeAuditByStudent[key]=val});
     db.gradeAuditLog.pop();toast('تعذر حفظ الدرجات محليًا؛ لم يتم اعتماد التعديل');return
@@ -5929,6 +5930,7 @@ function sanitizeStudents(arr){
       var e=g[sub];if(!e||typeof e!=='object'||Array.isArray(e)){delete g[sub];return}
       Object.keys(e).forEach(function(k){
         if(!/^[A-Za-z0-9_]{1,24}$/.test(k)){delete e[k];return}
+        if(k.indexOf('_a_')===0){var ao=e[k];if(ao&&typeof ao==='object'&&!Array.isArray(ao)&&typeof ao.at==='string'&&ao.at.length<=40&&!isNaN(Date.parse(ao.at))){e[k]={at:ao.at,n:cleanStr(String(ao.n||'')).slice(0,60),r:cleanStr(String(ao.r||'')).slice(0,12),u:cleanStr(String(ao.u||'')).slice(0,40)}}else delete e[k];return}
         if(k.charAt(0)==='_'){var mo=e[k],cl=null;
           if(mo&&typeof mo==='object'&&!Array.isArray(mo)){
             var nn=function(x){return (x===null||x===undefined||x==='')?null:(typeof x==='number'&&isFinite(x)&&x>=0&&x<=100?x:undefined)};
@@ -5995,6 +5997,7 @@ async function loadAll(user){
   db=d;window.db=db;migrateDB();
   sanitizeDeep(db);
   sanitizeStudents(db.students);
+  try{db.gradeAuditByStudent={};db.students.forEach(function(st){var g=st.grades||{};Object.keys(g).forEach(function(sub){Object.keys(g[sub]).forEach(function(k){if(k.indexOf('_a_')!==0)return;var a=g[sub][k],ex=k.slice(3);db.gradeAuditByStudent[studentGradeAuditKey(st.id,st.grade,st.section,sub,ex)]={at:a.at,grade:st.grade,section:st.section,subject:sub,exam:ex,studentId:st.id,studentName:st.name||'',byName:a.n||'غير معروف',byRole:a.r||'',byUsername:a.u||''}})})})}catch(e){console.warn('audit rebuild',e)}
   db.owner.password=PH;db.manager.password=PH;
   sortStudentsAlphabetically();
   snap={js:{},obj:{},main:''};
@@ -7151,16 +7154,17 @@ function save(auto){
     var oldFin=gradeVal(st,sub,ex),rawChanged=JSON.stringify(old||null)!==JSON.stringify(nw),finChanged=fin!==null&&fin!==oldFin;
     if(rawChanged||finChanged)changes.push({st:st,nw:nw,fin:fin,finChanged:finChanged,dataChanged:dataChanged,hadRaw:!!old,oldRaw:old,hadSub:!!(st.grades&&st.grades[sub]),hadFin:!!(st.grades&&st.grades[sub]&&Object.prototype.hasOwnProperty.call(st.grades[sub],ex)),oldFin:st.grades&&st.grades[sub]?st.grades[sub][ex]:undefined})});
   if(!changes.length){if(!auto)toast('لا توجد تغييرات جديدة لحفظها');return}
-  changes.forEach(function(x){var st=x.st;st.grades=st.grades||{};st.grades[sub]=st.grades[sub]||{};if(x.nw)st.grades[sub]['_'+ex]=x.nw;else delete st.grades[sub]['_'+ex];if(x.finChanged)st.grades[sub][ex]=x.fin});
+  var iso0=window.sirtiNowIso?window.sirtiNowIso():new Date().toISOString(),actor0={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
+  changes.forEach(function(x){var st=x.st;st.grades=st.grades||{};st.grades[sub]=st.grades[sub]||{};if(x.dataChanged||x.finChanged){x.prevStamp=st.grades[sub]['_a_'+ex];st.grades[sub]['_a_'+ex]={at:iso0,n:actor0.name,r:actor0.role,u:actor0.username}}if(x.nw)st.grades[sub]['_'+ex]=x.nw;else delete st.grades[sub]['_'+ex];if(x.finChanged)st.grades[sub][ex]=x.fin});
   if(!db.gradeAudit||typeof db.gradeAudit!=='object')db.gradeAudit={};if(!Array.isArray(db.gradeAuditLog))db.gradeAuditLog=[];if(!db.gradeAuditByStudent||typeof db.gradeAuditByStudent!=='object')db.gradeAuditByStudent={};
-  var iso=window.sirtiNowIso?window.sirtiNowIso():new Date().toISOString(),actor={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
+  var iso=iso0,actor={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
   var akey=typeof window.sirtiGradeAuditKey==='function'?window.sirtiGradeAuditKey(S.grade,S.section,sub,ex):[S.grade,S.section,sub,ex].join('|');
   var prevA=db.gradeAudit[akey],prevS={};
   changes.forEach(function(x){if(!x.dataChanged&&!x.finChanged)return;var k=studentGradeAuditKey(x.st.id,S.grade,S.section,sub,ex);prevS[k]=db.gradeAuditByStudent[k];db.gradeAuditByStudent[k]={at:iso,grade:S.grade,section:S.section,subject:sub,exam:ex,studentId:x.st.id,studentName:x.st.name||'',changedFrom:x.oldFin===undefined?null:x.oldFin,changedTo:x.finChanged?x.fin:(x.oldFin===undefined?null:x.oldFin),byName:actor.name,byRole:actor.role,byUsername:actor.username}});
   var entry={at:iso,grade:S.grade,section:S.section,subject:sub,exam:ex,changedCount:changes.length,byName:actor.name,byRole:actor.role,byUsername:actor.username};
   db.gradeAudit[akey]=entry;db.gradeAuditLog.push(entry);if(db.gradeAuditLog.length>1000)db.gradeAuditLog.splice(0,db.gradeAuditLog.length-1000);
   var ok=saveDB();
-  if(!ok){changes.forEach(function(x){var g=x.st.grades[sub];if(x.hadRaw)g['_'+ex]=x.oldRaw;else delete g['_'+ex];if(x.finChanged){if(x.hadFin)g[ex]=x.oldFin;else delete g[ex]}if(!x.hadSub&&Object.keys(g).length===0)delete x.st.grades[sub]});
+  if(!ok){changes.forEach(function(x){var g=x.st.grades[sub];if(x.dataChanged||x.finChanged){if(x.prevStamp===undefined)delete g['_a_'+ex];else g['_a_'+ex]=x.prevStamp}if(x.hadRaw)g['_'+ex]=x.oldRaw;else delete g['_'+ex];if(x.finChanged){if(x.hadFin)g[ex]=x.oldFin;else delete g[ex]}if(!x.hadSub&&Object.keys(g).length===0)delete x.st.grades[sub]});
     if(prevA)db.gradeAudit[akey]=prevA;else delete db.gradeAudit[akey];Object.keys(prevS).forEach(function(k){if(prevS[k]===undefined)delete db.gradeAuditByStudent[k];else db.gradeAuditByStudent[k]=prevS[k]});db.gradeAuditLog.pop();toast('تعذر حفظ الدرجات محليًا؛ لم يتم اعتماد التعديل');return}
   ['renderHome','renderTeacherStats','renderTeacherRegister','renderAdminRecords','renderSlips'].forEach(function(f){try{if(typeof window[f]==='function')window[f]()}catch(e){console.error(f,e)}});
   toast(auto?'✓ حُفظ تلقائيًا':'تم الحفظ وترحيل '+arDigits(changes.filter(function(x){return x.finChanged}).length)+' درجة إلى خانة الشهر'+(incomplete?'. '+arDigits(incomplete)+' طالب غير مكتمل لم تُرحَّل درجته':''));
