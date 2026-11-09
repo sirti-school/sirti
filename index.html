@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٠</title>
+<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠١</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1598,7 +1598,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v200</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v201</span></div>
   </div>
 </div>
 <div class="app">
@@ -7080,10 +7080,10 @@ function gradesFor(){return isT()?teacherAssignedGrades():gradesList.slice()}
 function sectionsFor(g){if(isT())return teacherAssignedSections(g);var s=(db.sectionsByGrade&&db.sectionsByGrade[g])||[];return s.length?s.slice():sections.slice()}
 function subjectsFor(g,sec){return isT()?teacherAssignedSubjects(g,sec):((db.subjects&&db.subjects[g])||[]).slice()}
 function fillSel(id,arr,labelFn){var el=$(id);if(!el)return '';var prev=el.value;el.innerHTML=arr.map(function(v){return '<option value="'+esc(v.v!==undefined?v.v:v)+'">'+esc(v.t!==undefined?v.t:v)+'</option>'}).join('');var vals=arr.map(function(v){return String(v.v!==undefined?v.v:v)});if(prev&&vals.indexOf(prev)>-1)el.value=prev;return el.value}
-function defCfg(subject){var en=/إنكليزية|انكليزية|إنجليزية|انجليزية/.test(subject||'');return en?{m:[70],dm:30,md:'s'}:{m:[100],dm:100,md:'a'}}
+function defCfg(subject){var en=/إنكليزية|انكليزية|إنجليزية|انجليزية/.test(subject||'');return en?{m:[40,30],dm:30,md:'s'}:{m:[100],dm:100,md:'a'}}
 function num(v){var s=toLatin(String(v==null?'':v)).trim().replace(/,/g,'.');if(s==='')return null;if(!/^\d+(\.\d{1,2})?$/.test(s))return NaN;return Number(s)}
-function cfgOk(c){if(!c||!c.m||!c.m.length||c.m.length>3)return false;var t=0;for(var i=0;i<c.m.length;i++){if(!(c.m[i]>0&&c.m[i]<=100))return false;t+=c.m[i]}if(t>100)return false;return c.dm>0&&c.dm<=100&&(c.md==='s'||c.md==='a')}
-function calc(row,c){var n=c.m.length,e=0,i;for(i=0;i<n;i++){var p=num(row.p[i]);if(p===null||isNaN(p)||p>c.m[i])return null;e+=p}var d=num(row.d);if(d===null||isNaN(d)||d>c.dm)return null;var EM=c.m.reduce(function(a,b){return a+b},0),r;if(c.md==='s')r=(e+d)/(EM+c.dm)*100;else r=((d/c.dm)+(e/EM))/2*100;return Math.max(0,Math.min(100,Math.round(r+1e-9)))}
+function cfgOk(c){if(!c||!c.m||!c.m.length||c.m.length>3)return false;if(c.md==='a')return c.m.length===1&&c.m[0]===100&&c.dm===100;if(c.md!=='s')return false;var t=c.dm;for(var i=0;i<c.m.length;i++){if(!(c.m[i]>0&&c.m[i]<=100))return false;t+=c.m[i]}return c.dm>0&&c.dm<=100&&Math.abs(t-100)<1e-9}
+function calc(row,c){var n=c.m.length,e=0,i;for(i=0;i<n;i++){var p=num(row.p[i]);if(p===null||isNaN(p)||p>c.m[i])return null;e+=p}var d=num(row.d);if(d===null||isNaN(d)||d>c.dm)return null;var r=c.md==='a'?(e+d)/2:(e+d);return Math.max(0,Math.min(100,Math.round(r+1e-9)))}
 function stored(st,subject,exam){var o=st.grades&&st.grades[subject]&&st.grades[subject]['_'+exam];return o&&typeof o==='object'?o:null}
 function findCfg(list,subject,exam){var i,j,o,ms=MONTHS();for(i=0;i<list.length;i++){o=stored(list[i],subject,exam);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}for(j=0;j<ms.length;j++){for(i=0;i<list.length;i++){o=stored(list[i],subject,ms[j].id);if(o&&o.c&&cfgOk(o.c))return JSON.parse(JSON.stringify(o.c))}}for(var q=0;q<db.students.length;q++){var gg=db.students[q].grades&&db.students[q].grades[subject];if(!gg)continue;for(var kk in gg){if(kk.charAt(0)==='_'&&gg[kk]&&gg[kk].c&&cfgOk(gg[kk].c))return JSON.parse(JSON.stringify(gg[kk].c))}}return defCfg(subject)}
 function locked(){if(!S)return 'x';if(!ownerOrCan('grades_edit'))return 'ليس لديك صلاحية تعديل الدرجات';if(isT()&&!teacherCanEditGrade(S.grade,S.section,S.subject))return 'هذه المادة غير مكلَّف بها في هذه الشعبة';if(currentUser.role!=='owner'&&typeof window.sirtiExamTimerBlocksUser==='function'&&window.sirtiExamTimerBlocksUser(S.exam))return (window.sirtiExamTimerMessage&&window.sirtiExamTimerMessage(S.exam))||'خارج فترة السماح';return ''}
@@ -7095,30 +7095,28 @@ function load(){
   if(!g||!sec||!sub||!ex){S=null;$('mcBody').innerHTML='<div class="empty">لا توجد تكليفات مناسبة.</div>';$('mcCfg').innerHTML='';return}
   var list=db.students.filter(function(s){return s.grade===g&&s.section===sec});
   var cfg=findCfg(list,sub,ex),rows={},fold=false,hasSaved=list.some(function(st){var o=stored(st,sub,ex);return o&&o.c&&cfgOk(o.c)});
-  if(cfg.md==='s'&&cfg.m.length>1){cfg.m=[Math.max(1,Math.min(cfg.m.reduce(function(a,b){return a+b},0),100-cfg.dm))];fold=true}
-  list.forEach(function(st){var o=stored(st,sub,ex),r={p:['','',''],d:''};if(o){(o.p||[]).forEach(function(v,i){if(i<3&&v!=null)r.p[i]=String(v)});if(fold){var t=0,any=false;r.p.forEach(function(v){var q=num(v);if(q!==null&&!isNaN(q)){t+=q;any=true}});r.p=[any?String(t):'','','']}if(o.d!=null)r.d=String(o.d)}rows[st.id]=r});
+  list.forEach(function(st){var o=stored(st,sub,ex),r={p:['','',''],d:''};if(o){(o.p||[]).forEach(function(v,i){if(i<3&&v!=null)r.p[i]=String(v)});if(cfg.m.length===1&&(o.p||[]).length>1){fold=true;var t=0,any=false;r.p.forEach(function(v){var q=num(v);if(q!==null&&!isNaN(q)){t+=q;any=true}});r.p=[any?String(t):'','','']}if(o.d!=null)r.d=String(o.d)}rows[st.id]=r});
   S={grade:g,section:sec,subject:sub,exam:ex,list:list,cfg:cfg,rows:rows,saved:hasSaved&&!fold?JSON.stringify(cfg):''};
   render();
 }
-function noteText(c){var EM=c.m.reduce(function(a,b){return a+b},0);if(c.md==='s'){var t=EM+c.dm;return 'الدرجة = (الامتحان الشهري من '+arDigits(EM)+' + اليومي من '+arDigits(c.dm)+') = من '+arDigits(t)+(t!==100?' ثم تُحوَّل إلى ١٠٠':'')+'.'}return 'الدرجة = (اليومي من '+arDigits(c.dm)+' محوَّلًا إلى ١٠٠ + الامتحان من '+arDigits(EM)+' محوَّلًا إلى ١٠٠) ÷ ٢.'}
+function noteText(c){var EM=c.m.reduce(function(a,b){return a+b},0);if(c.md==='a')return 'الدرجة = (الامتحان الشهري من ١٠٠ + اليومي من ١٠٠) ÷ ٢.';var t=Math.round((EM+c.dm)*100)/100;return 'الدرجة = مجموع الأجزاء + اليومي. المجموع الحالي لأعلى الدرجات: '+arDigits(t)+' من ١٠٠'+(t===100?' ✓':' — '+(t<100?'ينقص ':'يزيد ')+arDigits(Math.round(Math.abs(100-t)*100)/100)+' ليصبح ١٠٠')+'.'}
 function auditLine(st){var a=getStudentGradeAudit(st.id,S.grade,S.section,S.subject,S.exam);return a?'<div class="grade-last-edit"><span class="grade-last-edit-badge">✓ آخر تعديل</span><span class="gle-date">'+esc(formatAuditDate(a.at))+'</span><span class="gle-by">بواسطة: '+esc(a.byName||'غير معروف')+'</span></div>':''}
 function render(){
   if(!S)return;var c=S.cfg,lk=locked(),dis=lk?'disabled':'',n=c.m.length,i;
   var h='<div class="mc-cfg"><div class="mc-cfg-h"><span>تقسيم الامتحان والدرجة اليومية</span><span class="mc-state" id="mcState"></span></div>';
   var sm=c.md==='s';
-  h+='<div class="mc-modes" style="margin:0 0 10px"><label><input type="radio" name="mcMode" value="s" '+(sm?'checked':'')+' '+dis+'> اليومي مكمِّل للامتحان (جمع الدرجتين: يومي + شهري)</label><label><input type="radio" name="mcMode" value="a" '+(!sm?'checked':'')+' '+dis+'> متوسط اليومي والامتحان (كلٌّ من ١٠٠ ثم القسمة على اثنين)</label></div>';
-  if(!sm){h+='<div class="mc-seg"><span style="font-size:12px;font-weight:800">عدد أجزاء الامتحان:</span>';
+  h+='<div class="mc-modes" style="margin:0 0 10px"><label><input type="radio" name="mcMode" value="a" '+(!sm?'checked':'')+' '+dis+'> متوسط: اليومي من ١٠٠ + الشهري من ١٠٠ ثم القسمة على ٢</label><label><input type="radio" name="mcMode" value="s" '+(sm?'checked':'')+' '+dis+'> جمع: الامتحان الشهري موزَّع على أجزاء (حتى ٣) + اليومي، والمجموع ١٠٠</label></div>';
+  if(sm){h+='<div class="mc-seg"><span style="font-size:12px;font-weight:800">عدد أجزاء الامتحان:</span>';
   for(i=1;i<=3;i++)h+='<button type="button" class="'+(n===i?'on':'')+'" '+dis+' data-mc-n="'+i+'">'+arDigits(i)+'</button>';
-  h+='</div>'}
-  h+='<div class="mc-cfg-grid">';
-  for(i=0;i<n;i++)h+='<div><label>'+(sm?'أعلى درجة للامتحان الشهري':'أعلى درجة للجزء '+arDigits(i+1))+'</label><input class="mc-in" inputmode="decimal" data-mc-max="'+i+'" value="'+c.m[i]+'" '+dis+'></div>';
-  h+='<div><label>أعلى درجة لليومي</label><input class="mc-in" inputmode="decimal" data-mc-dm value="'+c.dm+'" '+dis+'></div></div>';
+  h+='</div><div class="mc-cfg-grid">';
+  for(i=0;i<n;i++)h+='<div><label>أعلى درجة للجزء '+arDigits(i+1)+'</label><input class="mc-in" inputmode="decimal" data-mc-max="'+i+'" value="'+c.m[i]+'" '+dis+'></div>';
+  h+='<div><label>أعلى درجة لليومي</label><input class="mc-in" inputmode="decimal" data-mc-dm value="'+c.dm+'" '+dis+'></div></div>'}
   h+='<div class="mc-note" id="mcNote"></div></div>';
   $('mcCfg').innerHTML=h+(lk?'<div class="mc-lock">'+esc(lk)+' — العرض فقط.</div>':'');
   var cols=n+2,b='<div class="mc-rows" style="--mcn:'+cols+'">';
   if(!S.list.length)b='<div class="empty">لا يوجد طلاب في هذه الشعبة</div>';
   else{S.list.forEach(function(st,k){var r=S.rows[st.id];b+='<div class="mc-row" data-st="'+esc(st.id)+'"><div class="mc-name"><span class="mc-no">'+arDigits(k+1)+'</span>'+esc(st.name)+auditLine(st)+'</div>';
-    for(i=0;i<n;i++)b+='<div class="mc-cell"><label>'+(c.md==='s'?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(c.m[i])+'</label><input class="mc-in" inputmode="decimal" enterkeyhint="next" data-p="'+i+'" value="'+esc(r.p[i])+'" '+dis+'></div>';
+    for(i=0;i<n;i++)b+='<div class="mc-cell"><label>'+(c.md==='a'?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(c.m[i])+'</label><input class="mc-in" inputmode="decimal" enterkeyhint="next" data-p="'+i+'" value="'+esc(r.p[i])+'" '+dis+'></div>';
     b+='<div class="mc-cell"><label>اليومي / '+arDigits(c.dm)+'</label><input class="mc-in" inputmode="decimal" enterkeyhint="next" data-d value="'+esc(r.d)+'" '+dis+'></div><div class="mc-cell"><label>الشهر / ١٠٠</label><div class="mc-res" data-res>—</div></div></div>'});
     b+='</div><div class="mc-foot"><div class="mc-sum" id="mcSum"></div>'+(lk?'':'<div class="actions"><button class="btn primary" type="button" id="mcSave">حفظ الآن</button></div>')+'</div>'}
   $('mcBody').innerHTML=b;
@@ -7131,17 +7129,17 @@ function refreshRow(el){var id=el.getAttribute('data-st'),r=S.rows[id],c=S.cfg,i
   if(out===null){res.textContent=bad?'!':'—';res.className='mc-res'}else{res.textContent=arDigits(out);res.className='mc-res '+(out>=((db.settings&&db.settings.passMark)||50)?'ok':'fail')}
   el.__bad=bad;el.__out=out}
 function refreshAudit(){document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var st=S.list.find(function(x){return String(x.id)===el.getAttribute('data-st')});var nm=el.querySelector('.mc-name'),old=nm.querySelector('.grade-last-edit');if(old)old.remove();nm.insertAdjacentHTML('beforeend',auditLine(st))})}
-function refreshAll(){if(!S)return;document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var sm=S.cfg.md==='s';el.querySelectorAll('[data-p]').forEach(function(inp){var i=+inp.getAttribute('data-p'),l=inp.previousElementSibling;if(l)l.textContent=(sm?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(S.cfg.m[i])});var d=el.querySelector('[data-d]');if(d&&d.previousElementSibling)d.previousElementSibling.textContent='اليومي / '+arDigits(S.cfg.dm)});var stt=$('mcState');if(stt){var ok=S.saved&&S.saved===JSON.stringify(S.cfg);stt.textContent=ok?'✓ التقسيم محفوظ':'غير محفوظ بعد';stt.className='mc-state '+(ok?'ok':'no')}var rows=document.querySelectorAll('#mcBody .mc-row'),done=0,sum=0,bad=0;rows.forEach(function(el){refreshRow(el);if(el.__bad)bad++;if(el.__out!==null&&el.__out!==undefined){done++;sum+=el.__out}});
-  var note=$('mcNote');if(note)note.textContent=noteText(S.cfg);
+function refreshAll(){if(!S)return;document.querySelectorAll('#mcBody .mc-row').forEach(function(el){var sm=S.cfg.md==='a';el.querySelectorAll('[data-p]').forEach(function(inp){var i=+inp.getAttribute('data-p'),l=inp.previousElementSibling;if(l)l.textContent=(sm?'الشهري':'جزء '+arDigits(i+1))+' / '+arDigits(S.cfg.m[i])});var d=el.querySelector('[data-d]');if(d&&d.previousElementSibling)d.previousElementSibling.textContent='اليومي / '+arDigits(S.cfg.dm)});var stt=$('mcState');if(stt){var ok=S.saved&&S.saved===JSON.stringify(S.cfg);stt.textContent=ok?'✓ التقسيم محفوظ':'غير محفوظ بعد';stt.className='mc-state '+(ok?'ok':'no')}var rows=document.querySelectorAll('#mcBody .mc-row'),done=0,sum=0,bad=0;rows.forEach(function(el){refreshRow(el);if(el.__bad)bad++;if(el.__out!==null&&el.__out!==undefined){done++;sum+=el.__out}});
+  var note=$('mcNote');if(note){note.textContent=noteText(S.cfg);note.classList.toggle('bad',!cfgOk(S.cfg))}
   var s=$('mcSum');if(s)s.textContent='المكتمل: '+arDigits(done)+' من '+arDigits(S.list.length)+(done?' — المعدل: '+arDigits((sum/done).toFixed(1)):'')+(bad?' — أخطاء: '+arDigits(bad):'')}
-function collapse(){var c=S.cfg;if(c.md==='s'&&c.m.length>1){c.m=[Math.max(1,Math.min(c.m.reduce(function(a,b){return a+b},0),100-c.dm))];Object.keys(S.rows).forEach(function(id){var r=S.rows[id],t=0,any=false;r.p.forEach(function(v){var q=num(v);if(q!==null&&!isNaN(q)){t+=q;any=true}});r.p=[any?String(t):'','','']})}}
+function collapse(){var c=S.cfg;if(c.md==='a'){if(c.m.length>1||c.m[0]!==100||c.dm!==100){Object.keys(S.rows).forEach(function(id){var r=S.rows[id],t=0,any=false;r.p.forEach(function(v){var q=num(v);if(q!==null&&!isNaN(q)){t+=q;any=true}});r.p=[any?String(t):'','','']})}c.m=[100];c.dm=100}else if(c.m.length===1&&c.m[0]===100&&c.dm===100){c.m=[70];c.dm=30}}
 function readCfgFromUI(){var c=S.cfg,i;for(i=0;i<c.m.length;i++){var el=document.querySelector('[data-mc-max="'+i+'"]');if(el){var v=num(el.value);c.m[i]=(v===null||isNaN(v))?0:v}}var d=document.querySelector('[data-mc-dm]');if(d){var dv=num(d.value);c.dm=(dv===null||isNaN(dv))?0:dv}var m=document.querySelector('input[name="mcMode"]:checked');if(m)c.md=m.value}
 var T=null;
 function autoSave(){clearTimeout(T);T=setTimeout(function(){T=null;save(true)},1200)}
 function flush(){if(T){clearTimeout(T);T=null;save(true)}}
 function save(auto){
   if(!S)return;var lk=locked();if(lk){if(!auto)toast(lk);return}
-  var c=S.cfg;if(!cfgOk(c)){if(!auto)toast('تقسيم الدرجات غير صحيح: كل جزء بين ١ و١٠٠ ومجموع الأجزاء لا يتجاوز ١٠٠');return}
+  var c=S.cfg;if(!cfgOk(c)){if(!auto)toast('تقسيم الدرجات غير صحيح: يجب أن يكون مجموع أعلى درجات الأجزاء واليومي = ١٠٠');return}
   document.querySelectorAll('#mcBody .mc-row').forEach(refreshRow);
   var bads=[].filter.call(document.querySelectorAll('#mcBody .mc-row'),function(e){return e.__bad});
   if(bads.length){if(!auto)toast('توجد درجات غير صحيحة (تتجاوز الحد الأعلى أو ليست رقمًا)');return}
@@ -7176,7 +7174,7 @@ document.addEventListener('input',function(e){var t=e.target;if(!S||!t||!t.close
 });
 document.addEventListener('change',function(e){var t=e.target;if(!S||!t||!t.closest||!t.closest('#monthlyCalc'))return;if(t.closest('.mc-row')&&t.classList.contains('mc-in')){autoSave();return}if(t.hasAttribute('data-mc-max')||t.hasAttribute('data-mc-dm')){readCfgFromUI();refreshAll();autoSave();return}if(t.name==='mcMode'){readCfgFromUI();collapse();render();autoSave()}});
 document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest||!t.closest('#monthlyCalc'))return;
-  var b=t.closest('[data-mc-n]');if(b&&S&&!b.disabled){readCfgFromUI();var n=+b.getAttribute('data-mc-n'),m=S.cfg.m;while(m.length<n)m.push(Math.max(1,Math.min(100-S.cfg.dm-m.reduce(function(a,x){return a+x},0),30)));m.length=n;render();autoSave();return}
+  var b=t.closest('[data-mc-n]');if(b&&S&&!b.disabled){readCfgFromUI();var n=+b.getAttribute('data-mc-n'),m=S.cfg.m;while(m.length<n){var last=m[m.length-1],half=Math.floor(last/2);if(half>=1){m[m.length-1]=last-half;m.push(half)}else m.push(1)}if(m.length>n){var rem=0;for(var z=n;z<m.length;z++)rem+=m[z];m.length=n;m[n-1]=Math.min(100,m[n-1]+rem)}render();autoSave();return}
   if(t.id==='mcSave'){clearTimeout(T);T=null;save()}});
 document.addEventListener('keydown',function(e){var t=e.target;if(e.key!=='Enter'||!t||!t.classList||!t.classList.contains('mc-in')||!t.closest('#monthlyCalc'))return;e.preventDefault();
   var all=[].slice.call(document.querySelectorAll('#mcBody .mc-in:not([disabled])')),i=all.indexOf(t);if(i>-1&&all[i+1]){all[i+1].focus();try{all[i+1].select()}catch(_){}}else t.blur()});
@@ -7189,6 +7187,7 @@ show=function(id,btn){var r=os.apply(this,arguments);if(id==='monthlyCalc'&&$('m
 })();
 </script>
 <style id="sirti-v198-audit-line">
+#monthlyCalc .mc-note.bad{color:#b8283b!important;font-weight:800}
 #monthlyCalc .mc-state{font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px}
 #monthlyCalc .mc-state.ok{background:#e4f7ee;color:#0f7a54}
 #monthlyCalc .mc-state.no{background:#fff3d6;color:#8a5a00}
