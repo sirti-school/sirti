@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سيرتي">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
@@ -1598,7 +1604,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v205</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v206</span></div>
   </div>
 </div>
 <div class="app">
@@ -7266,6 +7272,9 @@ var og=window.guardView||guardView;guardView=function(id){return og(id==='monthl
 var os=window.show||show;
 show=function(id,btn){var r=os.apply(this,arguments);if(id==='monthlyCalc'&&$('monthlyCalc').classList.contains('active'))load();return r};
 })();
+</script>
+<script id="sirti-v206-pwa">
+(function(){try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}}catch(e){}})();
 </script>
 <script id="sirti-v205-digits">
 /* الأرقام: إنكليزية على الشاشة، وعربية (هندية) عند الطباعة فقط */
