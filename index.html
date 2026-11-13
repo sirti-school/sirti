@@ -1604,7 +1604,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v206</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v207</span></div>
   </div>
 </div>
 <div class="app">
@@ -5883,7 +5883,21 @@ var auth=firebase.auth(),fs=firebase.firestore(),FV=firebase.firestore.FieldValu
 try{fs.settings({experimentalForceLongPolling:true,merge:true})}catch(e){console.warn('firestore settings',e)}
 try{console.info('Sirti build 2026-10-05b')}catch(e){}
 var secApp=firebase.initializeApp(CFG,'sirti-secondary'),secAuth=secApp.auth();
-var persistReady=Promise.resolve(auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)).catch(function(){});
+/* البقاء مسجَّلًا: فقط عند فتحه كتطبيق مثبَّت، ولمدة محدودة من عدم الاستخدام. في المتصفح العادي تنتهي الجلسة بإغلاق التبويب. */
+var SIRTI_APP_KEEP_DAYS=14,SIRTI_LA='sirti_last_active_v1';
+var isApp=false;try{isApp=!!((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true)}catch(e){}
+function laGet(){try{return +localStorage.getItem(SIRTI_LA)||0}catch(e){return 0}}
+function laSet(){try{localStorage.setItem(SIRTI_LA,String(Date.now()))}catch(e){}}
+function laExpired(){var t=laGet();return !t||(Date.now()-t)>SIRTI_APP_KEEP_DAYS*86400000}
+var persistReady=Promise.resolve(auth.setPersistence(isApp?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION)).then(function(){
+  if(isApp&&laExpired()){return auth.signOut().catch(function(){})}
+}).catch(function(){});
+if(isApp){
+  var laT=0;function touch(){var n=Date.now();if(n-laT<60000)return;laT=n;try{if(auth.currentUser)laSet()}catch(e){}}
+  ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){document.addEventListener(ev,touch,{passive:true,capture:true})});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&auth.currentUser&&laExpired()){try{window.logout()}catch(e){}}else touch()});
+  auth.onAuthStateChanged(function(u){if(u)laSet();else{try{localStorage.removeItem(SIRTI_LA)}catch(e){}}});
+}
 Promise.resolve(secAuth.setPersistence(firebase.auth.Auth.Persistence.NONE)).catch(function(){});
 
 /* ---------- حالة ---------- */
