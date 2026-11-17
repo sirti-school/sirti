@@ -3,13 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>/* منع تضمين الموقع داخل إطار موقع آخر (clickjacking) */
+if(window.top!==window.self){try{document.documentElement.style.display='none';window.top.location=window.self.location}catch(e){document.documentElement.innerHTML=''}}
+</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="سيرتي">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="referrer" content="no-referrer">
+
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>if(window.top!==window.self){document.documentElement.style.display='none';try{window.top.location=window.self.location}catch(e){}}</script>
@@ -17,7 +22,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<title>سيرتي | نظام إدارة درجات الطلاب | الإصدار ٢٠٣</title>
+<title>سيرتي | نظام إدارة درجات الطلاب</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1596,7 +1601,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       <h2>تسجيل الدخول</h2>
       <p class="login-subtitle">أدخل بيانات الحساب المسجل مسبقًا للوصول إلى المنصة.</p>
       <form onsubmit="loginSubmit(event)" autocomplete="off" novalidate>
-        <div class="login-field enhanced"><label for="loginUsername">اسم المستخدم / الرقم التعريفي</label><div class="login-input-wrap"><span>◉</span><input id="loginUsername" name="sirti_login_id" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="أدخل اسم المستخدم" required></div></div>
+        <div class="login-field enhanced"><label for="loginUsername">اسم المستخدم / الرقم التعريفي</label><div class="login-input-wrap"><span>◉</span><input id="loginUsername" name="sirti_login_id" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="أدخل اسم المستخدم" required></div></div>
         <div class="login-field enhanced"><label for="loginPassword">كلمة المرور</label><div class="login-input-wrap"><span>🔒</span><input id="loginPassword" name="sirti_login_secret" type="password" autocomplete="off" inputmode="text" maxlength="32" placeholder="ادخل كلمة السر" required><button type="button" class="login-eye" onclick="toggleLoginPassword()" aria-label="إظهار كلمة المرور">◉</button></div></div>
         <div class="login-remember-row"><label class="login-remember"><input id="rememberLogin" type="checkbox"> <span>تذكّر اسم المستخدم على هذا المتصفح</span></label><button type="button" class="login-clear-remember" onclick="clearRememberedLogin()">مسح المحفوظ</button></div>
         <button class="login-submit" type="submit"><span>دخول إلى المنصة</span><b>←</b></button>
@@ -1604,7 +1609,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v207</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v210</span></div>
   </div>
 </div>
 <div class="app">
@@ -1835,7 +1840,7 @@ const defaultSubjects=['التربية الإسلامية','اللغة العر�
 const demoGirlsByGrade={};const demoBoysByGrade={};const defaultStudents=[];
 const titles={home:['مرحباً بك في سيرتي 👋','إدارة الطلاب والدرجات والسجلات من مكان واحد'],students:['الطلاب','إدارة بيانات الطلاب للعام الدراسي'],teachers:['المدرسون','حسابات المدرسين والمواد والصفوف المكلفين بها'],classes:['الصفوف والشعب','الصفوف من الأول المتوسط حتى الخامس الإعدادي'],subjects:['المواد الدراسية','إدارة المواد حسب الصف'],grades:['الدرجات والامتحانات','إدخال وحفظ درجات الامتحانات'],teacherStats:['نسب النجاح','حساب النسب من الدرجات المحفوظة'],teacherRegister:['سجل المدرسين','سجل درجات المدرس المولد تلقائيًا'],control:['الكونترول','كونترول السعي السنوي حسب الصف والشعبة'],reports:['سجلات الإدارة','سجل مستقل لكل طالب على ورقة A4'],slips:['قصاصات أولياء الأمور','قصاصات درجات غير رسمية للطباعة'],settings:['الإعدادات','إعدادات النظام واستيراد الطلاب والمواد'],account:['حساب المالك','بيانات الحساب والصلاحيات الكاملة']};
 let db;
-function freshDB(){const subjects={};gradesList.forEach(g=>subjects[g]=[...defaultSubjects]);return{version:53,demoRosterSeeded:true,students:structuredClone(defaultStudents),teachers:[],sectionsByGrade:{'الأول المتوسط':['أ','ب','ج']},subjects,settings:{systemName:'سيرتي',year:'2026–2027',schoolName:'ثانوية السيرة النبوية المختلطة',principalName:'',creatorAr:'حسن ثامر',creatorEn:'Hasan Thamer',passMark:50},owner:{username:'owner',name:'حسن ثامر',email:'',status:'مفعّل',password:''}}}
+function freshDB(){const subjects={};gradesList.forEach(g=>subjects[g]=[...defaultSubjects]);return{version:53,demoRosterSeeded:true,students:JSON.parse(JSON.stringify(defaultStudents)),teachers:[],sectionsByGrade:{'الأول المتوسط':['أ','ب','ج']},subjects,settings:{systemName:'سيرتي',year:'2026–2027',schoolName:'ثانوية السيرة النبوية المختلطة',principalName:'',creatorAr:'حسن ثامر',creatorEn:'Hasan Thamer',passMark:50},owner:{username:'owner',name:'حسن ثامر',email:'',status:'مفعّل',password:''}}}
 const REAL_FIRST_A_STUDENTS=[];
 const REAL_FIRST_B_STUDENTS=[];
 function applyFirstAMultirosterOnce(){
@@ -1920,6 +1925,7 @@ function isOwner(){return currentUser?.role==='owner'}
 function currentTeacher(){return currentUser?.role==='teacher'?db.teachers.find(t=>t.id===currentUser.id):null}
 var PWSTRONG_RULE='كلمة مرور المالك والمدير: من ١٠ إلى ٣٢ خانة وتحتوي حرفاً كبيراً وحرفاً صغيراً ورقماً ورمزاً.';
 function validStrongPw(p){return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,32}$/.test(String(p||''))}
+function stActive(s){return !(s&&s.disabled===true)}
 function validPassword6(p){return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,32}$/.test(String(p||''))}
 const PRESENCE_KEY='sirti_teacher_presence_v1';
 let presenceTimer=null;
@@ -1985,10 +1991,11 @@ function renderAll(){applyFirstIntermediateSectionCTransfer();fillGradeSelect('s
 
 function renderHome(){document.getElementById('statStudents').textContent=arDigits(db.students.length);document.getElementById('statTeachers').textContent=arDigits(db.teachers.length);document.getElementById('statOnlineTeachers').textContent=arDigits(onlineTeacherCount());document.getElementById('statUnsaved').textContent='٠';document.getElementById('homeGrades').innerHTML=gradesList.map((g,i)=>{const a=db.students.filter(s=>s.grade===g&&s.section==='أ').length,b=db.students.filter(s=>s.grade===g&&s.section==='ب').length;return `<div class="grade"><div class="gicon">${arDigits(i+1)}</div><div><b>${esc(g)}</b><small>شعبة أ • شعبة ب</small></div><div class="count">أ ${arDigits(a)} / ب ${arDigits(b)}</div></div>`}).join('');document.getElementById('homeChart').innerHTML=gradesList.map((g,i)=>{const total=db.students.filter(s=>s.grade===g).length||1;const filled=db.students.filter(s=>s.grade===g).filter(s=>Object.keys(s.grades||{}).length).length;const p=Math.round(filled/total*100);return `<div class="bar" style="height:${Math.max(8,p)}%"><span>${g.replace('المتوسط','').replace('الإعدادي','')}</span></div>`}).join('');const recent=[...db.students].slice(-5).reverse();document.getElementById('homeRecent').innerHTML=recent.length?`<div class="table-wrap"><table class="table"><thead><tr><th>الطالب</th><th>الصف</th><th>الشعبة</th><th>الحالة</th></tr></thead><tbody>${recent.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.grade)}</td><td>${esc(s.section)}</td><td><span class="pill ok">فعال</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا يوجد طلاب</div>'}
 
-function renderStudents(){const grade=document.getElementById('studentGradeFilter')?.value||'';const section=document.getElementById('studentSectionFilter')?.value||'';const search=(document.getElementById('studentSearch')?.value||'').trim().toLowerCase();const list=db.students.filter(s=>(!grade||s.grade===grade)&&(!section||s.section===section)&&(!search||s.name.toLowerCase().includes(search)));document.getElementById('studentsTable').innerHTML=list.length?`<div class="table-wrap"><table class="table"><thead><tr><th class="student-seq-col">التسلسل</th><th>الطالب</th><th>الصف</th><th>الشعبة</th><th>رقم القيد</th><th>الحالة</th><th>الأوامر</th></tr></thead><tbody>${list.map((s,i)=>`<tr><td class="student-seq-col">${arDigits(i+1)}</td><td>${esc(s.name)}</td><td>${esc(s.grade)}</td><td>${esc(s.section)}</td><td>${esc(s.registry||'')}</td><td><span class="pill ok">فعال</span></td><td class="actions-cell"><div class="action-group"><button class="btn light" onclick="openStudentModal('${jsArg(s.id)}')">تعديل</button><button class="btn danger" onclick="deleteStudent('${jsArg(s.id)}')">حذف</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا توجد نتائج مطابقة</div>';applyArabicDigits(document.getElementById('students'))}
+function renderStudents(){const grade=document.getElementById('studentGradeFilter')?.value||'';const section=document.getElementById('studentSectionFilter')?.value||'';const search=(document.getElementById('studentSearch')?.value||'').trim().toLowerCase();const list=db.students.filter(s=>(!grade||s.grade===grade)&&(!section||s.section===section)&&(!search||s.name.toLowerCase().includes(search)));document.getElementById('studentsTable').innerHTML=list.length?`<div class="table-wrap"><table class="table"><thead><tr><th class="student-seq-col">التسلسل</th><th>الطالب</th><th>الصف</th><th>الشعبة</th><th>رقم القيد</th><th>الحالة</th><th>الأوامر</th></tr></thead><tbody>${list.map((s,i)=>`<tr><td class="student-seq-col">${arDigits(i+1)}</td><td>${esc(s.name)}</td><td>${esc(s.grade)}</td><td>${esc(s.section)}</td><td>${esc(s.registry||'')}</td><td>${s.disabled===true?'<span class="pill off">معطَّل</span>':'<span class="pill ok">فعال</span>'}</td><td class="actions-cell"><div class="action-group"><button class="btn light" onclick="openStudentModal('${jsArg(s.id)}')">تعديل</button><button class="btn ${s.disabled===true?'primary':'light'}" onclick="toggleStudentDisabled('${jsArg(s.id)}')">${s.disabled===true?'تفعيل':'تعطيل'}</button><button class="btn danger" onclick="deleteStudent('${jsArg(s.id)}')">حذف</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا توجد نتائج مطابقة</div>';applyArabicDigits(document.getElementById('students'))}
 
 function openStudentModal(id){const s=db.students.find(x=>x.id===id);openModal(id?'تعديل طالب':'إضافة طالب',`<div class="modal-grid"><div class="field full"><label>اسم الطالب</label><input id="mStudentName" value="${esc(s?.name||'')}"></div><div class="field"><label>الصف</label><select id="mStudentGrade">${gradesList.map(g=>`<option ${g===s?.grade?'selected':''}>${g}</option>`).join('')}</select></div><div class="field"><label>الشعبة</label><select id="mStudentSection"><option ${s?.section==='أ'||!s?'selected':''}>أ</option><option ${s?.section==='ب'?'selected':''}>ب</option><option ${s?.section==='ج'?'selected':''}>ج</option></select></div><div class="field"><label>رقم القيد (اختياري في بيانات الطالب)</label><input id="mStudentRegistry" value="${esc(s?.registry||'')}" inputmode="numeric"></div></div>`,`<button class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary" onclick="saveStudent('${jsArg(id||'')}')">حفظ</button>`);}
 function saveStudent(id){const name=document.getElementById('mStudentName').value.trim();if(!name){toast('اكتب اسم الطالب');return}const grade=document.getElementById('mStudentGrade').value,section=document.getElementById('mStudentSection').value,registry=toLatin(document.getElementById('mStudentRegistry').value.trim());if(id){const s=db.students.find(x=>x.id===id);Object.assign(s,{name,grade,section,registry})}else{db.students.push({id:'S'+Date.now(),name,grade,section,registry,grades:{}})}saveDB();closeModal();renderAll();toast('تم حفظ بيانات الطالب')}
+function toggleStudentDisabled(id){const s=db.students.find(x=>x.id===id);if(!s)return;const to=s.disabled!==true;if(to&&!confirm(`تعطيل الطالب ${s.name}؟\nيبقى اسمه في سجلات المدرسين لكن لا يُحتسب في النسب ولا يظهر في القصاصات ولا في سجل المدرس الخاص بالشهري.`))return;s.disabled=to;saveDB();renderAll();toast(to?'تم تعطيل الطالب':'تم تفعيل الطالب')}
 function deleteStudent(id){const s=db.students.find(x=>x.id===id);if(!s)return;if(confirm(`حذف الطالب ${s.name}؟`)){db.students=db.students.filter(x=>x.id!==id);saveDB();renderAll();toast('تم حذف الطالب')}}
 function renderTeachers(){const list=db.teachers;document.getElementById('teachersTable').innerHTML=list.length?`<div class="table-wrap"><table class="table"><thead><tr><th>المدرس/المدرسة</th><th>النوع</th><th>اسم المستخدم</th><th>التكليفات الدراسية</th><th>الحالة</th><th>الأوامر</th></tr></thead><tbody>${list.map(t=>{const as=Array.isArray(t.assignments)&&t.assignments.length?t.assignments:[{grade:t.grade,section:t.section,subject:t.subject}];return `<tr><td>${esc(t.name)}</td><td><span class="pill ${t.gender==='female'?'success':'ok'}">${t.gender==='female'?'مدرسة':'مدرس'}</span></td><td><span dir="ltr" data-no-arabic-digits="true" style="unicode-bidi:isolate">${esc(t.username)}</span></td><td><div class="assignment-summary">${as.filter(a=>a&&a.subject).map(a=>`<span>${esc(a.subject)} — ${esc(a.grade)} / ${esc(a.section)}</span>`).join('')||'<small>لا يوجد تكليف بعد</small>'}</div></td><td><span class="pill ${t.active?'ok':'off'}">${t.active?'فعال':'معطّل'}</span></td><td class="actions-cell"><div class="action-group"><button class="btn light" onclick="openTeacherModal('${jsArg(t.id)}')">تعديل</button><button class="btn light" onclick="toggleTeacher('${jsArg(t.id)}')">${t.active?'تعطيل':'تفعيل'}</button><button class="btn danger" onclick="deleteTeacher('${jsArg(t.id)}')">حذف</button></div></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">لا توجد حسابات مدرسين</div>';applyArabicDigits(document.getElementById('teachers'))}
 function teacherAssignmentsFromRecord(t){const a=Array.isArray(t?.assignments)?t.assignments:[];if(a.length)return a.map(x=>({grade:x.grade,section:x.section,subject:x.subject}));if(t?.grade&&t?.section&&t?.subject)return[{grade:t.grade,section:t.section,subject:t.subject}];return[]}
@@ -2050,7 +2057,7 @@ function renderGradeEntry(){
     const state=timerLocked?(window.sirtiExamTimerMessage?.(exam)||'خارج فترة السماح'):(canByPermission?'قابلة للتعديل':'قراءة فقط');
     const audit=getStudentGradeAudit(st.id,grade,section,subject,exam);
     const auditHtml=audit?`<div class="grade-last-edit" title="آخر عملية تعديل على درجة هذا الطالب في هذه المادة والامتحان"><span class="grade-last-edit-badge">✓ آخر تعديل</span><span class="gle-date">${esc(formatAuditDate(audit.at))}</span><span class="gle-by">بواسطة: ${esc(audit.byName||'غير معروف')}</span></div>`:'<div class="grade-last-edit grade-last-edit-empty">لم تُسجل عملية تعديل سابقة لهذه الدرجة</div>';
-    return `<tr><td><div class="grade-name-line">${esc(st.name)}</div>${auditHtml}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" enterkeyhint="next" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px"></div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
+    return `<tr${st.disabled===true?' class="st-off"':''}><td><div class="grade-name-line">${esc(st.name)}${st.disabled===true?' <span class="st-off-tag">معطَّل</span>':''}</div>${auditHtml}</td><td><div class="grade-cell"><input class="grade-input" data-student="${esc(st.id)}" value="${esc(v)}" inputmode="numeric" enterkeyhint="next" ${baseDisabled} style="width:90px;padding:7px;border:1px solid #dfe5ed;border-radius:7px"></div></td><td><span class="pill ${timerLocked?'off':editable?'ok':'wait'}">${state}</span></td></tr>`
   }).join('')}</tbody></table></div>${editable?'<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" onclick="saveGrades()">حفظ الدرجات</button><button class="btn light" type="button" onclick="clearGradeInputs()">مسح الحقول</button></div>':''}`:'<div class="empty">لا يوجد طلاب في هذه الشعبة</div>';
   if(window.sirtiRenderExamTimerUI)window.sirtiRenderExamTimerUI();
   if(typeof window.sirtiRenderOwnerExamWindowControls==='function')window.sirtiRenderOwnerExamWindowControls();
@@ -2126,10 +2133,10 @@ function annualStudy(student,subject){return decisionAdjustedAnnualStudy(student
 function finalGradeBeforeDecision(student,subject){const annual=annualStudyBeforeDecision(student,subject),final=gradeVal(student,subject,'final');return annual!==null&&final!==null?Math.round((annual+final)/2):null}
 function finalGrade(student,subject){const base=finalGradeBeforeDecision(student,subject);if(base===null)return null;const pass=Number(db?.settings?.passMark)||50;const alloc=db?.decisionAllocations?.[student.id]?.[subject];if(!alloc||alloc.mode!=='final'||base>=pass)return base;const points=Math.max(0,Math.min(pass-base,Math.round(Number(alloc.points)||0)));return Math.min(pass,Math.round(base+points))}
 
-function renderTeacherStats(){let grade=document.getElementById('statsGrade')?.value||gradesList[0],section=document.getElementById('statsSection')?.value||'أ',subject=document.getElementById('statsSubject')?.value||'';const teacher=currentUser?.role==='teacher',globalUser=currentUser?.role==='owner'||currentUser?.role==='manager';if(teacher){configureTeacherSelectors();grade=document.getElementById('statsGrade')?.value||teacherAssignedGrades()[0]||'';section=document.getElementById('statsSection')?.value||teacherAssignedSections(grade)[0]||'';const allowed=teacherAssignedSubjects(grade,section);subject=allowed.includes(subject)?subject:(allowed[0]||'')}else if(globalUser){const oldSubject=document.getElementById('statsSubject')?.value;fillSubjectSelect('statsSubject',grade);if(oldSubject&&db.subjects[grade]?.includes(oldSubject))document.getElementById('statsSubject').value=oldSubject;subject=document.getElementById('statsSubject')?.value||db.subjects[grade]?.[0]||''}if(!subject)return;const list=db.students.filter(s=>s.grade===grade&&s.section===section);const pass=Number(db.settings.passMark)||50;const items=exams.map(e=>{const vals=list.map(s=>gradeVal(s,subject,e.id)).filter(v=>v!==null);const success=vals.length?vals.filter(v=>v>=pass).length/vals.length*100:null;return{label:e.label,rate:success}});const c1=avgRate(list,subject,1),c2=avgRate(list,subject,2),mid=avgRateExam(list,subject,'mid'),fin=avgRateExam(list,subject,'final');const cards=[items[0],items[1],items[2],{label:'معدل الفصل الأول',rate:c1},{label:'نصف السنة',rate:mid},{...items[4]},{...items[5]},{...items[6]},{label:'معدل الفصل الثاني',rate:c2},{label:'نهاية السنة',rate:fin}];document.getElementById('statsGrid').innerHTML=cards.map(c=>`<div class="stat-card"><span>${esc(c.label)}</span><strong>${c.rate===null?'—':percentDisplay(c.rate)+'٪'}</strong><small>${c.rate===null?'لم تُدخل الدرجات':'نسبة النجاح'}</small><div class="progress"><i style="width:${c.rate===null?0:Math.min(100,c.rate)}%"></i></div></div>`).join('');document.getElementById('statsBars').innerHTML=cards.map(c=>`<div><i style="height:${c.rate===null?0:Math.max(2,c.rate)}%"></i><b>${esc(shortLabel(c.label))}</b></div>`).join('');applyArabicDigits(document.getElementById('teacherStats'))}
+function renderTeacherStats(){let grade=document.getElementById('statsGrade')?.value||gradesList[0],section=document.getElementById('statsSection')?.value||'أ',subject=document.getElementById('statsSubject')?.value||'';const teacher=currentUser?.role==='teacher',globalUser=currentUser?.role==='owner'||currentUser?.role==='manager';if(teacher){configureTeacherSelectors();grade=document.getElementById('statsGrade')?.value||teacherAssignedGrades()[0]||'';section=document.getElementById('statsSection')?.value||teacherAssignedSections(grade)[0]||'';const allowed=teacherAssignedSubjects(grade,section);subject=allowed.includes(subject)?subject:(allowed[0]||'')}else if(globalUser){const oldSubject=document.getElementById('statsSubject')?.value;fillSubjectSelect('statsSubject',grade);if(oldSubject&&db.subjects[grade]?.includes(oldSubject))document.getElementById('statsSubject').value=oldSubject;subject=document.getElementById('statsSubject')?.value||db.subjects[grade]?.[0]||''}if(!subject)return;const list=db.students.filter(s=>s.grade===grade&&s.section===section&&stActive(s));const pass=Number(db.settings.passMark)||50;const items=exams.map(e=>{const vals=list.map(s=>gradeVal(s,subject,e.id)).filter(v=>v!==null);const success=vals.length?vals.filter(v=>v>=pass).length/vals.length*100:null;return{label:e.label,rate:success}});const c1=avgRate(list,subject,1),c2=avgRate(list,subject,2),mid=avgRateExam(list,subject,'mid'),fin=avgRateExam(list,subject,'final');const cards=[items[0],items[1],items[2],{label:'معدل الفصل الأول',rate:c1},{label:'نصف السنة',rate:mid},{...items[4]},{...items[5]},{...items[6]},{label:'معدل الفصل الثاني',rate:c2},{label:'نهاية السنة',rate:fin}];document.getElementById('statsGrid').innerHTML=cards.map(c=>`<div class="stat-card"><span>${esc(c.label)}</span><strong>${c.rate===null?'—':percentDisplay(c.rate)+'٪'}</strong><small>${c.rate===null?'لم تُدخل الدرجات':'نسبة النجاح'}</small><div class="progress"><i style="width:${c.rate===null?0:Math.min(100,c.rate)}%"></i></div></div>`).join('');document.getElementById('statsBars').innerHTML=cards.map(c=>`<div><i style="height:${c.rate===null?0:Math.max(2,c.rate)}%"></i><b>${esc(shortLabel(c.label))}</b></div>`).join('');applyArabicDigits(document.getElementById('teacherStats'))}
 
-function avgRateExam(list,subject,exam){const vals=list.map(s=>gradeVal(s,subject,exam)).filter(v=>v!==null);return vals.length?vals.filter(v=>v>=Number(db.settings.passMark)).length/vals.length*100:null}
-function avgRate(list,subject,course){const ids=course===1?['c1m1','c1m2','c1m3']:['c2m1','c2m2','c2m3'];const perStudent=list.map(s=>avgCourse(s,subject,course)).filter(v=>v!==null);return perStudent.length?perStudent.filter(v=>v>=Number(db.settings.passMark)).length/perStudent.length*100:null}
+function avgRateExam(list,subject,exam){list=list.filter(stActive);const vals=list.map(s=>gradeVal(s,subject,exam)).filter(v=>v!==null);return vals.length?vals.filter(v=>v>=Number(db.settings.passMark)).length/vals.length*100:null}
+function avgRate(list,subject,course){list=list.filter(stActive);const ids=course===1?['c1m1','c1m2','c1m3']:['c2m1','c2m2','c2m3'];const perStudent=list.map(s=>avgCourse(s,subject,course)).filter(v=>v!==null);return perStudent.length?perStudent.filter(v=>v>=Number(db.settings.passMark)).length/perStudent.length*100:null}
 function shortLabel(x){return x.includes('معدل الفصل الأول')?'ف١':x.includes('معدل الفصل الثاني')?'ف٢':x.includes('نصف')?'نصف':x.includes('نهاية')?'نهاية':x.match(/الشهر الأول/) ? 'ش١':x.match(/الشهر الثاني/) ? 'ش٢':'ش٣'}
 
 function slipPrintPages(){
@@ -2829,7 +2836,7 @@ function renderSlips(){
   const grade=document.getElementById('slipGrade')?.value||gradesList[0];
   const section=document.getElementById('slipSection')?.value||'أ';
   const exam=document.getElementById('slipExam')?.value||'c1m1';
-  const students=db.students.filter(s=>s.grade===grade&&s.section===section);
+  const students=db.students.filter(s=>s.grade===grade&&s.section===section&&stActive(s));
   const subs=db.subjects[grade]||[];
   const examLabel=exams.find(e=>e.id===exam)?.label||'';
   const container=document.getElementById('slipsContent');
@@ -2923,7 +2930,7 @@ function openDedicatedPrintWindow(title, bodyHtml, css){
   const printTitle=String(title||'');
   const printClass = /سجل المدرسين/.test(printTitle) ? 'print-register' : /سجلات الإدارة/.test(printTitle) ? 'print-admin' : /قصاصات|أولياء/.test(printTitle) ? 'print-slips' : /كونترول/.test(printTitle) ? 'print-control' : 'sirti-printing';
   doc.open();
-  doc.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${String(title||'سيرتي')}</title><style>
+  doc.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(String(title||'سيرتي'))}</title><style>
     html,body{margin:0!important;padding:0!important;background:#fff!important;color:#111!important;font-family:Cairo,Arial,sans-serif}
     *,*::before,*::after{box-sizing:border-box}
     ${safeCss}
@@ -3459,7 +3466,7 @@ function toggleLoginPassword(){
   input.type=input.type==='password'?'text':'password';
 }
 
-function teacherRegisterStats(list,subject){const cols=[['c1','الفصل الأول',st=>avgCourse(st,subject,1)],['mid','نصف السنة',st=>gradeVal(st,subject,'mid')],['c2','الفصل الثاني',st=>avgCourse(st,subject,2)],['annual','السعي السنوي',st=>annualStudy(st,subject)],['final','الامتحان النهائي',st=>gradeVal(st,subject,'final')],['finalGrade','الدرجة النهائية',st=>finalGrade(st,subject)]];const stats={};const passMark=Number(db.settings.passMark)||50;cols.forEach(([key,label,fn])=>{const values=list.map(st=>fn(st));const complete=list.length>0&&values.every(v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)));if(!complete){stats[key]={key,label,total:null,passed:null,failed:null,pct:null,ready:false};return}const entered=values.map(Number).map(v=>Math.round(v));const total=entered.length;const passed=entered.filter(v=>v>=passMark).length;const failed=entered.filter(v=>v<passMark).length;const pct=total?Math.round((passed/total)*1000)/10:0;stats[key]={key,label,total,passed,failed,pct,ready:true}});return stats}
+function teacherRegisterStats(list,subject){list=list.filter(stActive);const cols=[['c1','الفصل الأول',st=>avgCourse(st,subject,1)],['mid','نصف السنة',st=>gradeVal(st,subject,'mid')],['c2','الفصل الثاني',st=>avgCourse(st,subject,2)],['annual','السعي السنوي',st=>annualStudy(st,subject)],['final','الامتحان النهائي',st=>gradeVal(st,subject,'final')],['finalGrade','الدرجة النهائية',st=>finalGrade(st,subject)]];const stats={};const passMark=Number(db.settings.passMark)||50;cols.forEach(([key,label,fn])=>{const values=list.map(st=>fn(st));const complete=list.length>0&&values.every(v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)));if(!complete){stats[key]={key,label,total:null,passed:null,failed:null,pct:null,ready:false};return}const entered=values.map(Number).map(v=>Math.round(v));const total=entered.length;const passed=entered.filter(v=>v>=passMark).length;const failed=entered.filter(v=>v<passMark).length;const pct=total?Math.round((passed/total)*1000)/10:0;stats[key]={key,label,total,passed,failed,pct,ready:true}});return stats}
 
 function teacherRegisterSummaryRowsHTML(list,subject){
   const stats=teacherRegisterStats(list,subject);
@@ -3995,7 +4002,7 @@ window.savePermissionTarget=function(target){if(currentUser?.role!=='owner'){toa
 window.saveManager=function(){if(window.SIRTI_FB&&window.sirtiSaveManager)return window.sirtiSaveManager();if(currentUser?.role!=='owner'){toast('إدارة المدير للمالك فقط');return}const username=toLatin(document.getElementById('managerUsername').value.trim())||'manager',name=document.getElementById('managerName').value.trim()||'المدير',password=document.getElementById('managerPassword').value,confirmPass=document.getElementById('managerPasswordConfirm').value;if(password){if(!validStrongPw(password)){toast(PWSTRONG_RULE);return}if(password!==confirmPass){toast('تأكيد كلمة مرور المدير غير مطابق.');return}db.manager.password=password}db.manager.username=username;db.manager.name=name;db.manager.status=document.getElementById('managerStatus').value||'مفعّل';ensurePermissionState();saveDB();renderAccount();toast('تم حفظ حساب المدير')};
 window.applySirtiPermissionUI=function(){const u=currentUser;if(!u)return;document.querySelectorAll('.nav button[onclick*="show("]').forEach(btn=>{const m=btn.getAttribute('onclick')?.match(/show\(['"]([^'"]+)/);if(m)btn.style.display=guardView(m[1])?'flex':'none'});const editRules=[['#students button[onclick*="openStudentModal"],#students button[onclick*="saveStudent"],#students button[onclick*="deleteStudent"]','students_edit'],['#teachers button[onclick*="openTeacherModal"],#teachers button[onclick*="saveTeacher"],#teachers button[onclick*="deleteTeacher"]','teachers_edit'],['#grades button[onclick*="saveGrades"]','grades_edit'],['#settings button[onclick*="saveSettings"],#settings button[onclick*="chooseExcelFile"],#settings button[onclick*="downloadStudentTemplate"]','settings_edit'],['#subjects button[onclick*="addSubject"],#subjects button[onclick*="deleteSubject"]','subjects_edit']];editRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(u.role==='owner')return;const ok=window.sirtiCan(key,u);el.style.display=ok?'':'none'}));const printRules=[['#teacherRegister button','teacherRegister_print'],['#control button','control_print'],['#reports button','reports_print'],['#slips button','slips_print']];printRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/طباعة|print/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const exportRules=[['#teacherRegister button','teacherRegister_export'],['#control button','control_export'],['#reports button','reports_export']];exportRules.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(el=>{if(/Excel|تصدير|export/i.test(el.textContent||''))el.style.display=window.sirtiCan(key,u)?'':'none'}));const settings=document.getElementById('settings');if(settings&&u.role!=='owner'&&!window.sirtiCan('settings_view',u))settings.style.display='none'};
 function guardFn(name,key){const old=window[name];if(typeof old!=='function'||old.__sirtiV91)return;const wrapped=function(){if(!window.sirtiCan(key,currentUser)){toast('ليس لديك صلاحية تنفيذ هذه العملية');return}return old.apply(this,arguments)};wrapped.__sirtiV91=true;window[name]=wrapped}
-function wrapActions(){[['saveStudent','students_edit'],['deleteStudent','students_edit'],['saveTeacher','teachers_edit'],['deleteTeacher','teachers_edit'],['addSubject','subjects_edit'],['deleteSubject','subjects_edit'],['saveGrades','grades_edit'],['saveSettings','settings_edit'],['printTeacherRegister','teacherRegister_print'],['printTeacherRegisterFullGrade','teacherRegister_print'],['exportTeacherRegister','teacherRegister_export'],['printControl','control_print'],['exportControl','control_export'],['printAdminRecords','reports_print'],['exportAdminRecords','reports_export'],['printSlips','slips_print']].forEach(([n,k])=>guardFn(n,k))}
+function wrapActions(){[['saveStudent','students_edit'],['deleteStudent','students_edit'],['toggleStudentDisabled','students_edit'],['saveTeacher','teachers_edit'],['deleteTeacher','teachers_edit'],['addSubject','subjects_edit'],['deleteSubject','subjects_edit'],['saveGrades','grades_edit'],['saveSettings','settings_edit'],['printTeacherRegister','teacherRegister_print'],['printTeacherRegisterFullGrade','teacherRegister_print'],['exportTeacherRegister','teacherRegister_export'],['printControl','control_print'],['exportControl','control_export'],['printAdminRecords','reports_print'],['exportAdminRecords','reports_export'],['printSlips','slips_print']].forEach(([n,k])=>guardFn(n,k))}
 // Keep the core DB migration compatible with old/local data.
 try{ensurePermissionState()}catch(e){console.warn(e)}
 wrapActions();
@@ -5892,6 +5899,15 @@ function laExpired(){var t=laGet();return !t||(Date.now()-t)>SIRTI_APP_KEEP_DAYS
 var persistReady=Promise.resolve(auth.setPersistence(isApp?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION)).then(function(){
   if(isApp&&laExpired()){return auth.signOut().catch(function(){})}
 }).catch(function(){});
+if(!isApp){
+  /* متصفح عادي (قد يكون جهازًا مشتركًا): خروج تلقائي بعد 30 دقيقة بلا أي نشاط */
+  var IDLE_MS=30*60*1000,idleT=null;
+  function idleArm(){clearTimeout(idleT);if(!auth.currentUser)return;idleT=setTimeout(function(){if(auth.currentUser){try{toast('انتهت الجلسة بسبب عدم النشاط')}catch(e){}setTimeout(function(){try{window.logout()}catch(e){}},400)}},IDLE_MS)}
+  var idleLast=0;function idleTouch(){var n=Date.now();if(n-idleLast<5000)return;idleLast=n;idleArm()}
+  ['pointerdown','keydown','touchstart','scroll','input'].forEach(function(ev){document.addEventListener(ev,idleTouch,{passive:true,capture:true})});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&auth.currentUser)idleArm()});
+  auth.onAuthStateChanged(function(u){if(u)idleArm();else clearTimeout(idleT)});
+}
 if(isApp){
   var laT=0;function touch(){var n=Date.now();if(n-laT<60000)return;laT=n;try{if(auth.currentUser)laSet()}catch(e){}}
   ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){document.addEventListener(ev,touch,{passive:true,capture:true})});
@@ -5909,13 +5925,14 @@ function memberCanEditStudents(){return !!me&&me.role==='teacher'&&memberCan('st
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function uKey(u){return String(u==null?'':u).trim().toLowerCase()}
 function okUser(u){return /^[a-z0-9][a-z0-9._-]{1,31}$/.test(u)}
-function newMail(key){return key.replace(/[^a-z0-9]/g,'')+'-'+Math.random().toString(36).slice(2,8)+Date.now().toString(36)+DOMAIN}
+function newMail(key){var r='';try{var u=new Uint32Array(3);crypto.getRandomValues(u);r=Array.prototype.map.call(u,function(x){return x.toString(36)}).join('').slice(0,12)}catch(e){r=Math.random().toString(36).slice(2,8)+Math.random().toString(36).slice(2,8)}return key.replace(/[^a-z0-9]/g,'')+'-'+r+Date.now().toString(36)+DOMAIN}
 function ckey(st){return String(st.grade||'')+'|'+String(st.section||'')}
 function sid(st){return String(st.id).replace(/\//g,'_')}
 function cleanSt(st){var c=clone(st);delete c.classKey;if(!c.grades||typeof c.grades!=='object')c.grades={};return c}
 function msg(e){var c=(e&&e.code)||'';
   if(c==='auth/too-many-requests')return 'محاولات كثيرة خاطئة. انتظر قليلًا ثم أعد المحاولة.';
   if(c==='auth/network-request-failed'||c==='unavailable'||c==='failed-precondition')return 'تعذر الاتصال بالخادم. تحقق من الإنترنت ثم أعد المحاولة.';
+  if(c==='auth/operation-not-supported-in-this-environment'||c==='auth/web-storage-unsupported')return 'هذا المتصفح لا يدعم تسجيل الدخول (قد يكون متصفح تطبيق مثل واتساب/تلغرام أو وضع التصفح الخاص). افتح الرابط من Safari أو Chrome مباشرة.';
   if(c==='auth/user-disabled')return 'الحساب معطّل.';
   if(c==='auth/weak-password')return 'كلمة المرور ضعيفة.';
   if(c==='auth/requires-recent-login')return 'لأسباب أمنية سجّل الخروج ثم ادخل من جديد وأعد المحاولة.';
@@ -7125,8 +7142,8 @@ function load(){
   var g,sec,sub;if(isT()){sub=fillSel('mcSubject',teacherSubjects());g=fillSel('mcGrade',teacherGradesFor(sub));sec=fillSel('mcSection',teacherSectionsFor(g,sub))}else{g=fillSel('mcGrade',gradesFor());sec=fillSel('mcSection',sectionsFor(g));sub=fillSel('mcSubject',subjectsFor(g,sec))}var tb=$('mcToolbar');if(tb)tb.classList.toggle('subj-first',isT());
   var ex=fillSel('mcExam',MONTHS().map(function(e){return {v:e.id,t:e.label}}));
   if(!g||!sec||!sub||!ex){S=null;$('mcBody').innerHTML='<div class="empty">لا توجد تكليفات مناسبة.</div>';$('mcCfg').innerHTML='';return}
-  var list=db.students.filter(function(s){return s.grade===g&&s.section===sec});
-  var cfg=findCfg(list,sub,ex),rows={},fold=false,hasSaved=list.some(function(st){var o=stored(st,sub,ex);return o&&o.c&&cfgOk(o.c)});
+  var all=db.students.filter(function(s){return s.grade===g&&s.section===sec}),list=all.filter(stActive);
+  var cfg=findCfg(all,sub,ex),rows={},fold=false,hasSaved=all.some(function(st){var o=stored(st,sub,ex);return o&&o.c&&cfgOk(o.c)});
   list.forEach(function(st){var o=stored(st,sub,ex),r={p:['','','',''],d:''};if(o){(o.p||[]).forEach(function(v,i){if(i<4&&v!=null)r.p[i]=String(v)});if(cfg.m.length===1&&(o.p||[]).length>1){fold=true;var t=0,any=false;r.p.forEach(function(v){var q=num(v);if(q!==null&&!isNaN(q)){t+=q;any=true}});r.p=[any?String(t):'','','','']}if(o.d!=null)r.d=String(o.d)}rows[st.id]=r});
   S={grade:g,section:sec,subject:sub,exam:ex,list:list,cfg:cfg,rows:rows,saved:hasSaved&&!fold?JSON.stringify(cfg):''};
   render();
@@ -7227,7 +7244,7 @@ function privClasses(all){
   return out}
 function fmt(v){return v===null||v===undefined||v===''||(typeof v==='number'&&isNaN(v))?'':arDigits(String(Math.round(v*100)/100))}
 function privPages(cl,sem,sub){
-  var list=db.students.filter(function(st){return st.grade===cl.g&&st.section===cl.s}).sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''),'ar')});
+  var list=db.students.filter(function(st){return st.grade===cl.g&&st.section===cl.s&&stActive(st)}).sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''),'ar')});
   var ids=sem===2?['c2m1','c2m2','c2m3']:['c1m1','c1m2','c1m3'];
   var groups=ids.map(function(id,gi){var c=findCfg(list,sub,id),cols=[],i;if(S&&cl.g===S.grade&&cl.s===S.section&&id===S.exam&&cfgOk(S.cfg))c=JSON.parse(JSON.stringify(S.cfg));
     for(i=0;i<c.m.length;i++)cols.push({t:(c.md==='a'?'الشهري':'جزء '+arDigits(i+1))+' ('+arDigits(c.m[i])+')',k:'p',i:i});
@@ -7314,6 +7331,12 @@ document.addEventListener('DOMContentLoaded',function(){fixNode(document.body)})
 var _tl=Date.prototype.toLocaleString;Date.prototype.toLocaleString=function(l,o){return toLat(_tl.call(this,l,o))};
 })();
 </script>
+<style id="sirti-v209-old-safari">
+/* دعم آيفون القديم: بدل inset وdvh */
+.login-screen{top:0;right:0;bottom:0;left:0}
+@supports not (height:100dvh){html body,html body .app{min-height:100vh!important}html body .login-screen{height:100vh!important;min-height:100vh!important}}
+@supports not (inset:0){html body .login-screen{top:0!important;right:0!important;bottom:0!important;left:0!important}}
+</style>
 <style id="sirti-v204-calc-layout">
 #monthlyCalc .mc-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;margin:14px 0 6px}
 #monthlyCalc .mc-f{display:flex;flex-direction:column;gap:4px;min-width:0;margin:0}
@@ -7384,6 +7407,8 @@ document.addEventListener('change',function(e){var t=e.target;if(!isT()||!t||!t.
 #monthlyCalc .mc-state.no{background:#fff3d6;color:#8a5a00}
 html body #gradeEntryTable .grade-last-edit,html body #monthlyCalc .grade-last-edit{display:flex!important;flex-wrap:wrap;gap:4px 8px;align-items:center;margin-top:3px!important;font-size:11px!important;font-weight:600;line-height:1.5}
 #gradeEntryTable .grade-name-line{display:inline}
+.st-off td{opacity:.55}.st-off-tag{display:inline-block;margin-inline-start:6px;padding:1px 8px;border-radius:999px;background:#fde8ea;color:#b8283b;font-size:11px;font-weight:800;vertical-align:middle}
+.table tr.st-off td{opacity:.6}
 #gradeEntryTable .gle-date,#monthlyCalc .gle-date{direction:rtl;unicode-bidi:isolate}
 #monthlyCalc .grade-last-edit{color:var(--muted,#7c8799)}
 #monthlyCalc .grade-last-edit-badge{border:1px solid #b8dfd1;background:#e9f8f2;color:#167552;border-radius:999px;padding:0 7px;font-size:10px}
