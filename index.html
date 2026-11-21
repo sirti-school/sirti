@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v212</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v214</span></div>
   </div>
 </div>
 <div class="app">
@@ -7401,7 +7401,7 @@ function attach(input,cands,pick){
   box.addEventListener('touchend',function(e){var it=e.target.closest('.ss-it');if(it){e.preventDefault();choose(+it.getAttribute('data-i'))}});
   document.addEventListener('click',function(e){if(!wrap.contains(e.target))close()})}
 function setSel(id,v){var e=$(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('change',{bubbles:true}))}
-function flash(sel){var tries=0;(function t(){var el=document.querySelector(sel);if(!el&&tries++<12)return setTimeout(t,120);if(!el)return;var tr=el.closest('tr')||el.closest('.mc-row')||el;tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');tr.scrollIntoView({behavior:'smooth',block:'center'});var inp=tr.querySelector('input:not([disabled])');if(inp&&!/Mobi|Android|iPhone/i.test(navigator.userAgent))try{inp.focus({preventScroll:true})}catch(e){}})()}
+function flash(sel){var tries=0;(function t(){var el=document.querySelector(sel);if(!el&&tries++<12)return setTimeout(t,120);if(!el)return;var tr=el.closest('tr')||el.closest('.mc-row')||el;tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit')},6500);tr.scrollIntoView({behavior:'smooth',block:'center'});var inp=tr.querySelector('input:not([disabled])');if(inp&&!/Mobi|Android|iPhone/i.test(navigator.userAgent))try{inp.focus({preventScroll:true})}catch(e){}})()}
 /* مرشّحو الطلاب لصفحات الدرجات: صفوف المدرس لهذه المادة، أو كل صفوف المادة للمالك/المدير */
 function scoped(subId){var sub=($(subId)||{}).value||'';
   if(isT()){var A={};teacherAssignments().forEach(function(a){if(a.subject===sub)A[a.grade+'|'+a.section]=1});return db.students.filter(function(s){return A[s.grade+'|'+s.section]})}
@@ -7420,7 +7420,7 @@ function init(){
     inp.value=st.name;flash('#mcBody .mc-row[data-st="'+String(st.id).replace(/"/g,'')+'"]')});
   var si=$('studentSearch');if(si&&!si.__ss){si.parentElement.style.position='relative';
     attach(si,function(){return db.students},function(st,inp){var g=$('studentGradeFilter'),sc=$('studentSectionFilter');if(g)g.value=st.grade;if(sc)sc.value=st.section;inp.value=st.name;try{renderStudents()}catch(e){}
-      setTimeout(function(){var b=document.querySelector('#studentsTable [onclick*="\''+String(st.id).replace(/["'\\]/g,'')+'\'"]');var tr=b&&b.closest('tr');if(tr){tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');tr.scrollIntoView({behavior:'smooth',block:'center'})}},150)})}
+      setTimeout(function(){var b=document.querySelector('#studentsTable [onclick*="\''+String(st.id).replace(/["'\\]/g,'')+'\'"]');var tr=b&&b.closest('tr');if(tr){tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit')},6500);tr.scrollIntoView({behavior:'smooth',block:'center'})}},150)})}
 }
 document.addEventListener('DOMContentLoaded',init);
 setInterval(function(){try{if(window.currentUser)init()}catch(e){}},1500);
@@ -7547,6 +7547,95 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)sync
 setTimeout(sync,1500);
 })();
 </script>
+<style id="sirti-v213-chart-edits">
+#homeChart .bar{position:relative}
+#homeChart .bar em{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;font-weight:800;color:var(--muted,#687386);white-space:nowrap}
+#homeChart .bar.zero{min-height:3px;opacity:.55}
+.ed-grp{border:1px solid var(--line,#e4e9f1);border-radius:12px;margin-bottom:8px;background:var(--card,#fff);overflow:hidden}
+.ed-h{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;font-family:inherit}
+.ed-h:focus-visible{outline:2px solid #3157d5;outline-offset:-2px}
+.ed-h .ed-nm{font-weight:800;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ed-h .ed-ct{font-size:10px;background:#e9edff;color:#3157d5;border-radius:12px;padding:3px 9px;font-weight:700;white-space:nowrap}
+.ed-h .ed-lt{font-size:10px;color:var(--muted,#7c8799);white-space:nowrap}
+.ed-h .ed-ch{transition:transform .2s;font-size:11px;color:var(--muted,#7c8799)}
+.ed-grp.open .ed-ch{transform:rotate(180deg)}
+.ed-body{display:none;border-top:1px solid var(--line,#e4e9f1)}
+.ed-grp.open .ed-body{display:block}
+.ed-body .table{min-width:560px}
+.ed-body .ed-more{padding:8px;text-align:center}
+@media(max-width:600px){.ed-h .ed-lt{display:none}}
+body.dark-mode .ed-grp{background:#0f1a2e;border-color:#2c3d5c}
+body.dark-mode .ed-h .ed-ct{background:#1c2b4a;color:#9db4ff}
+</style>
+<script id="sirti-v213-chart-edits-js">
+(function(){
+'use strict';
+function $(i){return document.getElementById(i)}
+function esc2(s){return typeof esc==='function'?esc(s):String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function exIds(){return(typeof exams!=='undefined'?exams:[]).map(function(e){return e.id})}
+/* ===== نسبة إدخال الدرجات: على كل المواد وكل الطلاب النشطين ===== */
+function entered(st,sub,ids){var o=st.grades&&st.grades[sub];if(!o||typeof o!=='object')return false;
+  for(var i=0;i<ids.length;i++){var v=o[ids[i]];if(v===undefined||v===null||v==='')continue;var n=Number(typeof toLatin==='function'?toLatin(v):v);if(isFinite(n))return true}return false}
+function chartData(){
+  var u=window.currentUser,ids=exIds(),teacher=u&&u.role==='teacher',out=[];
+  var asg=teacher&&typeof teacherAssignments==='function'?teacherAssignments():null;
+  (typeof gradesList!=='undefined'?gradesList:[]).forEach(function(g){
+    var exp=0,fil=0;
+    var act=db.students.filter(function(s){return s.grade===g&&(typeof stActive==='function'?stActive(s):true)});
+    if(teacher){(asg||[]).forEach(function(a){if(a.grade!==g)return;act.forEach(function(s){if(s.section!==a.section)return;exp++;if(entered(s,a.subject,ids))fil++})})}
+    else{var subs=(db.subjects&&db.subjects[g])||[];act.forEach(function(s){subs.forEach(function(sb){exp++;if(entered(s,sb,ids))fil++})})}
+    if(teacher&&!exp)return;
+    out.push({g:g,exp:exp,fil:fil,p:exp?Math.round(fil/exp*100):0})});
+  return out}
+function renderChart(){var box=$('homeChart');if(!box||!window.db||!db.students)return;
+  var d=chartData();
+  box.innerHTML=d.length?d.map(function(x){
+    var lab=String(x.g).replace('المتوسط','').replace('الإعدادي','').trim();
+    return '<div class="bar'+(x.p?'':' zero')+'" style="height:'+Math.max(3,x.p)+'%" title="'+esc2(x.g)+': '+x.fil+' من '+x.exp+'"><em>'+x.p+'٪</em><span>'+esc2(lab)+'</span></div>'}).join(''):'<div class="empty">لا توجد بيانات</div>';
+  if(typeof applyArabicDigits==='function')try{applyArabicDigits(box)}catch(e){}}
+/* ===== سجل التعديلات للمالك: مجمَّع حسب المدرس ===== */
+var OPEN={},SHOW={},STEP=10;
+function exLab(id){var e=(typeof exams!=='undefined'?exams:[]).filter(function(x){return x.id===id})[0];return e?String(e.label).split(' — ')[0]:id}
+function collect(){var out=[];db.students.forEach(function(st){var g=st.grades||{};Object.keys(g).forEach(function(sub){var o=g[sub];if(!o||typeof o!=='object')return;
+  Object.keys(o).forEach(function(k){if(k.indexOf('_a_')!==0)return;var a=o[k];if(!a||!a.at)return;var ex=k.slice(3),v=o[ex];
+    out.push({at:a.at,who:a.n||a.u||'—',key:a.u||a.n||'—',role:a.r||'',st:st.name,grade:st.grade,section:st.section,sub:sub,ex:ex,val:typeof v==='number'?v:null})})})});return out}
+function fv(v){return v==null?'—':String(Math.round(v*100)/100)}
+function renderOwnerEdits(){
+  var card=$('homeEditsCard'),box=$('homeEdits');if(!card||!box||!window.currentUser||currentUser.role!=='owner')return;
+  var fd=typeof formatAuditDate==='function'?formatAuditDate:function(x){return x};
+  var list=collect(),G={};list.forEach(function(r){(G[r.key]=G[r.key]||{name:r.who,rows:[]}).rows.push(r)});
+  var gs=Object.keys(G).map(function(k){var g=G[k];g.key=k;g.rows.sort(function(a,b){return String(b.at).localeCompare(String(a.at))});g.last=g.rows[0].at;return g});
+  gs.sort(function(a,b){return String(b.last).localeCompare(String(a.last))});
+  var t=$('homeEditsTitle');if(t)t.textContent='آخر التعديلات والدرجات المُدخلة';
+  var sub=$('homeEditsSub');if(sub)sub.textContent=gs.length?(gs.length+' مدرس — الأحدث تعديلًا أولًا'):'';
+  var mo=$('homeEditsMore');if(mo)mo.hidden=true;
+  box.innerHTML=gs.length?gs.map(function(g,i){
+    var n=SHOW[g.key]||STEP,rows=g.rows.slice(0,n),open=!!OPEN[g.key];
+    return '<div class="ed-grp'+(open?' open':'')+'" data-k="'+esc2(encodeURIComponent(g.key))+'">'+
+      '<button type="button" class="ed-h" aria-expanded="'+open+'"><span class="ed-nm">'+esc2(g.name)+'</span><span class="ed-ct">'+g.rows.length+' عملية</span><span class="ed-lt">آخر تعديل: '+esc2(fd(g.last))+'</span><span class="ed-ch">▼</span></button>'+
+      '<div class="ed-body"><div class="table-wrap edits-wrap"><table class="table"><thead><tr><th>التاريخ والوقت</th><th>الصف</th><th>المادة</th><th>الامتحان</th><th>الطالب</th><th>الدرجة</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr><td>'+esc2(fd(r.at))+'</td><td>'+esc2(r.grade)+' / '+esc2(r.section)+'</td><td>'+esc2(r.sub)+'</td><td>'+esc2(exLab(r.ex))+'</td><td>'+esc2(r.st)+'</td><td>'+esc2(fv(r.val))+'</td></tr>'}).join('')+
+      '</tbody></table></div>'+(g.rows.length>n?'<div class="ed-more"><button type="button" class="btn light ed-mb">عرض المزيد ('+(g.rows.length-n)+')</button></div>':'')+'</div></div>'}).join(''):'<div class="empty">لا توجد تعديلات مسجَّلة بعد.</div>';
+  if(typeof applyArabicDigits==='function')try{applyArabicDigits(box)}catch(e){}}
+document.addEventListener('click',function(e){
+  var h=e.target.closest&&e.target.closest('#homeEdits .ed-h'),mb=e.target.closest&&e.target.closest('#homeEdits .ed-mb');
+  if(h){var g=h.parentElement,k=decodeURIComponent(g.getAttribute('data-k')),on=!g.classList.contains('open');g.classList.toggle('open',on);h.setAttribute('aria-expanded',on);if(on)OPEN[k]=1;else delete OPEN[k]}
+  else if(mb){var g2=mb.closest('.ed-grp'),k2=decodeURIComponent(g2.getAttribute('data-k'));SHOW[k2]=(SHOW[k2]||STEP)+STEP;OPEN[k2]=1;renderOwnerEdits()}});
+var oRH=window.renderHome;
+window.renderHome=function(){var r=typeof oRH==='function'?oRH.apply(this,arguments):undefined;try{renderChart();renderOwnerEdits()}catch(e){}return r};
+window.sirtiRenderHomeChart=renderChart;
+})();
+</script>
+<style id="sirti-v214-hit">
+tr.ss-hit>td,tr.ss-hit>th,.mc-row.ss-hit,.mc-row.ss-hit>*{animation:none!important;background:#ffe36e!important;color:#1b2440!important;font-weight:800!important;box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900!important}
+tr.ss-hit>td:first-child,.mc-row.ss-hit{box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900,inset -4px 0 0 #e8a900!important}
+tr.ss-hit>td:last-child{box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900,inset 4px 0 0 #e8a900!important}
+tr.ss-hit input,.mc-row.ss-hit input{background:#fff!important;color:#111!important}
+tr.ss-hit{animation:ssPulse 1s ease-in-out 3}
+@keyframes ssPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
+body.dark-mode tr.ss-hit>td,body.dark-mode tr.ss-hit>th,body.dark-mode .mc-row.ss-hit,body.dark-mode .mc-row.ss-hit>*{background:#8a6600!important;color:#fff!important}
+@media(prefers-reduced-motion:reduce){tr.ss-hit{animation:none}}
+</style>
 </body>
 
 </html>
