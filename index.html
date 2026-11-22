@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v214</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v217</span></div>
   </div>
 </div>
 <div class="app">
@@ -7401,7 +7401,7 @@ function attach(input,cands,pick){
   box.addEventListener('touchend',function(e){var it=e.target.closest('.ss-it');if(it){e.preventDefault();choose(+it.getAttribute('data-i'))}});
   document.addEventListener('click',function(e){if(!wrap.contains(e.target))close()})}
 function setSel(id,v){var e=$(id);if(!e)return;e.value=v;e.dispatchEvent(new Event('change',{bubbles:true}))}
-function flash(sel){var tries=0;(function t(){var el=document.querySelector(sel);if(!el&&tries++<12)return setTimeout(t,120);if(!el)return;var tr=el.closest('tr')||el.closest('.mc-row')||el;tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit')},6500);tr.scrollIntoView({behavior:'smooth',block:'center'});var inp=tr.querySelector('input:not([disabled])');if(inp&&!/Mobi|Android|iPhone/i.test(navigator.userAgent))try{inp.focus({preventScroll:true})}catch(e){}})()}
+function flash(sel){var tries=0;(function t(){var el=document.querySelector(sel);if(!el&&tries++<12)return setTimeout(t,120);if(!el)return;var tr=el.closest('tr')||el.closest('.mc-row')||el;tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.classList.remove('ss-out');tr.__ssT=setTimeout(function(){tr.classList.add('ss-out');tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit','ss-out')},650)},5800);tr.scrollIntoView({behavior:'smooth',block:'center'});var inp=tr.querySelector('input:not([disabled])');if(inp&&!/Mobi|Android|iPhone/i.test(navigator.userAgent))try{inp.focus({preventScroll:true})}catch(e){}})()}
 /* مرشّحو الطلاب لصفحات الدرجات: صفوف المدرس لهذه المادة، أو كل صفوف المادة للمالك/المدير */
 function scoped(subId){var sub=($(subId)||{}).value||'';
   if(isT()){var A={};teacherAssignments().forEach(function(a){if(a.subject===sub)A[a.grade+'|'+a.section]=1});return db.students.filter(function(s){return A[s.grade+'|'+s.section]})}
@@ -7420,7 +7420,7 @@ function init(){
     inp.value=st.name;flash('#mcBody .mc-row[data-st="'+String(st.id).replace(/"/g,'')+'"]')});
   var si=$('studentSearch');if(si&&!si.__ss){si.parentElement.style.position='relative';
     attach(si,function(){return db.students},function(st,inp){var g=$('studentGradeFilter'),sc=$('studentSectionFilter');if(g)g.value=st.grade;if(sc)sc.value=st.section;inp.value=st.name;try{renderStudents()}catch(e){}
-      setTimeout(function(){var b=document.querySelector('#studentsTable [onclick*="\''+String(st.id).replace(/["'\\]/g,'')+'\'"]');var tr=b&&b.closest('tr');if(tr){tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit')},6500);tr.scrollIntoView({behavior:'smooth',block:'center'})}},150)})}
+      setTimeout(function(){var b=document.querySelector('#studentsTable [onclick*="\''+String(st.id).replace(/["'\\]/g,'')+'\'"]');var tr=b&&b.closest('tr');if(tr){tr.classList.remove('ss-hit');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.classList.remove('ss-out');tr.__ssT=setTimeout(function(){tr.classList.add('ss-out');tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit','ss-out')},650)},5800);tr.scrollIntoView({behavior:'smooth',block:'center'})}},150)})}
 }
 document.addEventListener('DOMContentLoaded',init);
 setInterval(function(){try{if(window.currentUser)init()}catch(e){}},1500);
@@ -7627,14 +7627,26 @@ window.sirtiRenderHomeChart=renderChart;
 })();
 </script>
 <style id="sirti-v214-hit">
-tr.ss-hit>td,tr.ss-hit>th,.mc-row.ss-hit,.mc-row.ss-hit>*{animation:none!important;background:#ffe36e!important;color:#1b2440!important;font-weight:800!important;box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900!important}
-tr.ss-hit>td:first-child,.mc-row.ss-hit{box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900,inset -4px 0 0 #e8a900!important}
-tr.ss-hit>td:last-child{box-shadow:inset 0 3px 0 #e8a900,inset 0 -3px 0 #e8a900,inset 4px 0 0 #e8a900!important}
-tr.ss-hit input,.mc-row.ss-hit input{background:#fff!important;color:#111!important}
-tr.ss-hit{animation:ssPulse 1s ease-in-out 3}
-@keyframes ssPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
-body.dark-mode tr.ss-hit>td,body.dark-mode tr.ss-hit>th,body.dark-mode .mc-row.ss-hit,body.dark-mode .mc-row.ss-hit>*{background:#8a6600!important;color:#fff!important}
-@media(prefers-reduced-motion:reduce){tr.ss-hit{animation:none}}
+:root{--hit-tint:rgba(232,169,0,.16);--hit-tint2:rgba(232,169,0,.30);--hit-line:#d99a00;--hit-glow:rgba(217,154,0,.28);--hit-card:#ffe9a6}
+body.dark-mode{--hit-tint:rgba(255,196,46,.14);--hit-tint2:rgba(255,196,46,.28);--hit-line:#ffc42e;--hit-glow:rgba(255,196,46,.32);--hit-card:#4a3a0e}
+@media screen and (min-width:861px){
+tr.ss-hit>td,tr.ss-hit>th{animation:none!important;transition:box-shadow .6s ease!important;box-shadow:inset 0 0 0 100vmax var(--hit-tint),inset 0 2px 0 var(--hit-line),inset 0 -2px 0 var(--hit-line)!important}
+tr.ss-hit>td:first-child{box-shadow:inset 0 0 0 100vmax var(--hit-tint2),inset 0 2px 0 var(--hit-line),inset 0 -2px 0 var(--hit-line),inset -6px 0 0 var(--hit-line)!important;font-weight:800}
+tr.ss-hit>td:last-child{box-shadow:inset 0 0 0 100vmax var(--hit-tint),inset 0 2px 0 var(--hit-line),inset 0 -2px 0 var(--hit-line),inset 2px 0 0 var(--hit-line)!important}
+tr.ss-hit.ss-out>td,tr.ss-hit.ss-out>th{box-shadow:inset 0 0 0 100vmax transparent,inset 0 2px 0 transparent,inset 0 -2px 0 transparent!important}
+}
+/* الهاتف: البطاقة كاملة هي التي تُظلَّل */
+@media screen and (max-width:860px){
+html body #gradeEntryTable table.table tr.ss-hit{background:var(--hit-card)!important;border-color:var(--hit-line)!important;box-shadow:0 0 0 3px var(--hit-glow),0 8px 20px var(--hit-glow),inset -6px 0 0 var(--hit-line)!important;animation:ssPop .45s cubic-bezier(.2,.9,.3,1.2) 1;transition:background .6s ease,box-shadow .6s ease,border-color .6s ease}
+html body #gradeEntryTable table.table tr.ss-hit.ss-out{background:revert-layer;box-shadow:0 0 0 0 transparent!important;border-color:transparent!important}
+html body #gradeEntryTable table.table tr.ss-hit>td{box-shadow:none!important;background:transparent!important}
+tr.ss-hit:not(#x)>td{box-shadow:none}
+}
+@keyframes ssPop{0%{transform:scale(.97)}60%{transform:scale(1.015)}100%{transform:scale(1)}}
+.mc-row.ss-hit{animation:ssPop .45s ease 1;background:var(--hit-card)!important;border-radius:12px;box-shadow:inset -6px 0 0 var(--hit-line),0 0 0 3px var(--hit-glow),0 8px 20px var(--hit-glow)!important;transition:box-shadow .6s ease,background .6s ease}
+.mc-row.ss-hit.ss-out{background:transparent!important;box-shadow:0 0 0 0 transparent!important}
+tr.ss-hit input:not([disabled]),.mc-row.ss-hit input:not([disabled]){border-color:var(--hit-line)!important;box-shadow:0 0 0 3px var(--hit-glow)!important}
+@media(prefers-reduced-motion:reduce){tr.ss-hit,.mc-row.ss-hit{animation:none!important}}
 </style>
 </body>
 
