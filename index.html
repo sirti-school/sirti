@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v224</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v225</span></div>
   </div>
 </div>
 <div class="app">
@@ -7651,7 +7651,7 @@ tr.ss-hit input:not([disabled]),.mc-row.ss-hit input:not([disabled]){border-colo
 </style>
 <style id="sirti-v219-sticky-search">
 @media screen{html,html body:not(.app-locked),html body .app,html body main,html body #monthlyCalc,html body #monthlyCalc>.card{overflow-x:clip!important;overflow-y:visible!important}}
-#ssGrades,#ssCalc{position:-webkit-sticky;position:sticky;top:8px;z-index:60;max-width:none;margin:10px 0 12px;padding:8px;border-radius:16px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line,#dfe5ee);box-shadow:0 6px 22px rgba(20,30,60,.12)}
+#ssGrades,#ssCalc{position:-webkit-sticky;position:sticky;top:calc(8px + var(--vvt,0px));z-index:60;max-width:none;margin:10px 0 12px;padding:8px;border-radius:16px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line,#dfe5ee);box-shadow:0 6px 22px rgba(20,30,60,.12)}
 #ssGrades input.ss-in,#ssCalc input.ss-in{height:44px}
 body.dark-mode #ssGrades,body.dark-mode #ssCalc{background:rgba(12,22,40,.9);border-color:#2c3d5c;box-shadow:0 6px 22px rgba(0,0,0,.4)}
 #ssGrades .ss-list,#ssCalc .ss-list{z-index:61}
@@ -7668,10 +7668,21 @@ document.documentElement.classList.add('no-clip');
 function upd(){['ssGrades','ssCalc'].forEach(function(id){var el=document.getElementById(id);if(!el||el.offsetParent===null)return;
   var cur=parseFloat(el.getAttribute('data-ty')||'0'),r=el.getBoundingClientRect(),nat=r.top-cur;
   var par=el.parentElement,pb=par?par.getBoundingClientRect().bottom:1e9;
-  var ty=Math.max(0,8-nat),maxTy=Math.max(0,pb-(nat+el.offsetHeight)-4);if(ty>maxTy)ty=maxTy;ty=Math.round(ty);
+  var vt=(window.visualViewport&&window.visualViewport.offsetTop)||0;var ty=Math.max(0,8+vt-nat),maxTy=Math.max(0,pb-(nat+el.offsetHeight)-4);if(ty>maxTy)ty=maxTy;ty=Math.round(ty);
   if(ty!==cur){el.setAttribute('data-ty',ty);el.style.transform=ty?'translateY('+ty+'px)':''}})}
 var t=0;function sch(){if(t)return;t=requestAnimationFrame(function(){t=0;try{upd()}catch(e){}})}
 window.addEventListener('scroll',sch,{passive:true});window.addEventListener('resize',sch);setInterval(sch,500);
+})();
+</script>
+<script id="sirti-v225-vv">
+(function(){
+'use strict';
+var vv=window.visualViewport;if(!vv)return;
+var t=0;function set(){t=0;try{var o=Math.max(0,Math.round(vv.offsetTop||0));document.documentElement.style.setProperty('--vvt',o+'px')}catch(e){}}
+function sch(){if(!t)t=requestAnimationFrame(set)}
+vv.addEventListener('resize',sch);vv.addEventListener('scroll',sch);window.addEventListener('scroll',sch,{passive:true});
+document.addEventListener('focusin',function(){setTimeout(set,150);setTimeout(set,500);setTimeout(set,1000)});
+document.addEventListener('focusout',function(){setTimeout(set,200)});
 })();
 </script>
 </body>
