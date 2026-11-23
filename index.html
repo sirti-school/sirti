@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v222</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v223</span></div>
   </div>
 </div>
 <div class="app">
@@ -7656,163 +7656,22 @@ tr.ss-hit input:not([disabled]),.mc-row.ss-hit input:not([disabled]){border-colo
 body.dark-mode #ssGrades,body.dark-mode #ssCalc{background:rgba(12,22,40,.9);border-color:#2c3d5c;box-shadow:0 6px 22px rgba(0,0,0,.4)}
 #ssGrades .ss-list,#ssCalc .ss-list{z-index:61}
 </style>
-<style id="sirti-v221-nav">
-:root{--nv-bg:rgba(255,255,255,.92);--nv-line:#e1e7f0;--nv-mut:#7b879c;--nv-acc:#d99a00;--nv-act:#1f3a7a;--nv-actbg:#e9eefc;--nv-shadow:0 -6px 24px rgba(20,30,60,.10);--nv-card:#fff;--nv-text:#1b2540}
-body.dark-mode{--nv-bg:rgba(12,22,40,.94);--nv-line:#243656;--nv-mut:#93a3c0;--nv-acc:#ffc42e;--nv-act:#ffd877;--nv-actbg:#1b2c4d;--nv-shadow:0 -6px 24px rgba(0,0,0,.45);--nv-card:#101c31;--nv-text:#eef2ff}
-.sv{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
-.nav button i .sv{width:20px;height:20px}
-.nav button.active{position:relative}
-.nav button.active::after{content:"";position:absolute;inset-block:8px;inset-inline-end:0;width:4px;border-radius:4px;background:var(--nv-acc)}
-/* شريط التنقل السفلي (الهاتف) */
-#sirtiBN{display:none}
-@media screen and (max-width:860px){
-#sirtiBN{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:900;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));gap:4px;background:var(--nv-bg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--nv-line);box-shadow:var(--nv-shadow)}
-#sirtiBN button{all:unset;box-sizing:border-box;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 6px;border-radius:14px;color:var(--nv-mut);font:700 10.5px/1.1 inherit;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .18s,color .18s,transform .12s}
-#sirtiBN button .sv{width:23px;height:23px}
-#sirtiBN button:active{transform:scale(.94)}
-#sirtiBN button.on{color:var(--nv-act);background:var(--nv-actbg)}
-#sirtiBN button.on .sv{stroke-width:2.2}
-#sirtiBN button:focus-visible{outline:2px solid var(--nv-acc)}
-body:not(.app-locked){padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
-body.sbn-hide #sirtiBN{display:none}
-body.app-locked #sirtiBN{display:none}
-.mobile-menu-toggle{display:none!important}
-}
-@media(prefers-reduced-motion:reduce){#sirtiBN button{transition:none}}
-/* زر البحث العام */
-#sirtiGsBtn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;min-width:40px;padding:0 12px;border-radius:12px;border:1px solid var(--nv-line);background:var(--nv-card);color:var(--nv-text);cursor:pointer;font:700 12px/1 inherit;font-family:inherit}
-#sirtiGsBtn kbd{font:600 10px/1 inherit;font-family:inherit;color:var(--nv-mut);border:1px solid var(--nv-line);border-radius:6px;padding:2px 5px}
-#sirtiGsBtn:hover{border-color:var(--nv-acc)}
-#sirtiGsBtn:focus-visible{outline:2px solid var(--nv-acc)}
-@media(max-width:860px){#sirtiGsBtn span,#sirtiGsBtn kbd{display:none}#sirtiGsBtn{padding:0;width:40px}}
-#sirtiGS{position:fixed;inset:0;z-index:5000;display:none;background:rgba(10,18,36,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:max(16px,env(safe-area-inset-top,0px)) 14px 14px}
-#sirtiGS.open{display:block}
-#sirtiGS .gs-box{max-width:620px;margin:6vh auto 0;background:var(--nv-card);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;animation:gsIn .18s ease}
-@keyframes gsIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
-#sirtiGS .gs-in{display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--nv-line)}
-#sirtiGS .gs-in input{all:unset;flex:1;height:56px;font:600 16px/1 inherit;font-family:inherit;color:var(--nv-text)}
-html body #sirtiGS .gs-in input,html body #sirtiGS .gs-in input:focus{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:0!important;outline:0!important;height:56px!important;color:var(--nv-text)!important;-webkit-appearance:none}
-#sirtiGS .gs-in input::-webkit-search-cancel-button,#sirtiGS .gs-in input::-webkit-search-decoration{-webkit-appearance:none;display:none}
-#sirtiGS .gs-in input::placeholder{color:var(--nv-mut)}
-#sirtiGS .gs-x{all:unset;cursor:pointer;color:var(--nv-mut);padding:8px;font-size:18px}
-#sirtiGS .gs-res{max-height:60vh;overflow:auto;padding:6px}
-#sirtiGS .gs-h{font-size:11px;font-weight:800;color:var(--nv-mut);padding:10px 12px 4px}
-#sirtiGS .gs-it{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;cursor:pointer}
-#sirtiGS .gs-it.sel,#sirtiGS .gs-it:hover{background:var(--nv-actbg)}
-#sirtiGS .gs-it b{font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#sirtiGS .gs-it small{color:var(--nv-mut);font-size:11px;white-space:nowrap}
-#sirtiGS .gs-it .sv{color:var(--nv-act);width:20px;height:20px}
-#sirtiGS .gs-empty{padding:26px;text-align:center;color:var(--nv-mut);font-size:13px}
-/* بطاقة «ماذا ينقصك اليوم؟» */
-#homeToday{margin:0 0 16px;padding:18px;border-radius:20px;background:var(--nv-card);border:1px solid var(--nv-line);box-shadow:0 8px 26px rgba(20,30,60,.07);color:var(--nv-text)}
-#homeToday h3{margin:0 0 4px;font-size:16px}
-#homeToday .ht-sub{font-size:12px;color:var(--nv-mut);margin-bottom:12px}
-#homeToday .ht-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--nv-actbg);margin-top:8px}
-#homeToday .ht-main{flex:1;min-width:0}
-#homeToday .ht-main b{display:block;font-size:13.5px}
-#homeToday .ht-main small{color:var(--nv-mut);font-size:11px}
-#homeToday .ht-bar{height:7px;border-radius:6px;background:rgba(120,135,170,.25);margin-top:7px;overflow:hidden}
-#homeToday .ht-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#d99a00,#ffc42e);transition:width .4s}
-#homeToday button{all:unset;cursor:pointer;flex:0 0 auto;padding:9px 14px;border-radius:12px;background:var(--nv-act);color:#fff;font:700 12px/1 inherit;font-family:inherit}
-body.dark-mode #homeToday button{background:#ffc42e;color:#1b2540}
-#homeToday button:focus-visible{outline:2px solid var(--nv-acc);outline-offset:2px}
-#homeToday .ht-done{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(23,166,115,.12);color:#17a673;font-weight:800;font-size:13px}
+<style id="sirti-v223-pin">
+html.no-clip #ssGrades,html.no-clip #ssCalc{position:relative!important;z-index:700;will-change:transform}
 </style>
-<script id="sirti-v221-nav-js">
+<script id="sirti-v223-pin-js">
 (function(){
 'use strict';
-function $(i){return document.getElementById(i)}
-function esc2(s){return typeof esc==='function'?esc(s):String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-var P={
-home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
-students:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
-teachers:'<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><path d="M16 5.5a3 3 0 0 1 0 5.5M18 14.5c1.8.7 3 2.3 3 4.5"/>',
-classes:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
-subjects:'<path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h10"/>',
-grades:'<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17Z"/><path d="m14 8 3 3"/>',
-monthlyCalc:'<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/>',
-teacherStats:'<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
-teacherRegister:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
-control:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/>',
-reports:'<path d="M7 3h8l4 4v14H7Z"/><path d="M15 3v4h4M10 12h6M10 16h6"/>',
-slips:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6"/>',
-settings:'<circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/>',
-account:'<circle cx="12" cy="9" r="3.5"/><path d="M5 20c.6-3.4 3.4-5.5 7-5.5s6.4 2.1 7 5.5"/><circle cx="12" cy="12" r="10"/>',
-more:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
-search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>',
-page:'<path d="M7 3h8l4 4v14H7Z"/><path d="M15 3v4h4"/>'};
-function ic(k){return '<svg class="sv" viewBox="0 0 24 24" aria-hidden="true">'+(P[k]||P.page)+'</svg>'}
-var LAB={home:'الرئيسية',grades:'الدرجات',students:'الطلاب',monthlyCalc:'الحاسب'};
-function navBtn(v){var b=document.querySelector('.nav button[onclick*="show(\''+v+'\'"]');return b}
-function allowed(v){var b=navBtn(v);if(!b)return false;return getComputedStyle(b).display!=='none'&&b.style.display!=='none'&&b.getAttribute('aria-hidden')!=='true'}
-function curView(){var s=document.querySelector('main > section.view.active');return s?s.id:'home'}
-/* استبدال الإيموجي بأيقونات موحدة */
-function iconize(){[].forEach.call(document.querySelectorAll('.nav button'),function(b){var m=(b.getAttribute('onclick')||'').match(/show\('(\w+)'/);var i=b.querySelector('i');if(m&&i&&!i.__sv){i.innerHTML=ic(m[1]);i.__sv=1}})}
-/* الشريط السفلي */
-function buildBN(){var bn=$('sirtiBN');if(!bn){bn=document.createElement('nav');bn.id='sirtiBN';bn.setAttribute('aria-label','التنقل السريع');document.body.appendChild(bn);
-  bn.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var v=b.getAttribute('data-v');if(v==='more'){if(typeof toggleMobileMenu==='function')toggleMobileMenu()}else if(typeof show==='function')show(v)})}
-  var items=['home','grades','students','monthlyCalc'].filter(allowed).slice(0,4);var cur=curView(),html='';
-  items.forEach(function(v){html+='<button type="button" data-v="'+v+'" class="'+(v===cur?'on':'')+'" aria-label="'+LAB[v]+'">'+ic(v)+'<span>'+LAB[v]+'</span></button>'});
-  html+='<button type="button" data-v="more" aria-label="المزيد">'+ic('more')+'<span>المزيد</span></button>';
-  if(bn.__h!==html+cur){bn.innerHTML=html;bn.__h=html+cur}}
-document.addEventListener('focusin',function(e){var t=e.target;if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)&&window.innerWidth<=860)document.body.classList.add('sbn-hide')});
-document.addEventListener('focusout',function(){setTimeout(function(){var a=document.activeElement;if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))document.body.classList.remove('sbn-hide')},120)});
-/* البحث العام */
-var gs=null,gsSel=0,gsItems=[];
-function norm(s){return String(s||'').replace(/[ً-ْـ]/g,'').replace(/[إأآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').toLowerCase().trim()}
-function pages(){var out=[];[].forEach.call(document.querySelectorAll('.nav button'),function(b){var m=(b.getAttribute('onclick')||'').match(/show\('(\w+)'/);if(!m||!allowed(m[1]))return;var sp=b.querySelector('span');out.push({t:'p',v:m[1],name:sp?sp.textContent:m[1]})});return out}
-function openGS(){if(!window.currentUser)return;if(!gs){gs=document.createElement('div');gs.id='sirtiGS';gs.setAttribute('role','dialog');gs.setAttribute('aria-modal','true');gs.setAttribute('aria-label','بحث');
-  gs.innerHTML='<div class="gs-box"><div class="gs-in">'+ic('search')+'<input type="search" id="gsInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ابحث عن طالب أو صفحة…" aria-label="بحث"><button type="button" class="gs-x" aria-label="إغلاق">✕</button></div><div class="gs-res" id="gsRes" role="listbox"></div></div>';document.body.appendChild(gs);
-  gs.addEventListener('mousedown',function(e){if(e.target===gs)closeGS()});gs.querySelector('.gs-x').addEventListener('click',closeGS);
-  var inp=gs.querySelector('input');inp.addEventListener('input',function(){gsSel=0;drawGS()});
-  inp.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){e.preventDefault();gsSel=Math.min(gsItems.length-1,gsSel+1);markSel()}else if(e.key==='ArrowUp'){e.preventDefault();gsSel=Math.max(0,gsSel-1);markSel()}else if(e.key==='Enter'){e.preventDefault();if(gsItems[gsSel])pick(gsItems[gsSel])}else if(e.key==='Escape')closeGS()});
-  gs.querySelector('#gsRes').addEventListener('click',function(e){var it=e.target.closest('.gs-it');if(it)pick(gsItems[+it.getAttribute('data-i')])})}
-  gs.classList.add('open');var i=gs.querySelector('input');i.value='';gsSel=0;drawGS();setTimeout(function(){i.focus()},30)}
-function closeGS(){if(gs)gs.classList.remove('open')}
-function markSel(){[].forEach.call(gs.querySelectorAll('.gs-it'),function(n,i){n.classList.toggle('sel',i===gsSel);if(i===gsSel&&n.scrollIntoView)n.scrollIntoView({block:'nearest'})})}
-function drawGS(){var q=norm(gs.querySelector('input').value),res=gs.querySelector('#gsRes');gsItems=[];var html='';
-  var pg=pages().filter(function(p){return !q||norm(p.name).indexOf(q)>=0}).slice(0,q?5:8);
-  var st=[];if(q&&window.db&&db.students){var a=[],b=[];db.students.forEach(function(s){var n=norm(s.name),i=n.indexOf(q);if(i===0||n.indexOf(' '+q)>=0)a.push(s);else if(i>0)b.push(s)});st=a.concat(b).slice(0,12)}
-  var k=0;
-  if(st.length){html+='<div class="gs-h">طلاب</div>';st.forEach(function(s){gsItems.push({t:'s',s:s});html+='<div class="gs-it" role="option" data-i="'+(k++)+'">'+ic('students')+'<b>'+esc2(s.name)+'</b><small>'+esc2(s.grade)+' / '+esc2(s.section)+'</small></div>'})}
-  if(pg.length){html+='<div class="gs-h">'+(q?'صفحات':'انتقال سريع')+'</div>';pg.forEach(function(p){gsItems.push(p);html+='<div class="gs-it" role="option" data-i="'+(k++)+'">'+ic(p.v)+'<b>'+esc2(p.name)+'</b></div>'})}
-  res.innerHTML=html||'<div class="gs-empty">لا توجد نتائج</div>';markSel()}
-function setSel(id,v){var e=$(id);if(!e||e.value===v)return;e.value=v;e.dispatchEvent(new Event('change',{bubbles:true}))}
-function hit(tr){if(!tr)return;tr.classList.remove('ss-hit','ss-out');void tr.offsetWidth;tr.classList.add('ss-hit');clearTimeout(tr.__ssT);tr.__ssT=setTimeout(function(){tr.classList.add('ss-out');tr.__ssT=setTimeout(function(){tr.classList.remove('ss-hit','ss-out')},650)},5800);tr.scrollIntoView({behavior:'smooth',block:'center'})}
-function pick(it){closeGS();if(!it)return;
-  if(it.t==='p'){show(it.v);return}
-  var s=it.s;
-  if(allowed('grades')){show('grades');setSel('gradeEntryGrade',s.grade);setSel('gradeEntrySection',s.section);
-    setTimeout(function(){var tr=document.querySelector('#gradeEntryTable [data-student="'+String(s.id).replace(/"/g,'')+'"]');tr=tr&&(tr.closest('tr')||tr);hit(tr)},350)}
-  else if(allowed('students')){show('students');var si=$('studentSearch');if(si){si.value=s.name;si.dispatchEvent(new Event('input',{bubbles:true}))}}}
-document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='k'){e.preventDefault();openGS()}else if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'')&&window.currentUser){e.preventDefault();openGS()}});
-function mountBtn(){if($('sirtiGsBtn'))return;var top=document.querySelector('.top');if(!top)return;var b=document.createElement('button');b.id='sirtiGsBtn';b.type='button';b.setAttribute('aria-label','بحث');b.innerHTML=ic('search')+'<span>بحث</span><kbd>Ctrl K</kbd>';b.addEventListener('click',openGS);var u=$('topUserAccountShortcut');if(u&&u.parentNode===top)top.insertBefore(b,u);else top.appendChild(b)}
-/* ماذا ينقصك اليوم؟ */
-function entered(st,sub,ids){var o=st.grades&&st.grades[sub];if(!o||typeof o!=='object')return false;for(var i=0;i<ids.length;i++){var v=o[ids[i]];if(v!==undefined&&v!==null&&v!==''&&isFinite(Number(v)))return true}return false}
-function exIds(){return(typeof exams!=='undefined'?exams:[]).map(function(e){return e.id})}
-function todayData(){var u=window.currentUser,ids=exIds(),rows=[];if(!u||!window.db)return rows;
-  var act=function(s){return typeof stActive==='function'?stActive(s):true};
-  if(u.role==='teacher'&&typeof teacherAssignments==='function'){(teacherAssignments()||[]).forEach(function(a){var l=db.students.filter(function(s){return s.grade===a.grade&&s.section===a.section&&act(s)});if(!l.length)return;var f=l.filter(function(s){return entered(s,a.subject,ids)}).length;rows.push({grade:a.grade,section:a.section,subject:a.subject,total:l.length,done:f})})}
-  else{(typeof gradesList!=='undefined'?gradesList:[]).forEach(function(g){var subs=(db.subjects&&db.subjects[g])||[];var l=db.students.filter(function(s){return s.grade===g&&act(s)});if(!l.length||!subs.length)return;var t=0,f=0;l.forEach(function(s){subs.forEach(function(sb){t++;if(entered(s,sb,ids))f++})});rows.push({grade:g,total:t,done:f})})}
-  return rows}
-function renderToday(){var h=$('home');if(!h||!window.currentUser)return;var box=$('homeToday');
-  if(!box){box=document.createElement('div');box.id='homeToday';h.insertBefore(box,h.firstChild);box.addEventListener('click',function(e){var b=e.target.closest('button[data-go]');if(!b)return;var d=JSON.parse(decodeURIComponent(b.getAttribute('data-go')));show('grades');if(d.grade)setSel('gradeEntryGrade',d.grade);if(d.section)setSel('gradeEntrySection',d.section);if(d.subject)setTimeout(function(){setSel('gradeEntrySubject',d.subject)},120)})}
-  var rows=todayData(),teacher=currentUser.role==='teacher';
-  var pend=rows.filter(function(r){return r.done<r.total}).sort(function(a,b){return a.done/a.total-b.done/b.total}).slice(0,3);
-  var html='<h3>ماذا ينقصك اليوم؟</h3>';
-  if(!rows.length){box.style.display='none';return}box.style.display='';
-  if(!pend.length)html+='<div class="ht-done">'+ic('home').replace('<svg','<svg style="stroke:#17a673"')+'<span>أحسنت — الإدخال مكتمل لكل '+(teacher?'صفوفك ومواد':'الصفوف')+' ✓</span></div>';
-  else{html+='<div class="ht-sub">'+(teacher?'أقرب ما يحتاج إكمالاً من صفوفك':'الصفوف الأقل إدخالاً للدرجات')+'</div>';
-    pend.forEach(function(r){var p=Math.round(r.done/r.total*100),lab=teacher?(r.grade+' / '+r.section):r.grade,sub=teacher?r.subject:('تم إدخال '+r.done+' من '+r.total+' خانة');
-      html+='<div class="ht-row"><div class="ht-main"><b>'+esc2(lab)+'</b><small>'+esc2(teacher?r.subject+' — '+r.done+' من '+r.total+' طالب':sub)+'</small><div class="ht-bar"><i style="width:'+p+'%"></i></div></div><button type="button" data-go="'+encodeURIComponent(JSON.stringify({grade:r.grade,section:teacher?r.section:'',subject:teacher?r.subject:''}))+'">'+(teacher?'أكمل الإدخال':'فتح')+'</button></div>'})}
-  if(box.__h!==html){box.innerHTML=html;box.__h=html;if(typeof applyArabicDigits==='function')try{applyArabicDigits(box)}catch(e){}}}
-/* تزامن مع show / renderHome */
-var oShow=window.show;
-if(typeof oShow==='function'){window.show=function(id,btn){var r=oShow.apply(this,arguments);try{buildBN()}catch(e){}return r}}
-var oRH=window.renderHome;
-window.renderHome=function(){var r=typeof oRH==='function'?oRH.apply(this,arguments):undefined;try{renderToday()}catch(e){}return r};
-function tick(){try{if(!window.currentUser){var bn=$('sirtiBN');if(bn)bn.style.display='none';return}var bn2=$('sirtiBN');if(bn2)bn2.style.display='';iconize();mountBtn();buildBN()}catch(e){}}
-setInterval(tick,1200);document.addEventListener('DOMContentLoaded',tick);
+var ok=false;try{ok=!!(window.CSS&&CSS.supports&&CSS.supports('overflow-x','clip'))}catch(e){}
+if(ok)return;
+document.documentElement.classList.add('no-clip');
+function upd(){['ssGrades','ssCalc'].forEach(function(id){var el=document.getElementById(id);if(!el||el.offsetParent===null)return;
+  var cur=parseFloat(el.getAttribute('data-ty')||'0'),r=el.getBoundingClientRect(),nat=r.top-cur;
+  var par=el.parentElement,pb=par?par.getBoundingClientRect().bottom:1e9;
+  var ty=Math.max(0,8-nat),maxTy=Math.max(0,pb-(nat+el.offsetHeight)-4);if(ty>maxTy)ty=maxTy;ty=Math.round(ty);
+  if(ty!==cur){el.setAttribute('data-ty',ty);el.style.transform=ty?'translateY('+ty+'px)':''}})}
+var t=0;function sch(){if(t)return;t=requestAnimationFrame(function(){t=0;try{upd()}catch(e){}})}
+window.addEventListener('scroll',sch,{passive:true});window.addEventListener('resize',sch);setInterval(sch,500);
 })();
 </script>
 </body>
