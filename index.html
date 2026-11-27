@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v225</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v226</span></div>
   </div>
 </div>
 <div class="app">
@@ -2113,7 +2113,7 @@ function saveGrades(){
   changes.forEach(c=>{
     const key=studentGradeAuditKey(c.st.id,grade,section,subject,exam);
     previousStudentAudits[key]=db.gradeAuditByStudent[key];
-    c.st.grades[subject]=c.st.grades[subject]||{};c.prevStamp=c.st.grades[subject]['_a_'+exam];c.st.grades[subject]['_a_'+exam]={at:nowIso,n:actor.name,r:actor.role,u:actor.username};
+    c.st.grades[subject]=c.st.grades[subject]||{};c.prevStamp=c.st.grades[subject]['_a_'+exam];c.st.grades[subject]['_a_'+exam]={at:nowIso,n:actor.name,r:actor.role,u:actor.username,p:(function(v){if(v===undefined||v===null||v==='')return null;var n=Number(toLatin(v));return isFinite(n)?n:null})(c.oldValue)};
     db.gradeAuditByStudent[key]={at:nowIso,grade,section,subject,exam,studentId:c.st.id,studentName:c.st.name||'',changedFrom:c.oldValue===undefined?null:c.oldValue,changedTo:c.value,byName:actor.name,byRole:actor.role,byUsername:actor.username};
   });
   const logEntry={at:nowIso,grade,section,subject,exam,changedCount:changes.length,byName:actor.name,byRole:actor.role,byUsername:actor.username};
@@ -5988,7 +5988,7 @@ function sanitizeStudents(arr){
       var e=g[sub];if(!e||typeof e!=='object'||Array.isArray(e)){delete g[sub];return}
       Object.keys(e).forEach(function(k){
         if(!/^[A-Za-z0-9_]{1,24}$/.test(k)){delete e[k];return}
-        if(k.indexOf('_a_')===0){var ao=e[k];if(ao&&typeof ao==='object'&&!Array.isArray(ao)&&typeof ao.at==='string'&&ao.at.length<=40&&!isNaN(Date.parse(ao.at))){e[k]={at:ao.at,n:cleanStr(String(ao.n||'')).slice(0,60),r:cleanStr(String(ao.r||'')).slice(0,12),u:cleanStr(String(ao.u||'')).slice(0,40)}}else delete e[k];return}
+        if(k.indexOf('_a_')===0){var ao=e[k];if(ao&&typeof ao==='object'&&!Array.isArray(ao)&&typeof ao.at==='string'&&ao.at.length<=40&&!isNaN(Date.parse(ao.at))){e[k]={at:ao.at,n:cleanStr(String(ao.n||'')).slice(0,60),r:cleanStr(String(ao.r||'')).slice(0,12),u:cleanStr(String(ao.u||'')).slice(0,40)};if(Object.prototype.hasOwnProperty.call(ao,'p')){var pv=ao.p;if(pv===null)e[k].p=null;else if(typeof pv==='number'&&isFinite(pv)&&pv>=0&&pv<=1000)e[k].p=pv}}else delete e[k];return}
         if(k.charAt(0)==='_'){var mo=e[k],cl=null;
           if(mo&&typeof mo==='object'&&!Array.isArray(mo)){
             var nn=function(x){return (x===null||x===undefined||x==='')?null:(typeof x==='number'&&isFinite(x)&&x>=0&&x<=100?x:undefined)};
@@ -7223,7 +7223,7 @@ function save(auto){
     if(rawChanged||finChanged)changes.push({st:st,nw:nw,fin:fin,finChanged:finChanged,dataChanged:dataChanged,hadRaw:!!old,oldRaw:old,hadSub:!!(st.grades&&st.grades[sub]),hadFin:!!(st.grades&&st.grades[sub]&&Object.prototype.hasOwnProperty.call(st.grades[sub],ex)),oldFin:st.grades&&st.grades[sub]?st.grades[sub][ex]:undefined})});
   if(!changes.length){if(!auto)toast('لا توجد تغييرات جديدة لحفظها');return}
   var iso0=window.sirtiNowIso?window.sirtiNowIso():new Date().toISOString(),actor0={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
-  changes.forEach(function(x){var st=x.st;st.grades=st.grades||{};st.grades[sub]=st.grades[sub]||{};if(x.dataChanged||x.finChanged){x.prevStamp=st.grades[sub]['_a_'+ex];st.grades[sub]['_a_'+ex]={at:iso0,n:actor0.name,r:actor0.role,u:actor0.username}}if(x.nw)st.grades[sub]['_'+ex]=x.nw;else delete st.grades[sub]['_'+ex];if(x.finChanged)st.grades[sub][ex]=x.fin});
+  changes.forEach(function(x){var st=x.st;st.grades=st.grades||{};st.grades[sub]=st.grades[sub]||{};if(x.dataChanged||x.finChanged){x.prevStamp=st.grades[sub]['_a_'+ex];st.grades[sub]['_a_'+ex]={at:iso0,n:actor0.name,r:actor0.role,u:actor0.username,p:(function(v){if(v===undefined||v===null||v==='')return null;var n=Number(typeof toLatin==='function'?toLatin(v):v);return isFinite(n)?n:null})(x.oldFin)}}if(x.nw)st.grades[sub]['_'+ex]=x.nw;else delete st.grades[sub]['_'+ex];if(x.finChanged)st.grades[sub][ex]=x.fin});
   if(!db.gradeAudit||typeof db.gradeAudit!=='object')db.gradeAudit={};if(!Array.isArray(db.gradeAuditLog))db.gradeAuditLog=[];if(!db.gradeAuditByStudent||typeof db.gradeAuditByStudent!=='object')db.gradeAuditByStudent={};
   var iso=iso0,actor={name:currentUser.name||currentUser.username||'غير معروف',role:currentUser.role||'unknown',username:currentUser.username||''};
   var akey=typeof window.sirtiGradeAuditKey==='function'?window.sirtiGradeAuditKey(S.grade,S.section,sub,ex):[S.grade,S.section,sub,ex].join('|');
@@ -7599,7 +7599,7 @@ var OPEN={},SHOW={},STEP=10;
 function exLab(id){var e=(typeof exams!=='undefined'?exams:[]).filter(function(x){return x.id===id})[0];return e?String(e.label).split(' — ')[0]:id}
 function collect(){var out=[];db.students.forEach(function(st){var g=st.grades||{};Object.keys(g).forEach(function(sub){var o=g[sub];if(!o||typeof o!=='object')return;
   Object.keys(o).forEach(function(k){if(k.indexOf('_a_')!==0)return;var a=o[k];if(!a||!a.at)return;var ex=k.slice(3),v=o[ex];
-    out.push({at:a.at,who:a.n||a.u||'—',key:a.u||a.n||'—',role:a.r||'',st:st.name,grade:st.grade,section:st.section,sub:sub,ex:ex,val:typeof v==='number'?v:null})})})});return out}
+    out.push({at:a.at,who:a.n||a.u||'—',key:a.u||a.n||'—',role:a.r||'',st:st.name,grade:st.grade,section:st.section,sub:sub,ex:ex,val:typeof v==='number'?v:null,hasP:Object.prototype.hasOwnProperty.call(a,'p'),p:(typeof a.p==='number'?a.p:null)})})})});return out}
 function fv(v){return v==null?'—':String(Math.round(v*100)/100)}
 function renderOwnerEdits(){
   var card=$('homeEditsCard'),box=$('homeEdits');if(!card||!box||!window.currentUser||currentUser.role!=='owner')return;
@@ -7614,8 +7614,8 @@ function renderOwnerEdits(){
     var n=SHOW[g.key]||STEP,rows=g.rows.slice(0,n),open=!!OPEN[g.key];
     return '<div class="ed-grp'+(open?' open':'')+'" data-k="'+esc2(encodeURIComponent(g.key))+'">'+
       '<button type="button" class="ed-h" aria-expanded="'+open+'"><span class="ed-nm">'+esc2(g.name)+'</span><span class="ed-ct">'+g.rows.length+' عملية</span><span class="ed-lt">آخر تعديل: '+esc2(fd(g.last))+'</span><span class="ed-ch">▼</span></button>'+
-      '<div class="ed-body"><div class="table-wrap edits-wrap"><table class="table"><thead><tr><th>التاريخ والوقت</th><th>الصف</th><th>المادة</th><th>الامتحان</th><th>الطالب</th><th>الدرجة</th></tr></thead><tbody>'+
-      rows.map(function(r){return '<tr><td>'+esc2(fd(r.at))+'</td><td>'+esc2(r.grade)+' / '+esc2(r.section)+'</td><td>'+esc2(r.sub)+'</td><td>'+esc2(exLab(r.ex))+'</td><td>'+esc2(r.st)+'</td><td>'+esc2(fv(r.val))+'</td></tr>'}).join('')+
+      '<div class="ed-body"><div class="table-wrap edits-wrap"><table class="table"><thead><tr><th>التاريخ والوقت</th><th>الصف</th><th>المادة</th><th>الامتحان</th><th>الطالب</th><th>قبل</th><th>بعد</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr><td>'+esc2(fd(r.at))+'</td><td>'+esc2(r.grade)+' / '+esc2(r.section)+'</td><td>'+esc2(r.sub)+'</td><td>'+esc2(exLab(r.ex))+'</td><td>'+esc2(r.st)+'</td><td class="ed-bf">'+(r.hasP?(r.p==null?'<span class="ed-na">فارغة</span>':esc2(fv(r.p))):'<span class="ed-na">—</span>')+'</td><td class="ed-af"><b>'+esc2(fv(r.val))+'</b></td></tr>'}).join('')+
       '</tbody></table></div>'+(g.rows.length>n?'<div class="ed-more"><button type="button" class="btn light ed-mb">عرض المزيد ('+(g.rows.length-n)+')</button></div>':'')+'</div></div>'}).join(''):'<div class="empty">لا توجد تعديلات مسجَّلة بعد.</div>';
   if(typeof applyArabicDigits==='function')try{applyArabicDigits(box)}catch(e){}}
 document.addEventListener('click',function(e){
@@ -7685,6 +7685,13 @@ document.addEventListener('focusin',function(){setTimeout(set,150);setTimeout(se
 document.addEventListener('focusout',function(){setTimeout(set,200)});
 })();
 </script>
+<style id="sirti-v226-edit-diff">
+.ed-body td.ed-bf{color:#b4232f;font-weight:700;text-decoration:line-through;text-decoration-thickness:1px}
+.ed-body td.ed-af b{color:#117a50}
+.ed-body .ed-na{color:var(--muted,#8b97ab);text-decoration:none;font-weight:600;font-size:11px;display:inline-block}
+body.dark-mode .ed-body td.ed-bf{color:#ff8791}
+body.dark-mode .ed-body td.ed-af b{color:#4fd6a4}
+</style>
 </body>
 
 </html>
