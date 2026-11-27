@@ -1622,7 +1622,7 @@ body:not(.dark-mode):not(.dark):not(.theme-dark) .grade-audit-note{
       </form>
       <div class="login-security"><span>●</span> الدخول متاح فقط للحسابات التي تنشئها إدارة الموقع</div>
     </div>
-    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v226</span></div>
+    <div class="login-footer">إنشاء وتطوير: حسن ثامر &nbsp; • &nbsp; Created & Developed by Hasan Thamer &nbsp; • &nbsp; <span id="sirtiBuild">v228</span></div>
   </div>
 </div>
 <div class="app">
@@ -7692,6 +7692,123 @@ document.addEventListener('focusout',function(){setTimeout(set,200)});
 body.dark-mode .ed-body td.ed-bf{color:#ff8791}
 body.dark-mode .ed-body td.ed-af b{color:#4fd6a4}
 </style>
+<style id="sirti-v227-history">
+#sirtiHist{display:inline-flex;gap:6px;align-items:center;margin-inline-end:6px}
+#sirtiHist button{all:unset;box-sizing:border-box;width:40px;height:40px;border-radius:12px;display:inline-grid;place-items:center;cursor:pointer;border:1px solid var(--line,#dfe5ee);background:var(--card,#fff);color:var(--text,#1b2540);-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s,transform .1s}
+#sirtiHist button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#sirtiHist button:hover:not([disabled]){border-color:#d99a00;background:rgba(217,154,0,.1)}
+#sirtiHist button:active:not([disabled]){transform:scale(.93)}
+#sirtiHist button[disabled]{opacity:.35;cursor:not-allowed}
+#sirtiHist button:focus-visible{outline:2px solid #d99a00;outline-offset:2px}
+body.dark-mode #sirtiHist button{background:#101c31;border-color:#2c3d5c;color:#eef2ff}
+@media(max-width:860px){#sirtiHist{margin-inline-end:2px}#sirtiHist button{width:36px;height:36px}}
+@media print{#sirtiHist{display:none!important}}
+</style>
+<script id="sirti-v227-history-js">
+(function(){
+'use strict';
+var MAXN=100,seen=null,seeded=false,busy=false,who='',shadow=new Map();
+var H={g:{list:[],idx:0},c:{list:[],idx:0}};
+function $(i){return document.getElementById(i)}
+function me(){return window.currentUser||null}
+function key(){return 'sirti_hist_v2_'+who}
+function clean(st){var l=(st&&Array.isArray(st.list)?st.list:[]).filter(function(e){return e&&e.sid&&e.sub&&e.ex&&e.grade&&e.section});var cut=Math.max(0,l.length-MAXN),idx=typeof st.idx==='number'?st.idx:l.length;l=l.slice(cut);return{list:l,idx:Math.max(0,Math.min(l.length,idx-cut))}}
+function load(){try{var j=JSON.parse(localStorage.getItem(key())||'null');if(j&&j.g&&j.c)H={g:clean(j.g),c:clean(j.c)};else{var o=JSON.parse(localStorage.getItem('sirti_hist_v1_'+who)||'null');H={g:o?clean(o):{list:[],idx:0},c:{list:[],idx:0}}}}catch(e){H={g:{list:[],idx:0},c:{list:[],idx:0}}}}
+function save(){try{localStorage.setItem(key(),JSON.stringify(H))}catch(e){}}
+function num(v){if(v===undefined||v===null||v==='')return null;var n=Number(typeof toLatin==='function'?toLatin(v):v);return isFinite(n)?n:null}
+function nowMs(){return typeof window.sirtiNowMs==='function'?window.sirtiNowMs():Date.now()}
+function exLab(id){var e=(typeof exams!=='undefined'?exams:[]).filter(function(x){return x.id===id})[0];return e?String(e.label).split(' — ')[0]:id}
+function fv(v){return v==null?'فارغة':String(v)}
+function rawStr(o){if(!o||typeof o!=='object'||o.p===undefined)return null;return JSON.stringify({p:o.p,d:o.d===undefined?null:o.d})}
+function rawTxt(s){if(!s)return 'فارغ';try{var o=JSON.parse(s);var ps=(o.p||[]).filter(function(x){return x!==null}).join('+');return (ps||'—')+(o.d!=null?' | يومي '+o.d:'')}catch(e){return '—'}}
+function view(){var s=document.querySelector('main > section.view.active');return s?s.id:''}
+function kindNow(){var v=view();return v==='grades'?'g':v==='monthlyCalc'?'c':null}
+function scan(record){var u=me();if(!u||!window.db||!db.students)return;var t=nowMs(),outG=[],outC=[],cur=new Map();
+  db.students.forEach(function(st){var g=st.grades;if(!g)return;Object.keys(g).forEach(function(sub){var o=g[sub];if(!o||typeof o!=='object')return;
+    Object.keys(o).forEach(function(k){
+      if(k.charAt(0)==='_'&&k.indexOf('_a_')!==0){var rs=rawStr(o[k]);if(rs)cur.set(st.id+'|'+sub+'|'+k.slice(1),rs);return}
+      if(k.indexOf('_a_')!==0)return;var a=o[k];if(!a||a.u!==u.username||!a.at)return;var ex=k.slice(3),sk=st.id+'|'+sub+'|'+ex+'|'+a.at;
+      if(seen.has(sk))return;seen.add(sk);if(!record)return;
+      var at=Date.parse(a.at);if(!isFinite(at)||Math.abs(t-at)>20000)return;
+      var base={sid:st.id,name:st.name||'',grade:st.grade,section:st.section,sub:sub,ex:ex,t:at};
+      if(Object.prototype.hasOwnProperty.call(o,'_'+ex)||shadow.has(st.id+'|'+sub+'|'+ex)){
+        var ra=rawStr(o['_'+ex]),rb=shadow.get(st.id+'|'+sub+'|'+ex)||null;if(ra===rb)return;base.rb=rb;base.ra=ra;base.fb=Object.prototype.hasOwnProperty.call(a,'p')?a.p:null;base.fa=num(o[ex]);outC.push(base);return}
+      if(!Object.prototype.hasOwnProperty.call(a,'p'))return;
+      var after=num(o[ex]),before=a.p;if(before===after)return;base.b=before;base.a=after;outG.push(base)})})});
+  shadow=cur;
+  function add(k,arr){if(!arr.length)return;var s=H[k];s.list=s.list.slice(0,s.idx).concat(arr);if(s.list.length>MAXN)s.list=s.list.slice(-MAXN);s.idx=s.list.length}
+  if(outG.length||outC.length){add('g',outG);add('c',outC);save();draw()}}
+function init(){var u=me();if(!u||!window.db||!db.students||!db.students.length)return false;
+  if(who!==u.username){who=u.username;seen=new Set();seeded=false;load()}
+  if(!seeded){scan(false);seeded=true;draw()}return true}
+function selSet(id,v){var e=$(id);if(!e)return false;var has=[].some.call(e.options,function(o){return o.value===v});if(!has)return false;if(e.value!==v){e.value=v;e.dispatchEvent(new Event('change',{bubbles:true}))}return true}
+function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
+/* تراجع/إعادة درجة إدخال عادي: عبر مسار saveGrades */
+function applyG(e,toVal,expected,word){
+  if(typeof show!=='function'||typeof saveGrades!=='function')return false;
+  var st=db.students.find(function(x){return x.id===e.sid});if(!st){toast('تعذر '+word+': الطالب لم يعد موجوداً');return false}
+  var inGrades=function(id,v){var s=$(id);if(!s)return false;var ok=[].some.call(s.options,function(o){return o.value===v});if(!ok)return false;s.value=v;if(typeof renderGradeEntry==='function')renderGradeEntry();return true};
+  if(!(inGrades('gradeEntryGrade',e.grade)&&inGrades('gradeEntrySection',e.section)&&inGrades('gradeEntrySubject',e.sub)&&inGrades('gradeEntryExam',e.ex))){toast('تعذر '+word+': ليس لديك هذه المادة أو الامتحان حالياً');return false}
+  var inputs=[].slice.call(document.querySelectorAll('#gradeEntryTable .grade-input')),inp=inputs.filter(function(i){return i.dataset.student===e.sid})[0];
+  if(!inp||inp.disabled){toast('تعذر '+word+': الحقل غير متاح (فترة الامتحان أو الصلاحية)');return false}
+  var dirty=inputs.some(function(i){var s2=db.students.find(function(x){return x.id===i.dataset.student});return s2&&num(i.value)!==num(s2.grades&&s2.grades[e.sub]&&s2.grades[e.sub][e.ex])});
+  if(dirty){toast('لديك درجات غير محفوظة في هذه الصفحة — احفظها أولاً ثم '+word);return false}
+  var cur=num(st.grades&&st.grades[e.sub]&&st.grades[e.sub][e.ex]);
+  if(cur!==expected&&!window.confirm('الدرجة الحالية ('+fv(cur)+') تختلف عمّا سُجّل في العملية ('+fv(expected)+'). قد يكون عدّلها شخص آخر.\nهل تريد المتابعة والاستبدال؟'))return false;
+  busy=true;try{inp.value=toVal==null?'':String(toVal);inp.dispatchEvent(new Event('input',{bubbles:true}));saveGrades()}catch(x){busy=false;return false}
+  busy=false;scan(false);
+  var now=num(st.grades&&st.grades[e.sub]&&st.grades[e.sub][e.ex]);
+  if(now!==toVal){toast('لم يتم '+word+' (تحقق من الصلاحية أو فترة الامتحان)');return false}return true}
+/* تراجع/إعادة صف في حاسب الامتحان الشهري: عبر خانات الحاسب نفسها (حفظ تلقائي) */
+async function applyC(e,toRaw,expRaw,word){
+  var st=db.students.find(function(x){return x.id===e.sid});if(!st){toast('تعذر '+word+': الطالب لم يعد موجوداً');return false}
+  if(typeof show==='function')show('monthlyCalc');await wait(150);
+  var ok=selSet('mcSubject',e.sub);await wait(60);ok=ok&&selSet('mcGrade',e.grade);await wait(60);ok=ok&&selSet('mcSection',e.section);await wait(60);ok=ok&&selSet('mcExam',e.ex);await wait(350);
+  if(!ok){toast('تعذر '+word+': ليس لديك هذه المادة أو الامتحان حالياً');return false}
+  var row=document.querySelector('#mcBody .mc-row[data-st="'+String(e.sid).replace(/"/g,'')+'"]');if(!row){toast('تعذر '+word+': لم أجد الطالب في الحاسب');return false}
+  var ins=[].slice.call(row.querySelectorAll('.mc-in'));if(!ins.length||ins.some(function(i){return i.disabled})){toast('تعذر '+word+': الخانات غير متاحة (حدد أعلى الدرجات أو الصلاحية)');return false}
+  var pend=[].slice.call(document.querySelectorAll('#mcBody .mc-row')).some(function(r){var s2=db.students.find(function(x){return x.id===r.getAttribute('data-st')});var o=s2&&s2.grades&&s2.grades[e.sub]&&s2.grades[e.sub]['_'+e.ex];var rr=[].slice.call(r.querySelectorAll('.mc-in')).map(function(i){return num(i.value)});var parts=[],d=null;[].forEach.call(r.querySelectorAll('.mc-in'),function(i){if(i.hasAttribute('data-d'))d=num(i.value);else parts.push(num(i.value))});var st0=o&&o.p!==undefined?JSON.stringify({p:o.p.slice(0,parts.length),d:o.d===undefined?null:o.d}):JSON.stringify({p:parts.map(function(){return null}),d:null});return JSON.stringify({p:parts,d:d})!==st0});
+  if(pend){toast('لديك درجات غير محفوظة في الحاسب — انتظر الحفظ التلقائي ثم '+word);return false}
+  var curRaw=rawStr(st.grades&&st.grades[e.sub]&&st.grades[e.sub]['_'+e.ex]);
+  if(curRaw!==expRaw&&!window.confirm('الصف الحالي في الحاسب ('+rawTxt(curRaw)+') يختلف عمّا سُجّل ('+rawTxt(expRaw)+'). قد يكون عدّله شخص آخر.\nهل تريد المتابعة والاستبدال؟'))return false;
+  var tgt=toRaw?JSON.parse(toRaw):{p:[],d:null},np=ins.filter(function(i){return !i.hasAttribute('data-d')});
+  if(toRaw&&tgt.p.length<np.length){var extra=tgt.p.slice(np.length);if(extra.some(function(x){return x!==null})){toast('تعذر '+word+': تغيّر عدد أجزاء الامتحان');return false}}
+  if(toRaw&&tgt.p.length>np.length&&tgt.p.slice(np.length).some(function(x){return x!==null})){toast('تعذر '+word+': تغيّر عدد أجزاء الامتحان');return false}
+  busy=true;
+  np.forEach(function(i,k){var v=tgt.p[k];i.value=v==null?'':String(v);i.dispatchEvent(new Event('input',{bubbles:true}))});
+  var di=ins.filter(function(i){return i.hasAttribute('data-d')})[0];if(di){di.value=tgt.d==null?'':String(tgt.d);di.dispatchEvent(new Event('input',{bubbles:true}))}
+  ins.forEach(function(i){i.dispatchEvent(new Event('change',{bubbles:true}))});
+  await wait(2000);busy=false;scan(false);
+  var nowRaw=rawStr(st.grades&&st.grades[e.sub]&&st.grades[e.sub]['_'+e.ex]);
+  var want=toRaw?JSON.stringify({p:tgt.p.slice(0,np.length).concat(new Array(Math.max(0,np.length-tgt.p.length)).fill(null)),d:tgt.d}):null;
+  var okv=toRaw?(function(){try{var a=JSON.parse(nowRaw||'null'),b=JSON.parse(toRaw);if(!a)return false;return JSON.stringify(a.p.slice(0,np.length))===JSON.stringify(b.p.slice(0,np.length))&&(a.d==null?null:a.d)===(b.d==null?null:b.d)}catch(x){return false}})():(nowRaw===null||(function(){try{var a=JSON.parse(nowRaw);return a.p.every(function(x){return x===null})&&a.d==null}catch(x){return false}})());
+  if(!okv){toast('لم يتم '+word+' (تحقق من الصلاحية أو فترة الامتحان)');return false}return true}
+async function undo(){var k=kindNow();if(!k||!init())return;var s=H[k];if(s.idx<=0)return;var e=s.list[s.idx-1],ok;
+  if(k==='g'){ok=applyG(e,e.b,e.a,'التراجع')}else{ok=await applyC(e,e.rb,e.ra,'التراجع')}
+  if(ok){s.idx--;save();draw();toast(k==='g'?'تم التراجع: '+e.name+' — '+e.sub+' ('+exLab(e.ex)+') من '+fv(e.a)+' إلى '+fv(e.b):'تم التراجع: '+e.name+' — '+e.sub+' ('+exLab(e.ex)+')')}}
+async function redo(){var k=kindNow();if(!k||!init())return;var s=H[k];if(s.idx>=s.list.length)return;var e=s.list[s.idx],ok;
+  if(k==='g'){ok=applyG(e,e.a,e.b,'الإعادة')}else{ok=await applyC(e,e.ra,e.rb,'الإعادة')}
+  if(ok){s.idx++;save();draw();toast(k==='g'?'تمت الإعادة: '+e.name+' — '+e.sub+' ('+exLab(e.ex)+') من '+fv(e.b)+' إلى '+fv(e.a):'تمت الإعادة: '+e.name+' — '+e.sub+' ('+exLab(e.ex)+')')}}
+function mount(){if($('sirtiHist'))return;var top=document.querySelector('.top');if(!top)return;var d=document.createElement('div');d.id='sirtiHist';d.setAttribute('role','group');d.setAttribute('aria-label','التراجع والإعادة');d.style.display='none';
+  var ar='<svg viewBox="0 0 24 24" aria-hidden="true">';
+  d.innerHTML='<button type="button" id="hUndo" aria-label="تراجع">'+ar+'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button><button type="button" id="hRedo" aria-label="إعادة">'+ar+'<path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>';
+  var u=$('topUserAccountShortcut');if(u&&u.parentNode===top)top.insertBefore(d,u);else top.appendChild(d);
+  $('hUndo').addEventListener('click',undo);$('hRedo').addEventListener('click',redo)}
+function desc(e,k,fwd){if(k==='g')return e.name+' — '+e.sub+' ('+exLab(e.ex)+') '+(fwd?fv(e.b)+' ← '+fv(e.a):fv(e.a)+' ← '+fv(e.b));return e.name+' — '+e.sub+' ('+exLab(e.ex)+') '+(fwd?rawTxt(e.rb)+' ← '+rawTxt(e.ra):rawTxt(e.ra)+' ← '+rawTxt(e.rb))}
+function draw(){var d=$('sirtiHist'),u=$('hUndo'),r=$('hRedo');if(!d||!u||!r)return;var k=kindNow();d.style.display=k?'inline-flex':'none';if(!k)return;
+  var s=H[k],eu=s.idx>0?s.list[s.idx-1]:null,er=s.idx<s.list.length?s.list[s.idx]:null;
+  u.disabled=!eu;r.disabled=!er;
+  u.title=eu?('تراجع: '+desc(eu,k,false)+'  (Ctrl+Z)'):'لا توجد عملية للتراجع عنها';
+  r.title=er?('إعادة: '+desc(er,k,true)+'  (Ctrl+Y)'):'لا توجد عملية للإعادة';
+  u.setAttribute('aria-label',u.title);r.setAttribute('aria-label',r.title)}
+document.addEventListener('keydown',function(e){if(!(e.ctrlKey||e.metaKey)||!me()||!kindNow())return;var a=document.activeElement,tg=a&&a.tagName;if(/^(INPUT|TEXTAREA|SELECT)$/.test(tg||'')||(a&&a.isContentEditable))return;var k=String(e.key).toLowerCase();
+  if(k==='z'&&!e.shiftKey){e.preventDefault();undo()}else if(k==='y'||(k==='z'&&e.shiftKey)){e.preventDefault();redo()}});
+var oSave=window.saveDB;
+if(typeof oSave==='function'){window.saveDB=function(){var r=oSave.apply(this,arguments);try{if(!busy&&init())scan(true)}catch(e){}return r}}
+setInterval(function(){try{if(me()){mount();init();draw()}else{if(who){who='';seen=null;seeded=false;shadow=new Map();H={g:{list:[],idx:0},c:{list:[],idx:0}}}var h=$('sirtiHist');if(h)h.style.display='none'}}catch(e){}},1000);
+document.addEventListener('click',function(){setTimeout(draw,60)},true);
+})();
+</script>
 </body>
 
 </html>
